@@ -415,3 +415,100 @@ def test_hedging_everything_scores_perfectly_on_recall_and_harm():
     assert report.harmful_errors == 0
     assert report.decision_accuracy == pytest.approx(0.1), "and it is still nearly always wrong"
     assert report.surfaced_precision == pytest.approx(0.2), "it buries the good jobs in noise"
+
+
+# --------------------------------------------------- building the dataset
+
+
+class TestDatasetBuild:
+    """A bug here silently corrupts every number the benchmark reports."""
+
+    def _job(self, session, job_id: int, **overrides):
+        from jobhunter.db.models import Job
+
+        payload = {
+            "id": job_id,
+            "fingerprint": f"fp-{job_id}",
+            "source": "jobs.bg",
+            "source_url": f"https://www.jobs.bg/job/{job_id}",
+            "normalized_url": f"https://www.jobs.bg/job/{job_id}",
+            "title": "Junior PHP Developer",
+            "title_normalized": "junior php developer",
+            "company_name_raw": "Acme",
+            "location_raw": "Варна",
+            "description": "Requirements: PHP and Laravel. " * 20,
+            "level_raw": "Ниво Entry-level / Junior",
+            "experience_raw": "Години опит от 0 до 2",
+            "work_mode_raw": "Възможност за работа от вкъщи",
+            "tech_keywords": ["php", "laravel"],
+            "languages_raw": ["Английски"],
+        }
+        payload.update(overrides)
+        job = Job(**payload)
+        session.add(job)
+        session.flush()
+        return job
+
+    def _labels(self, tmp_path, ids):
+        payload = {
+            "_candidate": "a test candidate",
+            "labels": {
+                str(i): {
+                    "decision": "apply",
+                    "is_it_role": True,
+                    "seniority": "junior",
+                    "location_fit": "exact_city",
+                    "tags": ["english"],
+                    "notes": "because",
+                }
+                for i in ids
+            },
+        }
+        path = tmp_path / "labels.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        return path
+
+    def test_the_site_tags_survive_into_the_dataset(self, session, tmp_path):
+        """The live pipeline has these, so the benchmark must not withhold them."""
+        from jobhunter.evaluation.build import build_dataset
+
+        self._job(session, 1)
+        dataset = build_dataset(session, self._labels(tmp_path, [1]))
+
+        built = dataset.cases[0]
+        assert built.level_raw == "Ниво Entry-level / Junior"
+        assert built.experience_raw == "Години опит от 0 до 2"
+        assert built.work_mode_raw == "Възможност за работа от вкъщи"
+        assert built.tech_tags == ["php", "laravel"]
+
+        # And they must reach the job the matcher is handed.
+        job = built.to_normalized_job()
+        assert job.level_raw == "Ниво Entry-level / Junior"
+        assert job.work_mode.value == "hybrid", "home-office possible is hybrid, not remote"
+
+    def test_the_label_and_its_note_are_carried_across(self, session, tmp_path):
+        from jobhunter.evaluation.build import build_dataset
+
+        self._job(session, 1)
+        dataset = build_dataset(session, self._labels(tmp_path, [1]))
+        assert dataset.cases[0].label.decision is Decision.APPLY
+        assert dataset.candidate_note == "a test candidate"
+
+    def test_a_label_for_a_job_that_is_gone_fails_loudly(self, session, tmp_path):
+        """Silently dropping a case would shrink the benchmark without saying so."""
+        from jobhunter.evaluation.build import MissingJobError, build_dataset
+
+        self._job(session, 1)
+        with pytest.raises(MissingJobError, match="99"):
+            build_dataset(session, self._labels(tmp_path, [1, 99]))
+
+    def test_the_built_dataset_round_trips_to_disk(self, session, tmp_path):
+        from jobhunter.evaluation.build import build_and_save
+
+        self._job(session, 1)
+        path = build_and_save(
+            session, labels_path=self._labels(tmp_path, [1]), out=tmp_path / "d.json"
+        )
+        restored = load_dataset(path)
+        assert len(restored) == 1
+        assert restored.cases[0].level_raw == "Ниво Entry-level / Junior"
