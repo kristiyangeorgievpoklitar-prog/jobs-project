@@ -78,16 +78,76 @@ Four models in the 1-4B class were run over a stratified 14-case subset
 (3 APPLY / 3 REVIEW / 8 SKIP) drawn from the labelled set, all on prompt v3 and
 identical settings, before the best was run over all 41 cases.
 
-| model | size on disk | resident | GPU offload |
-|---|---|---|---|
-| qwen3:1.7b | 1.4 GB | 1.9 GB | 33% |
-| qwen2.5:3b | 1.9 GB | 2.4 GB | 25% |
-| llama3.2:3b | 2.0 GB | — | — |
-| gemma3:4b | 3.3 GB | — | — |
+| model | on disk | resident | GPU offload | seconds/job |
+|---|---|---|---|---|
+| qwen3:1.7b | 1.4 GB | 1.9 GB | 33% | 109 |
+| **qwen2.5:3b** | 1.9 GB | 2.3 GB | 26% | **99** |
+| llama3.2:3b | 2.0 GB | 2.4 GB | ~25% | 193 |
+| gemma3:4b | 3.3 GB | 3.8 GB | **3%** | 180 |
 
 Multilingual capability was the reason for the shortlist: roughly half of the
 listings are in Bulgarian and many mix Bulgarian prose with English technology
 names, which rules out models that only handle English well.
+
+Note what the VRAM ceiling does to the largest one. gemma3:4b needs 3.8 GB
+against 1.6 GB available, so Ollama runs it 97% on the CPU — it is not really
+using the GPU at all. At 180 s/job a 94-listing scan would take about four and
+a half hours, which is not a daily tool.
+
+## Screening results
+
+Fourteen stratified cases (3 APPLY / 3 REVIEW / 8 SKIP), all models on prompt
+v3-v5, identical settings. The two stub baselines are included because most
+listings genuinely are skips, and both headline metrics can be gamed by refusing
+to decide in one direction or the other.
+
+| matcher | acc | worth-surfacing recall | precision | harmful | seniority | location | skips issued |
+|---|---|---|---|---|---|---|---|
+| always-skip stub | 57% | 0% | 0% | 3 | – | – | 14 |
+| always-review stub | 21% | 100% | 43% | 0 | – | – | 0 |
+| legacy rule score | 57% | 33% | 67% | 2 | 79% | 79% | 12 |
+| qwen3:1.7b | 14% | 100% | 43% | **6** | 22% | 11% | 0 |
+| qwen2.5:3b | 21% | 83% | 42% | 2 | 50% | 57% | 2 |
+| llama3.2:3b | 14% | 100% | 43% | 0 | 80% | 11% | **0** |
+| gemma3:4b | 14% | 100% | 43% | 1 | 75% | 58% | **0** |
+
+Read the last column first. Against **8 labelled skips**, three of the four
+models issued **none or almost none**. That is why they share identical headline
+numbers with the always-review stub: they had stopped discriminating.
+
+The cause was in the prompt, not the models. Up to v6 it said *"when genuinely
+torn, choose review"*, and every model obliged. Prompt v7 states the base rate —
+most listings are skips, and saying so is the useful answer — lists concrete
+skip triggers, and defines "review" as *"I could not decide"* rather than *"I
+would rather not say"*.
+
+The same model and the same 14 cases, before and after that one change:
+
+| qwen2.5:3b | v6 | **v7** |
+|---|---|---|
+| decision accuracy | 21% | **57%** |
+| surfaced precision | 42% | **67%** |
+| APPLY recall | 0% | **33%** |
+| harmful errors | 2 | **1** |
+| predictions | 10 review / 2 skip / 2 apply | **8 skip / 4 review / 2 apply** |
+| *(labels)* | | *8 skip / 3 review / 3 apply* |
+
+## The selected model
+
+**qwen2.5:3b, Q4, via Ollama.** Roughly 99 seconds per listing on this machine,
+2.3 GB resident, about a quarter of it on the GPU.
+
+It was chosen because it is the only candidate that both discriminates and runs
+at a usable speed:
+
+* **qwen3:1.7b** — six harmful errors out of fourteen, recommending APPLY for a
+  Senior Full-Stack WordPress role and a Sofia-based job. Being smaller bought
+  nothing: at this VRAM it is no faster.
+* **llama3.2:3b** — the slowest at 193 s/job, worst location accuracy (11%), and
+  statistically indistinguishable from the always-review stub.
+* **gemma3:4b** — the best supporting claims of the four (75% seniority, 58%
+  location) and its reasoning reads well in the logs, but it cannot fit the GPU
+  at all and costs 180 s/job. Worth revisiting on a machine with more VRAM.
 
 ## Results
 
