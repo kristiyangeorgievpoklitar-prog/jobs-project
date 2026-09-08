@@ -205,23 +205,38 @@ def test_the_candidate_fingerprint_tracks_the_cv_as_well_as_the_profile():
     assert candidate_fingerprint(candidate, CV_TEXT) == candidate_fingerprint(candidate, CV_TEXT)
 
 
-def test_the_rule_based_pre_assessment_reaches_the_model():
-    """The rules beat the model on seniority and location, so it sees them."""
+def test_the_candidate_location_check_reaches_the_model():
+    """Whether the stated city works for *this* candidate is real information."""
     from jobhunter.classify.classifier import classify_job
 
     job = make_job(level_raw="Ниво Entry-level / Junior", location_raw="Варна")
     classification = classify_job(job, target_locations=["Varna"], remote_ok=True)
     rendered = render_job(job, classification=classification)
 
-    assert "Rule-based pre-assessment" in rendered
-    assert "entry-level bar: entry" in rendered
-    assert "reachable for the candidate" in rendered
-    assert "may be wrong" in rendered, "it must be offered as an opinion, not a fact"
+    assert "Candidate-location check" in rendered
+    assert "works for this candidate" in rendered
 
 
-def test_an_undetermined_pre_assessment_says_so_rather_than_guessing():
+def test_a_job_in_the_wrong_city_is_marked_as_such():
     from jobhunter.classify.classifier import classify_job
 
-    job = make_job(level_raw=None, experience_raw=None, location_raw=None)
+    job = make_job(location_raw="София")
     rendered = render_job(job, classification=classify_job(job, target_locations=["Varna"]))
-    assert "could not be determined" in rendered
+    assert "does NOT work for this candidate" in rendered
+
+
+def test_no_seniority_pre_assessment_is_offered():
+    """It anchored the model onto the level tag and away from the posting body.
+
+    Measured: with a seniority pre-assessment the model called a Mid-Senior QA
+    role entry-level because the site tag said so, turning a correct SKIP into a
+    harmful APPLY. The tag itself is already in the prompt, so the derived
+    opinion added authority without information.
+    """
+    from jobhunter.classify.classifier import classify_job
+
+    job = make_job(level_raw="Ниво Entry-level / Junior, Mid-level")
+    rendered = render_job(job, classification=classify_job(job, target_locations=["Varna"]))
+
+    assert "entry-level bar" not in rendered
+    assert "Level tag on the site" in rendered, "the raw tag is still shown"

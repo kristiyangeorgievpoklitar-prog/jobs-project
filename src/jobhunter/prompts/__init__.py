@@ -20,7 +20,7 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 
 # Bumped whenever the meaning of a prompt changes. Cached evaluations produced
 # under an older version are recomputed rather than trusted.
-JOB_EVALUATION_VERSION = "v5"
+JOB_EVALUATION_VERSION = "v6"
 COVER_LETTER_VERSION = "v1"
 
 

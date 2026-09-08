@@ -69,22 +69,24 @@ def render_job(
         lines.append(f"Technology tags on the site: {', '.join(job.tech_keywords[:25])}")
 
     if classification is not None:
-        lines.append("")
-        lines.append("Rule-based pre-assessment (from the site tags only, may be wrong):")
-        if classification.seniority.is_known:
-            signals = ", ".join(classification.seniority_signals[:3]) or "no signals"
-            lines.append(
-                f"  entry-level bar: {classification.seniority.value} "
-                f"(confidence {classification.seniority_confidence:.0%}; {signals})"
-            )
-        else:
-            lines.append("  entry-level bar: could not be determined from the tags")
+        # Location only, deliberately.
+        #
+        # A seniority pre-assessment was tried and removed: it is derived from
+        # the level tag, which is already shown above, so it added no
+        # information — only authority. Measured, it made the model trust the
+        # tag over the posting body and call a Mid-Senior role entry-level,
+        # which is the exact failure the matcher exists to prevent.
+        #
+        # The location line does add something: whether the stated city works
+        # for *this* candidate needs their preferences, which the model would
+        # otherwise have to infer.
         location = {
-            True: "reachable for the candidate",
-            False: "NOT reachable for the candidate",
-            None: "could not be determined",
+            True: "the stated city works for this candidate",
+            False: "the stated city does NOT work for this candidate",
+            None: "the stated city could not be interpreted",
         }[classification.location_relevant]
-        lines.append(f"  location: {location}")
+        lines.append("")
+        lines.append(f"Candidate-location check (from the location field only): {location}")
 
     body = (job.description or "").strip()
     if body:
