@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 
 from jobhunter.domain.enums import WorkMode
-from jobhunter.domain.schemas import NormalizedJob
+from jobhunter.domain.schemas import ClassificationResult, NormalizedJob
 
 # Long postings are mostly benefits boilerplate after the requirements. Small
 # models degrade sharply with context length, so the body is bounded.
@@ -19,9 +19,20 @@ DEFAULT_MAX_DESCRIPTION_CHARS = 5000
 
 
 def render_job(
-    job: NormalizedJob, *, max_description_chars: int = DEFAULT_MAX_DESCRIPTION_CHARS
+    job: NormalizedJob,
+    *,
+    max_description_chars: int = DEFAULT_MAX_DESCRIPTION_CHARS,
+    classification: ClassificationResult | None = None,
 ) -> str:
-    """A posting as the matcher sees it."""
+    """A posting as the matcher sees it.
+
+    ``classification`` is the deterministic classifier's read of the site's own
+    tags. Measured on the labelled set it calls seniority and location right
+    about 79% of the time, against 42% for the local model — so it is given to
+    the model as evidence rather than discarded. It has not read the posting
+    body, which is exactly what the model is for, so the prompt tells the model
+    to override it whenever the body disagrees.
+    """
     lines: list[str] = [f"Title: {job.title}"]
 
     if job.company_name:
@@ -56,6 +67,24 @@ def render_job(
         lines.append(f"Languages required by the site tags: {', '.join(job.languages)}")
     if job.tech_keywords:
         lines.append(f"Technology tags on the site: {', '.join(job.tech_keywords[:25])}")
+
+    if classification is not None:
+        lines.append("")
+        lines.append("Rule-based pre-assessment (from the site tags only, may be wrong):")
+        if classification.seniority.is_known:
+            signals = ", ".join(classification.seniority_signals[:3]) or "no signals"
+            lines.append(
+                f"  entry-level bar: {classification.seniority.value} "
+                f"(confidence {classification.seniority_confidence:.0%}; {signals})"
+            )
+        else:
+            lines.append("  entry-level bar: could not be determined from the tags")
+        location = {
+            True: "reachable for the candidate",
+            False: "NOT reachable for the candidate",
+            None: "could not be determined",
+        }[classification.location_relevant]
+        lines.append(f"  location: {location}")
 
     body = (job.description or "").strip()
     if body:

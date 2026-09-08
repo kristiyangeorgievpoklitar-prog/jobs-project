@@ -26,6 +26,7 @@ import httpx
 from pydantic import ValidationError
 
 from jobhunter.ai.base import AIProvider
+from jobhunter.classify.classifier import classify_job
 from jobhunter.domain.enums import Language, Recommendation
 from jobhunter.domain.evaluation import Decision, JobEvaluation
 from jobhunter.domain.schemas import (
@@ -326,11 +327,24 @@ class LocalModelProvider(AIProvider):
         candidate: CandidateSnapshot,
         *,
         cv_text: str | None = None,
+        classification: ClassificationResult | None = None,
     ) -> JobEvaluation:
         """Evaluate one job. Never raises: failures come back marked degraded."""
+        if classification is None:
+            classification = classify_job(
+                job,
+                target_locations=candidate.preferred_locations
+                or ([candidate.location] if candidate.location else []),
+                remote_ok=candidate.remote_ok,
+            )
+
         user = self.prompt.render_user(
             candidate=render_candidate(candidate, cv_text=cv_text),
-            job=render_job(job, max_description_chars=self.config.max_description_chars),
+            job=render_job(
+                job,
+                max_description_chars=self.config.max_description_chars,
+                classification=classification,
+            ),
         )
 
         try:

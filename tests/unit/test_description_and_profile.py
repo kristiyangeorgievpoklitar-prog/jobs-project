@@ -203,3 +203,25 @@ def test_the_candidate_fingerprint_tracks_the_cv_as_well_as_the_profile():
     candidate = CandidateSnapshot(location="Varna", skills=["php"])
     assert candidate_fingerprint(candidate, CV_TEXT) != candidate_fingerprint(candidate, None)
     assert candidate_fingerprint(candidate, CV_TEXT) == candidate_fingerprint(candidate, CV_TEXT)
+
+
+def test_the_rule_based_pre_assessment_reaches_the_model():
+    """The rules beat the model on seniority and location, so it sees them."""
+    from jobhunter.classify.classifier import classify_job
+
+    job = make_job(level_raw="Ниво Entry-level / Junior", location_raw="Варна")
+    classification = classify_job(job, target_locations=["Varna"], remote_ok=True)
+    rendered = render_job(job, classification=classification)
+
+    assert "Rule-based pre-assessment" in rendered
+    assert "entry-level bar: entry" in rendered
+    assert "reachable for the candidate" in rendered
+    assert "may be wrong" in rendered, "it must be offered as an opinion, not a fact"
+
+
+def test_an_undetermined_pre_assessment_says_so_rather_than_guessing():
+    from jobhunter.classify.classifier import classify_job
+
+    job = make_job(level_raw=None, experience_raw=None, location_raw=None)
+    rendered = render_job(job, classification=classify_job(job, target_locations=["Varna"]))
+    assert "could not be determined" in rendered
