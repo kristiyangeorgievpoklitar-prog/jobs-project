@@ -114,9 +114,30 @@ def detect_language(*parts: str | None) -> Language:
     return Language.EN
 
 
+# Location strings the site uses that name a working arrangement, not a place.
+NON_CITY_LOCATIONS = (
+    "дистанционна работа",
+    "дистанционно",
+    "remote",
+    "work from home",
+    "анонимна обява",
+)
+
+
 def extract_city(location_raw: str | None) -> str | None:
-    """Pull a canonical city out of a free-form location string."""
+    """Pull a canonical city out of a free-form location string.
+
+    Returns None when the field names an arrangement rather than a place: the
+    site puts "Дистанционна работа" in the same slot as a city name, which
+    previously became the literal city "public Дистанционна работа".
+    """
     if not location_raw:
+        return None
+    normalized_full = normalize_text(location_raw)
+    if any(marker in normalized_full for marker in NON_CITY_LOCATIONS):
+        for alias, canonical in CITY_ALIASES.items():
+            if re.search(rf"\b{re.escape(alias)}\b", normalized_full):
+                return canonical
         return None
     head = re.split(r"[;,(]", location_raw)[0]
     normalized = normalize_text(head)
@@ -229,7 +250,12 @@ def normalize_job(raw: RawJob) -> NormalizedJob:
     experience = raw.experience_raw
     years = parse_years_experience(experience)
 
-    work_mode = detect_work_mode(raw.work_mode_raw, raw.location_raw, raw.description)
+    # Deliberately NOT the description: a Varna office job whose body mentions
+    # "възможност за работа от вкъщи" as a perk is not a remote job, and reading
+    # the body previously mislabelled 11 of 94 listings as remote, inflating
+    # their location score. The site's own field and the location line are the
+    # only trustworthy signals here; the model re-reads the body itself.
+    work_mode = detect_work_mode(raw.work_mode_raw, raw.location_raw)
     employment = detect_employment_type(raw.employment_raw, raw.description)
 
     tech = [t.strip() for t in raw.tech_tags if t and t.strip()]

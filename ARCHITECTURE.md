@@ -58,12 +58,25 @@ src/jobhunter/
 │
 ├── normalize/normalizer.py    RawJob -> NormalizedJob, fingerprints
 ├── classify/                  keywords.py (BG+EN tables), classifier.py
-├── matching/                  rules.py (deterministic scorer), engine.py
-├── ai/                        base.py + rule_based / anthropic / openai + factory
-├── profile/                   cv.py, profile_store.py
+├── matching/
+│   ├── gate.py            Stage 1: reject only what no reading could rescue
+│   ├── job_context.py     Posting -> the text the model reads; content hash
+│   ├── evaluator.py       Stage 1 -> cache -> model -> policy
+│   ├── policy.py          Safety rules; only ever downgrade a decision
+│   ├── rules.py           The old deterministic scorer (fallback + benchmark)
+│   └── engine.py          Classification wrapper, still used for structure
+├── prompts/
+│   ├── __init__.py        Versioned loader; identity = name.version.checksum
+│   └── templates/         job_evaluation.v1/v2/v3.{system,user}.txt
+├── ai/                        local_model.py (Ollama) + rule_based/anthropic/openai
+├── personalization/           learner.py (preferences), ranker.py (ordering)
+├── evaluation/                dataset.py, metrics.py, runner.py, build.py
+├── briefing.py                The daily "what should I apply to today"
+├── profile/                   cv.py, profile_store.py, context.py (candidate text)
 ├── applications/              state_machine.py, dedupe.py, orchestrator.py, cover_letter.py
 ├── notifications/             console, dashboard, telegram, manager
-├── pipeline/                  runner.py (the scan), repository.py (persistence)
+├── pipeline/                  runner.py, repository.py, evaluation_store.py,
+│                              feedback_store.py
 ├── scheduler/scheduler.py
 └── web/                       app.py, deps.py, routes/, templates/, static/
 ```
@@ -74,19 +87,27 @@ src/jobhunter/
  discovery.search()          paginated, polite, challenge-aware
         │  list[RawJob]  (listing cards: title, company, level, years, date)
         ▼
- _prioritise_for_enrichment  drop non-IT and too-senior; rank the rest by a
-        │                    cheap deterministic score
+ _prioritise_for_enrichment  drop what the Stage 1 gate rejects; keep site order
+        │                    (deliberately NOT ranked by a provisional score —
+        │                     a card has no requirements text, so such a ranking
+        │                     orders listings by how little is known about them)
         ▼
  discovery.enrich()          fetch the top N detail pages (bounded)
-        │  merge_detail()    overlay detail onto card
+        │  read_description_frame()  the posting body lives in a sandboxed
+        │  merge_detail()            iframe, not the page DOM
         ▼
  normalize_job()             clean, parse salary/date/experience, fingerprint
         ▼
  upsert_job()                insert, or update last_seen/seen_count (idempotent)
         ▼
- classify_job()              IT? location viable? minimum seniority?
+ classify_job()              structure only: seniority tag, language, bullets.
+        │                    No longer decides anything.
         ▼
- provider.score_job()        AI if configured, else rules; AI failures fall back
+ JobEvaluator.evaluate()
+        ├─ 1. Stage1Gate      certain rejects, no model call            ~43% of jobs
+        ├─ 2. cache lookup    same job + profile + model + prompt       free
+        ├─ 3. local model     reads the posting and the CV              ~145s/job
+        └─ 4. apply_policy    downgrade what the evidence cannot carry
         ▼
  transition_job()            CLASSIFIED -> MATCHED -> REVIEW/APPROVED/SKIPPED
         ▼
@@ -95,6 +116,32 @@ src/jobhunter/
 
 Each job is processed in its own transaction. One failure is recorded as an
 `ErrorRecord` and the run continues.
+
+### Why two stages
+
+A local model costs roughly two minutes per listing on the target hardware, so
+most listings have to be settled without it. The split follows one rule: **a
+gate rejection is final and invisible**, so the gate may only reject on grounds
+that are certain from the listing alone — an unambiguously senior title, a role
+that is not software, something the candidate already turned down.
+
+The gate explicitly does *not* look at technology overlap. That is the judgement
+that most needs a reader, and it is where the previous scorer failed worst.
+
+### Why the score is gone from the decision path
+
+The old scorer returned 0–100 across weighted components. Measured against the
+labelled set it reached 83% decision accuracy — against 78% for a stub that
+skips every listing. It found none of the strong matches, because its technology
+component returned a neutral 0.5 when it detected *no* technologies and a
+proportional score when it detected some. Parsing failure therefore outranked a
+genuine partial match, and jobs whose requirements it could not read floated to
+the top.
+
+A score also has no failure mode: it cannot distinguish "confidently a poor
+fit" from "we could not tell", and it cannot say which requirement is missing.
+The replacement is a set of separately checkable claims — see
+`domain/evaluation.py`.
 
 ## The Jobs.bg contract
 

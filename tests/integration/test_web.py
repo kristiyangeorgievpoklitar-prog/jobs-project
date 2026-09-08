@@ -50,14 +50,21 @@ def client(settings) -> TestClient:
 
 class TestPages:
     @pytest.mark.parametrize(
-        "path", ["/", "/jobs", "/applications", "/notifications", "/settings", "/health"]
+        "path",
+        ["/", "/overview", "/jobs", "/applications", "/notifications", "/settings", "/health"],
     )
     def test_pages_render(self, client: TestClient, path: str) -> None:
         response = client.get(path)
         assert response.status_code == 200
 
-    def test_overview_shows_stats_and_top_job(self, client: TestClient) -> None:
+    def test_home_page_leads_with_the_decision(self, client: TestClient) -> None:
+        """The home page answers "what should I apply to", not "what is the score"."""
         body = client.get("/").text
+        assert "What should I apply to today?" in body
+        assert "worth reviewing" in body
+
+    def test_statistics_view_still_shows_the_numbers(self, client: TestClient) -> None:
+        body = client.get("/overview").text
         assert "Junior PHP Developer" in body
         assert "92" in body
 

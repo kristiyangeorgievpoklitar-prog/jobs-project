@@ -60,7 +60,18 @@ class Settings(BaseSettings):
     respect_robots_txt: bool = Field(default=True)
 
     # ----------------------------------------------------------------------- ai
-    ai_provider: Literal["rule_based", "anthropic", "openai", "auto"] = Field(default="auto")
+    # The local model is the default matcher: the prompt carries the candidate's
+    # CV, and a daily job hunt is exactly the workload a hosted API suits worst.
+    ai_provider: Literal["local", "rule_based", "anthropic", "openai", "auto"] = Field(
+        default="local"
+    )
+    local_model: str = Field(default="qwen2.5:3b")
+    local_model_host: str = Field(default="http://127.0.0.1:11434")
+    local_model_timeout_seconds: float = Field(default=180.0, ge=10.0)
+    local_model_num_ctx: int = Field(default=4096, ge=1024, le=32768)
+    local_model_num_predict: int = Field(default=900, ge=200, le=4096)
+    # Sending the CV to a local model is private; sending it anywhere else is not.
+    send_cv_text_to_local_model: bool = Field(default=True)
     anthropic_api_key: SecretStr | None = Field(default=None)
     anthropic_model: str = Field(default="claude-sonnet-5")
     openai_api_key: SecretStr | None = Field(default=None)

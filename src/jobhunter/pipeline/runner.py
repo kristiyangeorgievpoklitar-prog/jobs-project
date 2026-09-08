@@ -18,14 +18,15 @@ from jobhunter.browser.manager import BrowserManager
 from jobhunter.context import AppContext
 from jobhunter.db.base import utcnow
 from jobhunter.db.models import AutomationRun, Job
-from jobhunter.domain.enums import JobState, Recommendation, RunStatus, RunTrigger
+from jobhunter.domain.enums import JobState, RunStatus, RunTrigger
+from jobhunter.domain.evaluation import Decision
 from jobhunter.domain.schemas import CandidateSnapshot, RawJob, ScanStats
 from jobhunter.logging_setup import get_logger
+from jobhunter.matching.evaluator import EvaluationStats
 from jobhunter.normalize.normalizer import normalize_job
 from jobhunter.pipeline.repository import (
     apply_classification,
     record_error,
-    record_match,
     upsert_job,
 )
 from jobhunter.profile.profile_store import get_active_profile, to_snapshot
@@ -89,34 +90,53 @@ class ScanPipeline:
     def _prioritise_for_enrichment(
         self, cards: list[RawJob], candidate: CandidateSnapshot
     ) -> list[RawJob]:
-        """Rank listings by a cheap card-only score before fetching details.
+        """Drop what the gate rejects; keep the rest in the order the site gave.
 
-        Every detail page is an extra request, so obvious non-starters (clearly
-        non-IT, clearly too senior) are dropped and the rest are ordered by their
-        provisional score. That way a capped enrichment budget is spent on the
-        most promising listings rather than whichever happened to appear first.
+        Every detail page is an extra request, so the enrichment budget goes to
+        listings that could still turn out to be worth applying to. It is
+        deliberately *not* ordered by a provisional match score: the card alone
+        has no requirements text, so any such ordering ranks listings by how
+        little is known about them, which is how the previous version spent its
+        budget on the jobs it understood least.
         """
-        from jobhunter.matching.rules import score_job as rule_score
-
-        scored: list[tuple[int, RawJob]] = []
+        rejected = self._rejected_fingerprints()
+        keep: list[RawJob] = []
         for raw in cards:
             normalized = normalize_job(raw)
-            classification = self.context.engine.classify(normalized, candidate)
-
-            if classification.is_it is False:
-                continue
-            if classification.seniority.rank > self.context.scoring_config.max_seniority.rank + 1:
-                continue
-
-            # Deliberately the deterministic scorer: this pre-pass runs on every
-            # card and must not spend an API call per listing.
-            provisional = rule_score(
-                normalized, classification, candidate, self.context.scoring_config
+            verdict = self.context.evaluator.gate.check(
+                normalized, candidate, rejected_fingerprints=rejected
             )
-            scored.append((provisional.score, raw))
+            if verdict.passed:
+                keep.append(raw)
+        return keep
 
-        scored.sort(key=lambda item: item[0], reverse=True)
-        return [raw for _, raw in scored]
+    def _rejected_fingerprints(self) -> set[str]:
+        """Listings the candidate has already turned down."""
+        from jobhunter.db.models import UserFeedback
+
+        with self.context.session() as session:
+            rows = (
+                session.query(Job.fingerprint)
+                .join(UserFeedback, UserFeedback.job_id == Job.id)
+                .filter(UserFeedback.action == "skip")
+                .all()
+            )
+        return {row[0] for row in rows}
+
+    def _cv_text(self) -> str | None:
+        """The CV the local model reads, when sending it locally is enabled."""
+        if not self.settings.send_cv_text_to_local_model:
+            return None
+        from jobhunter.db.models import CVFile
+
+        with self.context.session() as session:
+            cv = (
+                session.query(CVFile)
+                .filter(CVFile.is_available.is_(True), CVFile.extracted_text.isnot(None))
+                .order_by(CVFile.is_default.desc(), CVFile.id)
+                .first()
+            )
+            return cv.extracted_text if cv else None
 
     # ------------------------------------------------------------- the run
 
@@ -144,6 +164,7 @@ class ScanPipeline:
 
         status = RunStatus.SUCCEEDED
         notes: str | None = None
+        evaluation_stats = EvaluationStats()
 
         try:
             with BrowserManager(self.settings) as browser:
@@ -167,10 +188,23 @@ class ScanPipeline:
 
                 details = discovery.enrich(shortlist, limit=min(enrich_limit, len(shortlist)))
 
+                # Gathered once per run rather than per job: both are the same
+                # for every listing, and the CV read in particular is not free.
+                cv_text = self._cv_text()
+                rejected = self._rejected_fingerprints()
+
                 for card in cards:
                     merged = merge_detail(card, details.get(card.source_url))
                     try:
-                        self._process_job(merged, candidate, stats, run_id)
+                        self._process_job(
+                            merged,
+                            candidate,
+                            stats,
+                            run_id,
+                            cv_text=cv_text,
+                            rejected=rejected,
+                            evaluation_stats=evaluation_stats,
+                        )
                     except Exception as exc:
                         stats.errors_count += 1
                         log.warning("job_processing_failed", url=card.source_url, error=str(exc))
@@ -231,7 +265,16 @@ class ScanPipeline:
             )
 
         log.info(
-            "scan_done", run_id=run_id, status=status.value, **stats.model_dump(exclude={"notes"})
+            "scan_done",
+            run_id=run_id,
+            status=status.value,
+            gated=evaluation_stats.gated,
+            cached=evaluation_stats.cached,
+            model_calls=evaluation_stats.evaluated,
+            model_calls_avoided=evaluation_stats.model_calls_avoided,
+            degraded=evaluation_stats.degraded,
+            downgraded=evaluation_stats.downgraded,
+            **stats.model_dump(exclude={"notes"}),
         )
         return stats
 
@@ -242,7 +285,15 @@ class ScanPipeline:
     # --------------------------------------------------------- single job
 
     def _process_job(
-        self, raw: RawJob, candidate: CandidateSnapshot, stats: ScanStats, run_id: int
+        self,
+        raw: RawJob,
+        candidate: CandidateSnapshot,
+        stats: ScanStats,
+        run_id: int,
+        *,
+        cv_text: str | None = None,
+        rejected: set[str] | None = None,
+        evaluation_stats: EvaluationStats | None = None,
     ) -> None:
         normalized = normalize_job(raw)
 
@@ -258,7 +309,10 @@ class ScanPipeline:
                 log.info("job_skipped_already_applied", job_id=job.id)
                 return
 
-            classification, match = self.context.engine.evaluate(normalized, candidate)
+            # The deterministic classifier still runs: its structured fields
+            # (seniority tag, language, extracted requirement bullets) are useful
+            # on the job page and cost nothing. It no longer decides anything.
+            classification = self.context.engine.classify(normalized, candidate)
             apply_classification(job, classification)
             stats.jobs_classified += 1
 
@@ -271,7 +325,15 @@ class ScanPipeline:
                 detail={"seniority": classification.seniority.value, "is_it": classification.is_it},
             )
 
-            record_match(session, job, match, profile_version=candidate.version)
+            evaluation = self.context.evaluator.evaluate(
+                session,
+                job.id,
+                normalized,
+                candidate,
+                cv_text=cv_text,
+                rejected_fingerprints=rejected,
+                stats=evaluation_stats,
+            )
             stats.jobs_matched += 1
 
             transition_job(
@@ -280,14 +342,18 @@ class ScanPipeline:
                 JobState.MATCHED,
                 event="matched",
                 strict=False,
-                detail={"score": match.score, "recommendation": match.recommendation.value},
+                detail={
+                    "decision": evaluation.decision.value,
+                    "confidence": evaluation.confidence,
+                    "source": evaluation.source,
+                },
             )
 
             target_state = {
-                Recommendation.APPLY: JobState.APPROVED,
-                Recommendation.REVIEW: JobState.REVIEW,
-                Recommendation.SKIP: JobState.SKIPPED,
-            }[match.recommendation]
+                Decision.APPLY: JobState.APPROVED,
+                Decision.REVIEW: JobState.REVIEW,
+                Decision.SKIP: JobState.SKIPPED,
+            }[evaluation.decision]
 
             # In REVIEW mode nothing is auto-approved; a human decides.
             if target_state is JobState.APPROVED and not self.settings.auto_apply:
@@ -300,24 +366,20 @@ class ScanPipeline:
                 event="decision",
                 strict=False,
                 detail={
-                    "score": match.score,
-                    "recommendation": match.recommendation.value,
+                    "decision": evaluation.decision.value,
+                    "confidence": evaluation.confidence,
                     "auto_apply": self.settings.auto_apply,
                 },
             )
 
-            should_notify = (
-                is_new
-                and match.recommendation in (Recommendation.APPLY, Recommendation.REVIEW)
-                and match.score >= self.settings.review_threshold
-            )
+            should_notify = is_new and evaluation.decision in (Decision.APPLY, Decision.REVIEW)
             job_id, title, company, city, score, rec = (
                 job.id,
                 job.title,
                 job.company_display,
                 job.city or job.location_raw or "n/a",
-                match.score,
-                match.recommendation.value,
+                int(evaluation.confidence * 100),
+                evaluation.decision.value,
             )
 
         if should_notify:

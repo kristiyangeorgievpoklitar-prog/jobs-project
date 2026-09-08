@@ -176,3 +176,39 @@ class TestProfileStore:
         )
         snapshot = to_snapshot(get_active_profile(session))
         assert snapshot.all_tech == {"php", "laravel", "mysql"}
+
+
+class TestTemplateCvIsNeverSelected:
+    """A CV full of "[Име Фамилия]" placeholders must not reach an employer."""
+
+    def _add(self, session, filename: str, language: Language, text: str, default: bool = False):
+        from jobhunter.db.models import CVFile
+
+        cv = CVFile(
+            path=f"/tmp/{filename}",
+            filename=filename,
+            language=language,
+            extracted_text=text,
+            is_default=default,
+            is_available=True,
+        )
+        session.add(cv)
+        session.flush()
+        return cv
+
+    def test_an_unfilled_template_is_skipped_even_when_the_language_matches(self, session):
+        real = self._add(session, "CV_EN.pdf", Language.EN, "Kristiyan Poklitar\nPHP developer.", True)
+        self._add(
+            session,
+            "CV_IT_Junior_BG.pdf",
+            Language.BG,
+            "CV - [Име Фамилия]\n[Град, България] | [Телефон]",
+        )
+
+        chosen = select_cv_for_job(session, job_language=Language.BG)
+        assert chosen is not None
+        assert chosen.id == real.id, "the Bulgarian template must never win on language"
+
+    def test_no_cv_is_returned_when_every_candidate_is_a_template(self, session):
+        self._add(session, "template.pdf", Language.BG, "CV - [Име Фамилия] [Телефон]")
+        assert select_cv_for_job(session, job_language=Language.BG) is None

@@ -14,10 +14,14 @@ from sqlalchemy.orm import Session
 
 from jobhunter.ai.base import AIProvider
 from jobhunter.ai.factory import build_provider, scoring_config_from_settings
+from jobhunter.ai.local_model import LocalModelConfig, LocalModelProvider
 from jobhunter.config import Settings, get_settings
 from jobhunter.db.base import Database
 from jobhunter.logging_setup import configure_logging, get_logger
 from jobhunter.matching.engine import MatchingEngine
+from jobhunter.matching.evaluator import JobEvaluator
+from jobhunter.matching.gate import Stage1Gate
+from jobhunter.matching.policy import DecisionPolicy
 from jobhunter.matching.rules import ScoringConfig
 from jobhunter.notifications.manager import NotificationManager
 
@@ -53,7 +57,15 @@ class AppContext:
 
         self.settings = apply_overrides(self._base_settings, overrides)
         # Anything derived from settings must be rebuilt.
-        for attribute in ("scoring_config", "provider", "engine", "notifier"):
+        for attribute in (
+            "scoring_config",
+            "provider",
+            "engine",
+            "notifier",
+            "local_model",
+            "evaluator",
+            "decision_policy",
+        ):
             self.__dict__.pop(attribute, None)
 
     @cached_property
@@ -67,6 +79,28 @@ class AppContext:
     @cached_property
     def engine(self) -> MatchingEngine:
         return MatchingEngine(self.provider, self.scoring_config)
+
+    @cached_property
+    def local_model(self) -> LocalModelProvider:
+        return LocalModelProvider(
+            LocalModelConfig(
+                model=self.settings.local_model,
+                host=self.settings.local_model_host,
+                timeout_seconds=self.settings.local_model_timeout_seconds,
+                num_ctx=self.settings.local_model_num_ctx,
+                num_predict=self.settings.local_model_num_predict,
+                max_description_chars=self.settings.ai_max_description_chars,
+            )
+        )
+
+    @cached_property
+    def decision_policy(self) -> DecisionPolicy:
+        return DecisionPolicy(accept_remote=True)
+
+    @cached_property
+    def evaluator(self) -> JobEvaluator:
+        """The two-stage matcher that drives the scan."""
+        return JobEvaluator(self.local_model, gate=Stage1Gate(), policy=self.decision_policy)
 
     @cached_property
     def notifier(self) -> NotificationManager:

@@ -62,13 +62,21 @@ def create_app(context: AppContext | None = None) -> FastAPI:
     if STATIC_DIR.exists():
         app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-    from jobhunter.web.routes import actions, applications, jobs, pages, settings_routes
+    from jobhunter.web.routes import (
+        actions,
+        applications,
+        feedback_routes,
+        jobs,
+        pages,
+        settings_routes,
+    )
 
     app.include_router(pages.router)
     app.include_router(jobs.router)
     app.include_router(applications.router)
     app.include_router(settings_routes.router)
     app.include_router(actions.router)
+    app.include_router(feedback_routes.router)
 
     @app.exception_handler(404)
     async def not_found(request: Request, exc: object) -> HTMLResponse:

@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 from jobhunter.db.models import CVFile
 from jobhunter.domain.enums import Language
 from jobhunter.logging_setup import get_logger
+from jobhunter.profile.context import cv_has_placeholders
 
 log = get_logger(__name__)
 
@@ -159,8 +160,24 @@ def select_cv_for_job(
     """Pick the best CV for a listing.
 
     Prefers a CV in the job's language, then the default, then any available one.
+
+    A CV still containing template placeholders is excluded outright. The shipped
+    ``CV_IT_Junior_BG.pdf`` is an untouched template whose name is literally
+    "[Име Фамилия]"; sending that to an employer is worse than sending nothing,
+    and language-matching would otherwise pick it for every Bulgarian listing.
     """
     candidates = [cv for cv in list_cvs(session) if cv.is_available]
+    usable = [cv for cv in candidates if not cv_has_placeholders(cv.extracted_text)]
+
+    for rejected in set(candidates) - set(usable):
+        log.warning(
+            "cv_rejected_unfilled_template",
+            cv_id=rejected.id,
+            filename=rejected.filename,
+            markers=cv_has_placeholders(rejected.extracted_text),
+        )
+
+    candidates = usable
     if not candidates:
         return None
 

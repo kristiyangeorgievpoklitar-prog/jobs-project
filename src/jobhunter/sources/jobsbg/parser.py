@@ -7,6 +7,7 @@ rather than raising, and a missing field is simply absent.
 
 from __future__ import annotations
 
+import copy
 import json
 import re
 from datetime import UTC, datetime
@@ -369,8 +370,42 @@ def detect_application_method(
     return ApplicationMethod.UNKNOWN, None
 
 
-def parse_detail_page(html: str, *, source_url: str) -> RawJob | None:
-    """Parse a single job page into a fully populated RawJob."""
+def extract_description(content: Tag, iframe_text: str | None) -> str:
+    """The posting body, from whichever of the two Jobs.bg layouts is in use.
+
+    Most listings render the description inside a sandboxed iframe, whose text the
+    browser layer passes in. The rest render it inline, where it has to be picked
+    out of the surrounding page furniture. Falling back to the whole container is
+    a last resort: it is almost entirely navigation chrome.
+    """
+    if iframe_text and iframe_text.strip():
+        return clean_block_text(iframe_text)
+
+    inline = content.select_one(S.DetailSelectors.DESCRIPTION_INLINE)
+    if inline is not None:
+        candidate = copy.copy(inline)
+        for junk in candidate.select(S.DetailSelectors.DESCRIPTION_CHROME):
+            junk.decompose()
+        text = clean_block_text(candidate.get_text("\n", strip=True))
+        # A low bar on purpose. The alternative is the whole container, which is
+        # almost entirely navigation chrome, so even a terse posting body beats
+        # falling back; only an effectively empty node should fall through.
+        if len(text) > 60:
+            return text
+
+    return clean_block_text(content.get_text("\n", strip=True))
+
+
+def parse_detail_page(
+    html: str, *, source_url: str, description_text: str | None = None
+) -> RawJob | None:
+    """Parse a single job page into a fully populated RawJob.
+
+    ``description_text`` is the body of the sandboxed description iframe, which
+    the browser layer reads separately: Jobs.bg renders the actual posting there
+    rather than in the page DOM, so without it the only "description" available
+    is navigation chrome.
+    """
     soup = BeautifulSoup(html, "lxml")
     content = soup.select_one(S.DetailSelectors.CONTENT) or soup.body
     if content is None:
@@ -392,7 +427,7 @@ def parse_detail_page(html: str, *, source_url: str) -> RawJob | None:
         details = _parse_action_args(content.select_one(S.DetailSelectors.COMPANY_DETAILS))
         company_name = clean_text(details.get("name")) or None
 
-    body_text = clean_block_text(content.get_text("\n", strip=True))
+    body_text = extract_description(content, description_text)
     flat_text = clean_text(content.get_text(" ", strip=True))
 
     ref_no = None

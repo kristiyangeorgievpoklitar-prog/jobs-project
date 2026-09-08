@@ -143,10 +143,25 @@ class Job(Base, TimestampMixin):
     application: Mapped[Application | None] = relationship(
         back_populates="job", cascade="all, delete-orphan", uselist=False
     )
+    evaluations: Mapped[list[JobEvaluation]] = relationship(
+        back_populates="job", cascade="all, delete-orphan", order_by="JobEvaluation.id.desc()"
+    )
+    feedback: Mapped[list[UserFeedback]] = relationship(
+        back_populates="job", cascade="all, delete-orphan", order_by="UserFeedback.id.desc()"
+    )
 
     @property
     def latest_match(self) -> JobMatch | None:
         return self.matches[0] if self.matches else None
+
+    @property
+    def current_evaluation(self) -> JobEvaluation | None:
+        """The evaluation the dashboard should show for this job."""
+        return next((e for e in self.evaluations if e.is_current), None)
+
+    @property
+    def latest_feedback(self) -> UserFeedback | None:
+        return self.feedback[0] if self.feedback else None
 
     @property
     def company_display(self) -> str:
@@ -421,3 +436,146 @@ class Notification(Base):
 
     def __repr__(self) -> str:
         return f"<Notification {self.kind} {self.title!r}>"
+
+
+class JobEvaluation(Base, TimestampMixin):
+    """A cached structured evaluation of one job by one matcher.
+
+    Append-only, and keyed by everything that could change the answer: the job's
+    content, the candidate's profile, the model, and the prompt. A scan re-sees
+    the same listings every day, and a local model costs tens of seconds per job,
+    so re-running an evaluation whose inputs are all unchanged is the single
+    biggest waste the pipeline can make.
+    """
+
+    __tablename__ = "job_evaluations"
+    __table_args__ = (
+        Index(
+            "ix_job_evaluations_cache",
+            "job_content_hash",
+            "candidate_fingerprint",
+            "model",
+            "prompt_version",
+            "schema_version",
+        ),
+        Index("ix_job_evaluations_job_current", "job_id", "is_current"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_id: Mapped[int] = mapped_column(
+        ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+
+    # --- the decision
+    decision: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    recommendation: Mapped[str | None] = mapped_column(Text)
+    reasoning: Mapped[str | None] = mapped_column(Text)
+
+    # --- the claims behind it
+    is_it_role: Mapped[bool | None] = mapped_column(Boolean)
+    seniority: Mapped[Seniority] = mapped_column(
+        StrEnumType(Seniority, 20), default=Seniority.UNKNOWN
+    )
+    seniority_reasoning: Mapped[str | None] = mapped_column(Text)
+    location_fit: Mapped[str | None] = mapped_column(String(20))
+    location_reasoning: Mapped[str | None] = mapped_column(Text)
+    employment_fit: Mapped[bool | None] = mapped_column(Boolean)
+    experience_fit: Mapped[str | None] = mapped_column(String(20))
+
+    mandatory_requirements: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    nice_to_have_requirements: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    major_strengths: Mapped[list[str]] = mapped_column(JSON, default=list)
+    major_risks: Mapped[list[str]] = mapped_column(JSON, default=list)
+
+    # --- ordering signal, deliberately not the headline
+    rank_score: Mapped[float | None] = mapped_column(Float, index=True)
+
+    # --- provenance / cache key
+    source: Mapped[str] = mapped_column(String(40), default="local")
+    model: Mapped[str | None] = mapped_column(String(120), index=True)
+    prompt_version: Mapped[str | None] = mapped_column(String(80), index=True)
+    schema_version: Mapped[int] = mapped_column(Integer, default=1)
+    job_content_hash: Mapped[str | None] = mapped_column(String(64), index=True)
+    candidate_fingerprint: Mapped[str | None] = mapped_column(String(64), index=True)
+    profile_version: Mapped[int] = mapped_column(Integer, default=1)
+
+    latency_ms: Mapped[int | None] = mapped_column(Integer)
+    degraded: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    degraded_reason: Mapped[str | None] = mapped_column(String(300))
+
+    # Only the newest evaluation for a job drives the dashboard; older rows stay
+    # for auditing how a decision changed when the profile or prompt changed.
+    is_current: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+
+    job: Mapped[Job] = relationship(back_populates="evaluations")
+
+    def __repr__(self) -> str:
+        return f"<JobEvaluation job={self.job_id} {self.decision} model={self.model}>"
+
+
+class UserFeedback(Base):
+    """What the candidate actually decided, and why.
+
+    This is the only ground truth the system ever gets about its own quality, so
+    it is recorded verbatim and never overwritten.
+    """
+
+    __tablename__ = "user_feedback"
+    __table_args__ = (Index("ix_user_feedback_job", "job_id", "created_at"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_id: Mapped[int] = mapped_column(
+        ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    evaluation_id: Mapped[int | None] = mapped_column(
+        ForeignKey("job_evaluations.id", ondelete="SET NULL")
+    )
+
+    # What the candidate did: apply / skip / not_sure.
+    action: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    # Why, from a fixed vocabulary: too_senior, wrong_location, salary,
+    # technology, company, not_interested, other.
+    reason: Mapped[str | None] = mapped_column(String(40), index=True)
+    note: Mapped[str | None] = mapped_column(Text)
+
+    # What the system had said, so agreement can be measured over time.
+    predicted_decision: Mapped[str | None] = mapped_column(String(20))
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, nullable=False, index=True
+    )
+
+    job: Mapped[Job] = relationship(back_populates="feedback")
+
+    def __repr__(self) -> str:
+        return f"<UserFeedback job={self.job_id} {self.action} {self.reason}>"
+
+
+class CandidatePreference(Base, TimestampMixin):
+    """One learned preference, derived from feedback.
+
+    Kept as interpretable rows rather than model weights: with a handful of
+    decisions a month, anything fancier would overfit, and the candidate has to
+    be able to see and correct what the system thinks it has learned.
+    """
+
+    __tablename__ = "candidate_preferences"
+    __table_args__ = (
+        UniqueConstraint("dimension", "value", name="uq_candidate_preferences_dim_value"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # What kind of thing this is about: technology, company, seniority,
+    # work_mode, city, employment_type.
+    dimension: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    value: Mapped[str] = mapped_column(String(120), nullable=False)
+
+    # Positive means the candidate leans towards it, negative away from it.
+    weight: Mapped[float] = mapped_column(Float, default=0.0)
+    applies: Mapped[int] = mapped_column(Integer, default=0)
+    skips: Mapped[int] = mapped_column(Integer, default=0)
+    evidence_count: Mapped[int] = mapped_column(Integer, default=0)
+
+    def __repr__(self) -> str:
+        return f"<CandidatePreference {self.dimension}={self.value} w={self.weight:+.2f}>"

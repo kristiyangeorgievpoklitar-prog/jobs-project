@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Today - JobHunter{% endblock %}
+{% block content %}
+
+<h1>What should I apply to today?</h1>
+<p class="subtitle">
+  {{ model_label }}
+  {% if degraded_count %} &middot; <span class="warn-text">{{ degraded_count }} could not be evaluated</span>{% endif %}
+</p>
+
+<div class="decision-summary">
+  <div class="decision-stat apply">
+    <div class="n">{{ briefing.apply|length }}</div><div class="l">strong match{{ '' if briefing.apply|length == 1 else 'es' }}</div>
+  </div>
+  <div class="decision-stat review">
+    <div class="n">{{ briefing.review|length }}</div><div class="l">worth reviewing</div>
+  </div>
+  <div class="decision-stat skip">
+    <div class="n">{{ briefing.skipped_count }}</div><div class="l">filtered out</div>
+  </div>
+</div>
+
+{% if not briefing.apply and not briefing.review %}
+  <div class="empty">
+    Nothing worth your attention right now.
+    {% if briefing.skipped_count == 0 %}Run a scan to discover listings.{% endif %}
+  </div>
+{% endif %}
+
+{% macro job_card(ranked, kind) %}
+  {% set job = ranked.job %}
+  {% set ev = ranked.evaluation %}
+  <article class="job-card {{ kind }}">
+    <header>
+      <span class="decision-badge {{ kind }}">{{ kind|upper }}</span>
+      <h3><a href="/jobs/{{ job.id }}">{{ job.title }}</a></h3>
+      <div class="meta">
+        {{ job.company_display }} &middot; {{ job.city or job.location_raw or 'location unknown' }}
+        {% if ev.seniority and ev.seniority != 'unknown' %} &middot; {{ ev.seniority|replace('_','/') }}{% endif %}
+        {% if ev.location_fit and ev.location_fit != 'unclear' %} &middot; {{ ev.location_fit|replace('_',' ') }}{% endif %}
+      </div>
+    </header>
+
+    {% if ev.recommendation %}<p class="recommendation">{{ ev.recommendation }}</p>{% endif %}
+
+    <div class="why-risk">
+      {% if ev.major_strengths %}
+      <div class="why">
+        <span class="label">Why</span>
+        <ul>{% for s in ev.major_strengths %}<li>{{ s }}</li>{% endfor %}</ul>
+      </div>
+      {% endif %}
+      {% if ev.major_risks %}
+      <div class="risk">
+        <span class="label">Risk</span>
+        <ul>{% for r in ev.major_risks %}<li>{{ r }}</li>{% endfor %}</ul>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if ranked.personalised and ranked.preference_explanation %}
+      <p class="personalised">Ranked up because {{ ranked.preference_explanation }}.</p>
+    {% endif %}
+
+    <footer>
+      <span class="confidence">confidence {{ (ev.confidence * 100)|round|int }}%</span>
+      {% if ev.degraded %}<span class="badge bad">not evaluated</span>{% endif %}
+      <div class="actions">
+        <a class="btn" href="/jobs/{{ job.id }}">Details</a>
+        <a class="btn" href="{{ job.source_url }}" target="_blank" rel="noopener">Open listing</a>
+        <form method="post" action="/feedback/{{ job.id }}" class="inline-feedback">
+          <button name="action" value="apply" class="btn ok">Applied</button>
+          <button name="action" value="skip" class="btn muted">Not for me</button>
+          <button name="action" value="not_sure" class="btn muted">Not sure</button>
+        </form>
+      </div>
+    </footer>
+  </article>
+{% endmacro %}
+
+{% if briefing.apply %}
+  <h2 class="section-heading apply">Apply</h2>
+  {% for ranked in briefing.apply %}{{ job_card(ranked, 'apply') }}{% endfor %}
+{% endif %}
+
+{% if briefing.review %}
+  <h2 class="section-heading review">Worth reviewing</h2>
+  {% for ranked in briefing.review %}{{ job_card(ranked, 'review') }}{% endfor %}
+{% endif %}
+
+<div class="panel">
+  <div class="panel-header">Recent runs</div>
+  <div class="table-wrap">
+    {% if runs %}
+    <table>
+      <thead><tr><th>Started</th><th>Status</th><th class="right">Seen</th><th class="right">New</th><th class="right">Evaluated</th></tr></thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td>{{ run.started_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td><span class="badge {{ run.status|state_class }}">{{ run.status }}</span></td>
+          <td class="right">{{ run.jobs_seen }}</td>
+          <td class="right">{{ run.jobs_new }}</td>
+          <td class="right">{{ run.jobs_matched }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<div class="empty">No runs yet.</div>{% endif %}
+  </div>
+</div>
+
+{% endblock %}

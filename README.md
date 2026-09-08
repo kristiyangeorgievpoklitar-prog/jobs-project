@@ -17,13 +17,51 @@ Everything runs on your machine. Your CV never leaves it.
 | Stage | Behaviour |
 |---|---|
 | **Discovery** | Paginates the Jobs.bg IT section for your city with a real browser, at a polite request rate. |
-| **Normalization** | Cleans each listing, parses salary/dates/experience, and assigns a stable fingerprint. |
-| **Classification** | Decides *is this IT?*, *is this location viable?* and *what is the minimum seniority?* — in Bulgarian and English. |
-| **Matching** | Scores 0–100 across seniority, location, technology overlap, experience, language and employment type. Produces strengths, missing skills, disqualifiers and a recommendation. |
-| **Decision** | `>= 90` APPLY · `75–89` REVIEW · `< 75` SKIP. All configurable. Defaults to review-only. |
+| **Description recovery** | Reads the posting body out of the sandboxed iframe Jobs.bg renders it in. Without this the only "description" available is navigation chrome. |
+| **Stage 1 filter** | Removes what no reading could rescue — unambiguously senior titles, non-software roles, listings you already skipped. Never judges skill overlap. |
+| **Stage 2 local model** | A small instruct model reads the full posting and your CV, separates mandatory from nice-to-have requirements, infers the real seniority, decides the location from the text, and judges each requirement against evidence in your profile. |
+| **Policy** | Refuses to endorse what the evidence does not support: a failed model call, a posting whose text was never fetched, a missing mandatory requirement, a job in another city. Only ever downgrades. |
+| **Decision** | **APPLY / REVIEW / SKIP**, with the reasoning and the specific requirements behind it. There is no headline score. |
+| **Personalization** | Learns from what you actually decide, and reorders what you are shown. It never changes a decision. |
 | **Applications** | Selects the right CV, writes a cover letter, fills the Jobs.bg form, attaches the CV — then stops at any CAPTCHA or employer questionnaire. |
-| **Dashboard** | Local web UI for triage, job detail, match analysis, applications and settings. |
+| **Dashboard** | Local web UI that opens on "what should I apply to today?" |
 | **Scheduling** | Optional daily scan. |
+
+---
+
+## The local model
+
+The matcher is a small instruct model running on your own machine through
+[Ollama](https://ollama.com). This is the default, not an option: the prompt
+contains your CV, and a job hunt runs every day for months.
+
+```bash
+# install Ollama (no root needed - unpack into your home directory)
+curl -fL https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst \
+  -o /tmp/ollama.tar.zst
+mkdir -p ~/.local/ollama && tar --use-compress-program=unzstd -xf /tmp/ollama.tar.zst -C ~/.local/ollama
+
+# start the server and fetch the model
+~/.local/ollama/bin/ollama serve &
+~/.local/ollama/bin/ollama pull qwen2.5:3b
+
+# check the agent can see it
+uv run jobhunter doctor
+```
+
+Configure which model is used in `.env`:
+
+```ini
+AI_PROVIDER=local
+LOCAL_MODEL=qwen2.5:3b
+LOCAL_MODEL_HOST=http://127.0.0.1:11434
+LOCAL_MODEL_NUM_CTX=4096
+```
+
+See [MODEL.md](MODEL.md) for how the model was chosen, what it costs per job on
+this hardware, and where it is weak.
+
+---
 
 ---
 
@@ -76,14 +114,43 @@ uv run jobhunter serve      # dashboard at http://127.0.0.1:8000
 Then press **Run scan**, or from the terminal:
 
 ```bash
-uv run jobhunter scan                  # one pass
+uv run jobhunter scan                  # discover, filter and evaluate
+uv run jobhunter today                 # what is worth applying to right now
 uv run jobhunter scan --limit 40       # cap the listings processed
 uv run jobhunter scan --entry-level    # use the site's own entry-level filter
-uv run jobhunter jobs --min-score 75   # review results in the terminal
 ```
 
 A Chromium window opens while a scan runs. That is intentional — leave it alone
 and it will close itself.
+
+### Evaluating and giving feedback
+
+```bash
+uv run jobhunter evaluate               # run the matcher over jobs not yet judged
+uv run jobhunter evaluate --job-id 42   # re-run one job
+uv run jobhunter evaluate --force       # ignore cached evaluations
+
+uv run jobhunter feedback 42 apply                          # you applied
+uv run jobhunter feedback 42 skip --reason too_senior       # and why
+uv run jobhunter preferences                                # what it has learned
+```
+
+Feedback is the only ground truth the system gets. Reasons are one of
+`too_senior`, `wrong_location`, `salary`, `technology`, `company`,
+`not_interested`, `other`.
+
+### Measuring it
+
+```bash
+uv run jobhunter dataset                # rebuild the labelled benchmark set
+uv run jobhunter benchmark              # old scorer vs local model, on real listings
+uv run jobhunter benchmark --models qwen2.5:3b,qwen3:1.7b
+```
+
+The benchmark reports **worth-surfacing recall** — of the jobs a human said were
+worth a look, how many the matcher actually showed — alongside a deliberately
+included `always_skip_baseline`, because most listings genuinely are skips and
+plain accuracy flatters any cautious matcher.
 
 ### Applying
 

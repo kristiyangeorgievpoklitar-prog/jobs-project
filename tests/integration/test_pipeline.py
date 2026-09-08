@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import pytest
 from sqlalchemy import select
 
+from jobhunter.ai.local_model import LocalModelConfig, LocalModelProvider
 from jobhunter.browser.challenge import ChallengeDetectedError, ChallengeResult, ChallengeType
 from jobhunter.context import AppContext
 from jobhunter.db.models import AutomationRun, ErrorRecord, Job, Notification
 from jobhunter.domain.enums import JobState, RunStatus
 from jobhunter.domain.schemas import RawJob
+from jobhunter.matching.evaluator import JobEvaluator
 from jobhunter.pipeline import runner as runner_module
 from jobhunter.pipeline.runner import ScanOptions, ScanPipeline
 from jobhunter.profile.profile_store import update_profile
@@ -82,6 +85,38 @@ def detail_for(job_id: str, title: str, **extra: Any) -> RawJob:
     )
 
 
+STUB_EVALUATION = json.dumps(
+    {
+        "is_it_role": True,
+        "seniority": "junior",
+        "seniority_reasoning": "Junior bar.",
+        "location_fit": "exact_city",
+        "location_reasoning": "Varna.",
+        "experience_fit": "acceptable",
+        "mandatory_requirements": [{"requirement": "PHP", "candidate_fit": "strong"}],
+        "nice_to_have_requirements": [],
+        "major_strengths": ["PHP"],
+        "major_risks": ["Limited experience"],
+        "reasoning": "Good overlap with the candidate's PHP work.",
+        "decision": "review",
+        "confidence": 0.7,
+        "recommendation": "Worth a look.",
+    }
+)
+
+
+class StubLocalModel(LocalModelProvider):
+    """A local model that answers instantly, so tests never need a real one."""
+
+    def __init__(self) -> None:
+        super().__init__(LocalModelConfig(model="stub:test"))
+        self.calls = 0
+
+    def _chat(self, system: str, user: str) -> tuple[str, int]:
+        self.calls += 1
+        return STUB_EVALUATION, 5
+
+
 @pytest.fixture
 def context(settings, monkeypatch) -> AppContext:
     ctx = AppContext(settings, configure_logs=False)
@@ -100,6 +135,9 @@ def context(settings, monkeypatch) -> AppContext:
             },
         )
     monkeypatch.setattr(runner_module, "BrowserManager", FakeBrowser)
+    # Replace the cached properties so the scan uses the stub end to end.
+    ctx.__dict__["local_model"] = StubLocalModel()
+    ctx.__dict__["evaluator"] = JobEvaluator(ctx.local_model)
     return ctx
 
 
@@ -126,7 +164,7 @@ class TestScanPipeline:
         with context.session() as session:
             jobs = session.scalars(select(Job)).all()
             assert len(jobs) == 2
-            assert all(job.latest_match is not None for job in jobs)
+            assert all(job.current_evaluation is not None for job in jobs)
             assert all(job.state is not JobState.DISCOVERED for job in jobs)
 
     def test_is_idempotent_across_runs(self, context, monkeypatch) -> None:
@@ -240,11 +278,11 @@ class TestFailureHandling:
         original = ScanPipeline._process_job
         calls = {"n": 0}
 
-        def flaky(self, raw, candidate, stats, run_id):
+        def flaky(self, raw, candidate, stats, run_id, **kwargs):
             calls["n"] += 1
             if calls["n"] == 1:
                 raise ValueError("boom")
-            return original(self, raw, candidate, stats, run_id)
+            return original(self, raw, candidate, stats, run_id, **kwargs)
 
         monkeypatch.setattr(ScanPipeline, "_process_job", flaky)
         stats = ScanPipeline(context).run(ScanOptions())

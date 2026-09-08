@@ -29,6 +29,103 @@
   {% endif %}
 </div>
 
+{% if evaluation %}
+<div class="panel evaluation-panel">
+  <div class="panel-header">
+    Assessment
+    <span class="decision-badge {{ evaluation.decision.value }}">{{ evaluation.decision.value|upper }}</span>
+  </div>
+  <div class="panel-body">
+    {% if evaluation.degraded %}
+      <p class="warn-text">This listing could not be evaluated automatically ({{ evaluation.degraded_reason }}). Judge it yourself.</p>
+    {% endif %}
+
+    {% if evaluation.recommendation %}<p class="recommendation"><strong>{{ evaluation.recommendation }}</strong></p>{% endif %}
+    {% if evaluation.reasoning %}<p>{{ evaluation.reasoning }}</p>{% endif %}
+
+    <div class="claim-row">
+      <div><span class="label">Seniority</span> {{ evaluation.seniority.value|replace('_','/') }}
+        {% if evaluation.seniority_reasoning %}<span class="evidence">{{ evaluation.seniority_reasoning }}</span>{% endif %}</div>
+      <div><span class="label">Location</span> {{ evaluation.location_fit.value|replace('_',' ') }}
+        {% if evaluation.location_reasoning %}<span class="evidence">{{ evaluation.location_reasoning }}</span>{% endif %}</div>
+      <div><span class="label">Experience</span> {{ evaluation.experience_fit.value }}</div>
+      <div><span class="label">Confidence</span> {{ (evaluation.confidence * 100)|round|int }}%</div>
+    </div>
+
+    {% if evaluation.mandatory_requirements %}
+    <div class="requirements">
+      <h4>Mandatory requirements</h4>
+      {% for req in evaluation.mandatory_requirements %}
+      <div class="requirement">
+        <span class="fit {{ req.candidate_fit.value }}">{{ req.candidate_fit.value }}</span>
+        <span>{{ req.requirement }}{% if req.evidence %}<span class="evidence">{{ req.evidence }}</span>{% endif %}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if evaluation.nice_to_have_requirements %}
+    <div class="requirements">
+      <h4>Nice to have</h4>
+      {% for req in evaluation.nice_to_have_requirements %}
+      <div class="requirement">
+        <span class="fit {{ req.candidate_fit.value }}">{{ req.candidate_fit.value }}</span>
+        <span>{{ req.requirement }}{% if req.evidence %}<span class="evidence">{{ req.evidence }}</span>{% endif %}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="why-risk">
+      {% if evaluation.major_strengths %}
+      <div class="why"><span class="label">Strengths</span>
+        <ul>{% for s in evaluation.major_strengths %}<li>{{ s }}</li>{% endfor %}</ul></div>
+      {% endif %}
+      {% if evaluation.major_risks %}
+      <div class="risk"><span class="label">Gaps</span>
+        <ul>{% for r in evaluation.major_risks %}<li>{{ r }}</li>{% endfor %}</ul></div>
+      {% endif %}
+    </div>
+
+    <p class="muted provenance">
+      {{ evaluation.source }}{% if evaluation.model %} &middot; {{ evaluation.model }}{% endif %}
+      {% if evaluation.prompt_version %} &middot; {{ evaluation.prompt_version }}{% endif %}
+      {% if evaluation.latency_ms %} &middot; {{ (evaluation.latency_ms / 1000)|round(1) }}s{% endif %}
+    </p>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">Your decision</div>
+  <div class="panel-body">
+    {% if feedback %}
+      <p class="muted">You marked this <strong>{{ feedback[0].action|replace('_',' ') }}</strong>{% if feedback[0].reason %} ({{ feedback[0].reason|replace('_',' ') }}){% endif %}.</p>
+    {% endif %}
+    <form method="post" action="/feedback/{{ job.id }}" class="feedback-form">
+      <input type="hidden" name="next_url" value="/jobs/{{ job.id }}">
+      <div class="btn-row">
+        <button class="btn good" name="action" value="apply">I applied</button>
+        <button class="btn danger" name="action" value="skip">Not for me</button>
+        <button class="btn" name="action" value="not_sure">Not sure</button>
+      </div>
+      <label class="feedback-reason">
+        Reason (optional)
+        <select name="reason">
+          <option value="">-</option>
+          <option value="too_senior">Too senior</option>
+          <option value="wrong_location">Wrong location</option>
+          <option value="salary">Salary</option>
+          <option value="technology">Technology</option>
+          <option value="company">Company</option>
+          <option value="not_interested">Not interested</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+    </form>
+  </div>
+</div>
+{% endif %}
+
 <div class="detail-grid">
   <div>
     <div class="panel">

@@ -137,17 +137,19 @@ class TestLocation:
         assert relevant is False
 
     def test_remote_accepted_when_candidate_allows(self) -> None:
-        job = make_job(location_raw="София", description="Fully remote work from anywhere.")
+        # The site's own field, not the body: a perk mentioned in the description
+        # used to turn office jobs into remote ones.
+        job = make_job(location_raw="София", work_mode_raw="Дистанционна работа")
         relevant, _ = classify_location(job, target_locations=["Varna"], remote_ok=True)
         assert relevant is True
 
     def test_remote_rejected_when_candidate_refuses(self) -> None:
-        job = make_job(location_raw="София", description="Fully remote work from anywhere.")
+        job = make_job(location_raw="София", work_mode_raw="Дистанционна работа")
         relevant, _ = classify_location(job, target_locations=["Varna"], remote_ok=False)
         assert relevant is False
 
     def test_hybrid_needs_the_right_city(self) -> None:
-        job = make_job(location_raw="София", description="Възможност за работа от вкъщи")
+        job = make_job(location_raw="София", work_mode_raw="Възможност за работа от вкъщи")
         assert classify_location(job, target_locations=["Varna"])[0] is False
 
     def test_unknown_city_is_undetermined(self) -> None:

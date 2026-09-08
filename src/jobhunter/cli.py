@@ -19,6 +19,7 @@ from jobhunter.profile.profile_store import (
     bootstrap_profile_from_cv,
     get_active_profile,
     get_or_create_profile,
+    to_snapshot,
     update_profile,
 )
 
@@ -163,7 +164,49 @@ def doctor() -> None:
     except Exception as exc:
         row("Database", False, str(exc)[:70])
 
-    row("AI provider", True, context.provider.describe())
+    if settings.ai_provider == "local":
+        local = context.local_model
+        try:
+            installed = local.installed_models()
+            if settings.local_model in installed:
+                row("Local model", True, f"{settings.local_model} at {settings.local_model_host}")
+            else:
+                row(
+                    "Local model",
+                    False,
+                    f"{settings.local_model!r} not installed - "
+                    f"run: ollama pull {settings.local_model}",
+                )
+        except Exception:
+            row(
+                "Local model",
+                False,
+                f"no Ollama server at {settings.local_model_host} - run: ollama serve",
+            )
+
+        # A CV is what makes the matching good, so say plainly if none is usable.
+        try:
+            from jobhunter.profile.context import cv_has_placeholders
+
+            with context.session() as session:
+                usable = [
+                    cv
+                    for cv in session.scalars(select(CVFile)).all()
+                    if cv.extracted_text and not cv_has_placeholders(cv.extracted_text)
+                ]
+                templates = (session.scalar(select(func.count()).select_from(CVFile)) or 0) - len(
+                    usable
+                )
+            row(
+                "Usable CV",
+                len(usable) > 0,
+                f"{len(usable)} usable"
+                + (f", {templates} unfilled template(s) excluded" if templates else ""),
+            )
+        except Exception as exc:
+            row("Usable CV", None, str(exc)[:60])
+    else:
+        row("AI provider", True, context.provider.describe())
     row(
         "Auto-apply",
         None if settings.auto_apply else True,
@@ -509,6 +552,259 @@ def applications(limit: int = typer.Option(20)) -> None:
                 record.submitted_at.strftime("%Y-%m-%d %H:%M") if record.submitted_at else "-",
             )
     console.print(table)
+    context.close()
+
+
+# --------------------------------------------------------------- the new agent
+
+
+@app.command()
+def today(
+    limit: int = typer.Option(10, help="How many jobs to list per bucket"),
+    hours: int | None = typer.Option(None, help="Only listings first seen in the last N hours"),
+) -> None:
+    """What is worth applying to right now."""
+    from jobhunter.briefing import build_briefing, render_briefing
+
+    context = AppContext(configure_logs=False)
+    with context.session() as session:
+        briefing = build_briefing(session, limit=limit, since_hours=hours)
+        console.print(render_briefing(briefing))
+
+        for heading, bucket, style in (
+            ("APPLY", briefing.apply, "bold green"),
+            ("REVIEW", briefing.review, "yellow"),
+        ):
+            if not bucket:
+                continue
+            console.print(f"\n[{style}]{heading}[/{style}]")
+            for ranked in bucket:
+                job, evaluation = ranked.job, ranked.evaluation
+                console.print(
+                    f"  [{job.id}] {job.title} - {job.company_display} "
+                    f"({job.city or 'location unknown'})"
+                )
+                if evaluation.recommendation:
+                    console.print(f"      {evaluation.recommendation}")
+                if evaluation.major_risks:
+                    console.print(f"      [dim]risk: {evaluation.major_risks[0]}[/dim]")
+    context.close()
+
+
+@app.command()
+def evaluate(
+    job_id: int | None = typer.Option(None, help="Evaluate one job instead of all pending"),
+    limit: int = typer.Option(25, help="Maximum jobs to evaluate in this pass"),
+    force: bool = typer.Option(False, help="Ignore cached evaluations"),
+) -> None:
+    """Run the two-stage matcher over stored jobs."""
+    from jobhunter.db.models import CVFile
+    from jobhunter.db.models import JobEvaluation as JobEvaluationRow
+    from jobhunter.matching.evaluator import EvaluationStats
+    from jobhunter.normalize.normalizer import normalize_job
+    from jobhunter.pipeline.repository import raw_job_from_model
+
+    context = AppContext(configure_logs=False)
+    stats = EvaluationStats()
+
+    if not context.local_model.is_available():
+        console.print(
+            f"[red]Local model {context.settings.local_model!r} is not available[/red] at "
+            f"{context.settings.local_model_host}. Start it with `ollama serve`."
+        )
+        raise typer.Exit(code=1)
+
+    with context.session() as session:
+        candidate = to_snapshot(get_active_profile(session))
+        cv = (
+            session.query(CVFile)
+            .filter(CVFile.is_available.is_(True), CVFile.extracted_text.isnot(None))
+            .order_by(CVFile.is_default.desc(), CVFile.id)
+            .first()
+        )
+        cv_text = cv.extracted_text if cv else None
+
+        query = session.query(Job).filter(Job.is_archived.is_(False))
+        if job_id is not None:
+            query = query.filter(Job.id == job_id)
+        else:
+            evaluated = session.query(JobEvaluationRow.job_id).filter(
+                JobEvaluationRow.is_current.is_(True)
+            )
+            if not force:
+                query = query.filter(~Job.id.in_(evaluated))
+        jobs = query.order_by(Job.id).limit(limit).all()
+
+        if not jobs:
+            console.print("Nothing to evaluate.")
+            context.close()
+            return
+
+        console.print(f"Evaluating {len(jobs)} job(s) with {context.settings.local_model}...")
+        for index, job in enumerate(jobs, start=1):
+            normalized = normalize_job(raw_job_from_model(job))
+            evaluation = context.evaluator.evaluate(
+                session,
+                job.id,
+                normalized,
+                candidate,
+                cv_text=cv_text,
+                stats=stats,
+                force=force,
+            )
+            colour = {"apply": "green", "review": "yellow", "skip": "dim"}[
+                evaluation.decision.value
+            ]
+            console.print(
+                f"  [{index}/{len(jobs)}] [{colour}]{evaluation.decision.value.upper():6}[/{colour}] "
+                f"{job.title[:52]} [dim]({evaluation.source})[/dim]"
+            )
+
+    console.print(
+        f"\nmodel calls {stats.evaluated} | gated {stats.gated} | cached {stats.cached} "
+        f"| degraded {stats.degraded} | downgraded {stats.downgraded}"
+    )
+    if stats.gate_reasons:
+        console.print(f"gate reasons: {stats.gate_reasons}")
+    context.close()
+
+
+@app.command()
+def feedback(
+    job_id: int = typer.Argument(..., help="The job you are giving feedback on"),
+    action: str = typer.Argument(..., help="apply | skip | not_sure"),
+    reason: str | None = typer.Option(None, help="too_senior, wrong_location, salary, ..."),
+    note: str | None = typer.Option(None, help="Free-text note"),
+) -> None:
+    """Record what you decided, so future rankings improve."""
+    from jobhunter.pipeline.feedback_store import record_feedback
+
+    context = AppContext(configure_logs=False)
+    with context.session() as session:
+        try:
+            row = record_feedback(session, job_id, action=action, reason=reason, note=note)
+        except ValueError as exc:
+            console.print(f"[red]{exc}[/red]")
+            raise typer.Exit(code=1) from exc
+        console.print(
+            f"Recorded: job {row.job_id} -> {row.action}"
+            + (f" ({row.reason})" if row.reason else "")
+        )
+    context.close()
+
+
+@app.command()
+def preferences() -> None:
+    """Show what the system has learned from your decisions."""
+    from jobhunter.db.models import CandidatePreference
+
+    context = AppContext(configure_logs=False)
+    with context.session() as session:
+        rows = (
+            session.query(CandidatePreference)
+            .order_by(desc(CandidatePreference.evidence_count))
+            .all()
+        )
+        if not rows:
+            console.print("Nothing learned yet - give feedback on a few jobs first.")
+            context.close()
+            return
+        table = Table(title="Learned preferences")
+        for col in ("Dimension", "Value", "Weight", "Applies", "Skips", "Evidence"):
+            table.add_column(col)
+        for row in rows:
+            table.add_row(
+                row.dimension,
+                row.value[:30],
+                f"{row.weight:+.2f}",
+                str(row.applies),
+                str(row.skips),
+                str(row.evidence_count),
+            )
+        console.print(table)
+    context.close()
+
+
+@app.command()
+def benchmark(
+    models: str = typer.Option("", help="Comma-separated models; defaults to the configured one"),
+    include_legacy: bool = typer.Option(True, help="Also run the old rule-based scorer"),
+    limit: int | None = typer.Option(None, help="Only the first N cases"),
+) -> None:
+    """Measure matchers against the labelled dataset."""
+    from jobhunter.ai.local_model import LocalModelConfig
+    from jobhunter.db.models import CVFile
+    from jobhunter.evaluation.dataset import Dataset, load_dataset
+    from jobhunter.evaluation.metrics import format_report
+    from jobhunter.evaluation.runner import (
+        AlwaysSkipMatcher,
+        LegacyMatcher,
+        LocalModelMatcher,
+        run_benchmark,
+    )
+
+    context = AppContext(configure_logs=False)
+    dataset = load_dataset()
+    if limit:
+        dataset = Dataset(dataset.cases[:limit], dataset.candidate_note)
+
+    with context.session() as session:
+        candidate = to_snapshot(get_active_profile(session))
+        cv = (
+            session.query(CVFile)
+            .filter(CVFile.is_available.is_(True), CVFile.extracted_text.isnot(None))
+            .order_by(CVFile.is_default.desc(), CVFile.id)
+            .first()
+        )
+        cv_text = cv.extracted_text if cv else None
+
+    console.print(f"Dataset: {len(dataset)} cases {dataset.decision_counts}\n")
+
+    matchers: list = [AlwaysSkipMatcher()]
+    if include_legacy:
+        matchers.append(LegacyMatcher(candidate, context.scoring_config))
+    for model in [m.strip() for m in models.split(",") if m.strip()] or [
+        context.settings.local_model
+    ]:
+        matchers.append(
+            LocalModelMatcher(
+                candidate,
+                LocalModelConfig(
+                    model=model,
+                    host=context.settings.local_model_host,
+                    timeout_seconds=context.settings.local_model_timeout_seconds,
+                    num_ctx=context.settings.local_model_num_ctx,
+                    num_predict=context.settings.local_model_num_predict,
+                ),
+                cv_text=cv_text,
+            )
+        )
+
+    for matcher in matchers:
+        report = run_benchmark(matcher, dataset)
+        console.print(format_report(report))
+        for outcome in report.failures():
+            marker = "HARMFUL" if outcome.harmful else "       "
+            console.print(
+                f"    [dim]{marker} {outcome.case_id:8} want {outcome.expected.value:6} "
+                f"got {outcome.predicted.value:6} | {outcome.title[:44]}[/dim]"
+            )
+        console.print()
+    context.close()
+
+
+@app.command("dataset")
+def dataset_build() -> None:
+    """Rebuild the benchmark dataset from labels plus stored postings."""
+    from jobhunter.evaluation.build import build_and_save
+    from jobhunter.evaluation.dataset import load_dataset
+
+    context = AppContext(configure_logs=False)
+    with context.session() as session:
+        path = build_and_save(session)
+    dataset = load_dataset(path)
+    console.print(f"Wrote {len(dataset)} cases to {path}")
+    console.print(f"Decisions: {dataset.decision_counts}")
     context.close()
 
 

@@ -15,7 +15,40 @@ router = APIRouter()
 
 
 @router.get("/", response_class=HTMLResponse)
+async def today(request: Request) -> HTMLResponse:
+    """The home page answers one question: what is worth applying to now."""
+    from jobhunter.briefing import build_briefing
+    from jobhunter.personalization.ranker import explain_preferences
+
+    context = deps.get_context()
+    with context.session() as session:
+        briefing = build_briefing(session, limit=12)
+        runs = deps.recent_runs(session)
+
+        # Templates cannot call the explain helper, so precompute the phrase.
+        for ranked in (*briefing.apply, *briefing.review):
+            ranked.preference_explanation = explain_preferences(ranked.matched_preferences)
+
+    return render(
+        request,
+        "today.html",
+        {
+            "briefing": briefing,
+            "runs": runs,
+            "degraded_count": briefing.degraded_count,
+            "model_label": (
+                f"{context.settings.local_model} (local)"
+                if context.settings.ai_provider == "local"
+                else context.provider.describe()
+            ),
+        },
+        active="overview",
+    )
+
+
+@router.get("/overview", response_class=HTMLResponse)
 async def overview(request: Request) -> HTMLResponse:
+    """The older statistics view, kept for the numbers it still answers."""
     context = deps.get_context()
     with context.session() as session:
         stats = deps.overview_stats(session)
@@ -38,7 +71,7 @@ async def overview(request: Request) -> HTMLResponse:
             "auto_threshold": context.settings.auto_apply_threshold,
             "review_threshold": context.settings.review_threshold,
         },
-        active="overview",
+        active="stats",
     )
 
 

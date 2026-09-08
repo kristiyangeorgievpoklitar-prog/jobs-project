@@ -1,0 +1,1227 @@
+{
+  "candidate_note": "Kristiyan Poklitar - CS student at UE-Varna, ~0.5y commercial experience as a Laravel intern (NULA, Varna). PHP/Laravel/MySQL/JavaScript/HTML/CSS/Tailwind/Livewire/Alpine.js, Git, automated testing; C/C++ from university. Bulgarian native, English professional, Russian basic. No German. Based in Varna, open to remote.",
+  "case_count": 41,
+  "cases": [
+    {
+      "id": "job-14",
+      "title": "Junior Software Engineer",
+      "company": "Vertex Applied Solutions VCC",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8582586",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Python",
+        "Rust",
+        "JavaScript",
+        "React"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "generic-title-genuinely-junior",
+        "varna"
+      ],
+      "label": {
+        "decision": "apply",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Prior programming experience is explicitly not required and students are invited to apply; Varna office with flexible remote."
+      },
+      "description": "About the role\nWe're hiring software engineers who are familiar with \"agentic coding\" tools and have a good fundamental understanding of computers and server infrastructure.\nThe agentic coding tools we with include Claude Code, Codex and OpenCode.\nWhat we're looking for\nYou should be good at communicating in English, both spoken and written. Familiarity with any given programming is not required — however it's a great plus, provided you are actually a good programmer.\nPython, Rust or JavaScript for React frontends are especially welcome.\nHow you'll\nYou'll be expected to hard and learn fast. The flip side is that you'll with international clients and be directly mentored by a very experienced programmer and electrical engineer who's at the forefront of how the field is evolving because of LLMs.\nYour mentor is a former CTO at Metaculus, Littlebird and Abliterate.ai.\nPart of the is literally automating other teams of software engineers using LLMs, and building frameworks for creating products that require minimal software-engineer involvement.\nWorking hours & location\nFlexible working hours, but you'll need to be in the office at times. A lot of the can be done remotely, though there will be some in-person tasks and the occasional need for in-person coordination.\nStill studying?\nFeel free to apply if you are still currently studying."
+    },
+    {
+      "id": "job-64",
+      "title": "SAP Junior ABAP Developer",
+      "company": "Блу Елевън ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8596842",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "SAP",
+        "ABAP"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "mixed-language",
+        "generic-title-genuinely-junior",
+        "training-provided"
+      ],
+      "label": {
+        "decision": "apply",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Asks only for some programming knowledge and a wish to learn ABAP, with fully paid training."
+      },
+      "description": "SAP Junior ABAP Developer\nWho you are:\nYou have some experience solving challenging problems as a Software Enthusiast.\nYou have some knowledge in programming languages and you want to learn ABAP and join SAP world.\nYou are the right candidate!\nOur offer:\nWe can offer you a new challenge (with education), with interesting tasks and much more – including an open corporate culture, flat hierarchies, support for further training and development, opportunities to take on responsibility, attractive employment conditions and flexible working time models in various roles.\nAdditional:\nFully paid training\n• Modern new working environment equipped with Autonomous SmartDesk Core standing(adjustable) desks.\n• Medical and dental insurance.\n• Free Coffee, snacks and daily fruits, nuts and of course sweet stuff.\n• Food vouchers.\n• Luxury Health & dental insurance\n• Excellent coffee\n• Birthday Gift vouchers\n• Employee referral program\nCandidates must have completed a degree in Computer Science, Software Engineering, or a related technical field, or possess at least 2 years of hands-on industry experience in development.\nThis is an on-site position based in Varna and remote is not available. Candidates must be able to from our Varna office."
+    },
+    {
+      "id": "job-41",
+      "title": "Junior C# Developer",
+      "company": "Флат Рок Технолъджи ЕООД",
+      "location_raw": "Варна; бул. Генерал Колев 113, ет.5, офис 5.3, гр. Варна ( виж карта )",
+      "source_url": "https://www.jobs.bg/job/8604202",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "C#",
+        "JavaScript",
+        "HTML/CSS"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "missing-mandatory-skill",
+        "varna"
+      ],
+      "label": {
+        "decision": "apply",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Mandatory list is mostly fundamentals the candidate has (JavaScript, HTML, CSS, programming principles, English); C# is the one gap, adjacent to their C/C++."
+      },
+      "description": "Since 2008, Flat Rock Technology has provided a wide range of innovative and complex solutions for companies of all sizes and has grown into a reliable partner. Our company operates from seven locations – London, Varna, Ruse, Amsterdam, Burgas, Budapest, and Tbilisi and provides software, cloud, and outsourcing services.\nWith more than 400 highly skilled specialists in our team, we are able to cover all phases of a solution lifecycle – from research, through implementation, to support and allow organizations to create a more cost-effective structure while focusing on their core activities.\nMain responsibilities:\nWrite and maintain scripts in C# and JavaScript\nVerify and correct available content\nFollow the instructions and report to the lead\nActively communicate requirements, tasks, issues and questions with the seniors and the team\nFollow the project/company standards and team working procedures\nRequirements:\nFundamental knowledge of C# and JavaScript\nGood understanding of HTML and CSS\nGood understanding of the basic programming concepts and principles (Data Structures, Data types, Algorithms, Clean Code, etc.)\nGood written and spoken English\nAttention to details and desire to learn\nResponsible and reliable Team Player\nAdvantages:\nExperience with web-scraping\nKnowledge and experience with CSS Selectors\nWhat we offer in return:\nCompetitive salary and attractive commission structure\nComprehensive training and mentorship programs to enhance your sales skills\nOpportunities for professional growth and career development within a fast-paced and innovative industry\nChallenging in a dynamic and international organization\nEnergetic environment that fosters creativity and personal development.\nAdditional health insurance package\nModern offices in various locations\nBirthday vouchers\nOpportunity for a sport card\nEntertainment spaces, team building events, parties, and participation in different events\nFresh fruits and beverages in the office\nIf that sounds just like you, apply now by sending your CV in English!\nBy submitting your application you agree that FRT will use your personal data for recruitment purposes only. All documents will be treated in the strictest confidentiality.\nOnly short-listed candidates will be invited for an interview.\nWe can’t wait to meet you!"
+    },
+    {
+      "id": "job-46",
+      "title": "Junior C++ Developer",
+      "company": "МЕНПАУЪР БЪЛГАРИЯ ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8590043",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "C/C++",
+        "Python"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "junior-title",
+        "nice-to-have-missing",
+        "varna",
+        "english"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "C/C++ is explicitly 'an advantage, not a requirement', but '4th year student or recent graduate' is mandatory and the candidate is earlier in their degree."
+      },
+      "description": "Start Your IT Career as a Junior C++ Developer!\nAt Manpower Bulgaria, we don’t just fill roles - we empower careers.\nManpower Bulgaria is a subsidiary of ManpowerGroup, part of the global network founded in 1948. Operating in over 80 countries worldwide, it is one of the leading and well-established companies in staffing and workforce solutions, serving as a trusted partner for businesses. At Manpower Bulgaria, we don’t just fill roles - we empower careers.\nOur trusted partner – a multinational technology leader in microchips, networking equipment, embedded systems, and advanced software solutions is looking for its new Junior C++ Developer!\nYour Role:\nAs a Junior Developer, you will:\nWork on both software and hardware aspects of product development;\nParticipate in embedded systems projects across the full design flow – from RTL to GDSII;\nContribute to test strategies, test design, and validation activities;\nDevelop and maintain automation scripts using Python;\nCollaborate closely with Software Engineering, Physical Design, and Software Testing teams;\nWork in an international environment with experts from Silicon Valley and global locations.\nWhat We’re Looking For?\n4th year student or recent graduate in Electronics, Computer Science, Communication Technologies, Mathematics, Informatics, Physics, or related fields (BSc, MSc, PhD);\nStrong logical and analytical thinking;\nGood command of English (spoken and written);\nBasic knowledge or interest in embedded C/C++ (considered an advantage, not a requirement);\nMotivation to learn and grow in a high-tech, engineering-driven environment.\nWhat’s The Offer?\nOpportunity to join a stable multinational organization;\nWork alongside top engineers in embedded systems;\nExcellent prospects for professional and personal development;\nCompetitive remuneration package with annual salary reviews;\nAdditional health insurance and dental care;\nFood vouchers;\nSports card and wellness benefits;\nSupportive, international, and innovation-focused culture.\nKickstart your career in embedded systems and turn your ambition into action - apply today!\nJoin us at ManpowerGroup, an Equal Opportunity Employer that values diversity and considers applicants based on skills and expertise, without bias towards gender, nationality, or background.\nManpower Bulgaria holds License № 2033 / 20.04.2016 for providing human resources services."
+    },
+    {
+      "id": "job-53",
+      "title": "Junior Software Engineer",
+      "company": "МЕНПАУЪР БЪЛГАРИЯ ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8576155",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Python",
+        "C/C++"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "junior-title",
+        "nice-to-have-missing",
+        "varna",
+        "english"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Same posting body as the Junior C++ role: the degree-stage requirement is the open question."
+      },
+      "description": "Start Your IT Career!\nAt Manpower Bulgaria, we don’t just fill roles - we empower careers.\nManpower Bulgaria is a subsidiary of ManpowerGroup, part of the global network founded in 1948. Operating in over 80 countries worldwide, it is one of the leading and well-established companies in staffing and workforce solutions, serving as a trusted partner for businesses. At Manpower Bulgaria, we don’t just fill roles - we empower careers.\nOur trusted partner – a multinational technology leader in microchips, networking equipment, embedded systems, and advanced software solutions is looking for its new Junior Software Developer!\nYour Role:\nAs a Junior Software Developer, you will:\nWork on both software and hardware aspects of product development;\nParticipate in embedded systems projects across the full design flow – from RTL to GDSII;\nContribute to test strategies, test design, and validation activities;\nDevelop and maintain automation scripts using Python;\nCollaborate closely with Software Engineering, Physical Design, and Software Testing teams;\nWork in an international environment with experts from Silicon Valley and global locations.\nWhat We’re Looking For?\n4th year student or recent graduate in Electronics, Computer Science, Communication Technologies, Mathematics, Informatics, Physics, or related fields (BSc, MSc, PhD);\nStrong logical and analytical thinking;\nGood command of English (spoken and written);\nBasic knowledge or interest in embedded C/C++ (considered an advantage, not a requirement);\nMotivation to learn and grow in a high-tech, engineering-driven environment.\nWhat’s The Offer?\nOpportunity to join a stable multinational organization;\nWork alongside top engineers in embedded systems;\nExcellent prospects for professional and personal development;\nCompetitive remuneration package with annual salary reviews;\nAdditional health insurance and dental care;\nFood vouchers;\nSports card and wellness benefits;\nSupportive, international, and innovation-focused culture.\nKickstart your career in embedded systems and turn your ambition into action - apply today!\nJoin us at ManpowerGroup, an Equal Opportunity Employer that values diversity and considers applicants based on skills and expertise, without bias towards gender, nationality, or background.\nManpower Bulgaria holds License № 2033 / 20.04.2016 for providing human resources services."
+    },
+    {
+      "id": "job-10",
+      "title": "Software Developers and Electronics Engineers",
+      "company": "Broadcom Bulgaria LLC",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8592887",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Verilog",
+        "VHDL",
+        "FPGA"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "generic-title-genuinely-junior",
+        "long-description"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Programming is listed under 'Advantages (but not mandatory)'; the mandatory bar is a graduate or last-year student."
+      },
+      "description": "Did you know Broadcom is a Trillion-dollar company?\nDo you want to be a part of this multi-billion company and help us build the tech future together?\nBroadcom further extends its presence in Bulgaria based on most talented engineers.\nDo not miss the opportunity to join Broadcom now.\nAbout us:\nBroadcom, A leader IT firm in Bulgaria, is offering a unique opportunity to join the best in class team, developing the state of the art applications, offering you the best career opportunity.\nBroadcom is a leading provider of innovative silicon, systems and software technologies that enable products which seamlessly bring people, information and digital content together. We offer a broad portfolio of capabilities and services including custom and standard product ICs, adapters, systems and software that are trusted by the world's best-known brands to power leading solutions in the storage and networking markets.\nWell, we may not have our logo on the back of your iPhone or Android, but we design and manufacture the semiconductor (or chip) that is the brains of these powerful devices. Our chips can also be found in network switches, cars, gaming consoles, computers and medical devices. Every time you post a thread, an email, make a call with your mobile, upload a picture, download a file from the cloud – there is a 98,9% chance that you are using a Broadcom device that we, at Broadcom Bulgaria, participated in its design and development.\nThis is a golden opportunity to at the most technological company in Bulgaria, directly with top engineers in Silicon Valley, Orange County, United Kingdom, Tel Aviv and beyond. Use your determination, creativity and motivation and join a best-in-class team developing cutting-edge applications. Our employees' passion for excellence and innovation is our most prized resource. If you that passion — and want to be part of a company at the forefront of the communications revolution — we want to hear from you.\nSoftware Developers and Electronics Engineers\nPrimary responsibilities include:\nCreation and review of Test strategies, Test designs, Test cases and Test Automation suites;\nReviews of design and functional specifications created by development team to understand product functionality\nReview User Documentation to ensure it clearly documents product functionality\nWork closely with multi-site team of developers and testers to coordinate and execute test activities\nWork closely with the development, support and Devops team to ensure a high quality product\nInteractions with customers for demos, test qualifications and feedback sessions\nAbout you:\nGraduate in Electronics, Computer Science, Communication Technologies, Mathematics, Informatics, Physics, etc. (BSc, MSc, PhD)\nTop tier student (last year students are welcomed to join as well)\nWith logical and analytical thinking\nGood knowledge in English is a must\nAdvantages (but not mandatory):\nKnowledge/Experience in Programming and Scripting\nKnowledge in Network Operating Systems\nKnowledge in troubleshooting\nKnowledge in Electronics, Semiconductors, ASIC, Verilog/VHDL Design, FPGA\nKnowledge/Experience in Physical Design, Analog Design, Circuit Design, Backend and Layout\nBenefits:\nAdditional health insurance with dental care included\nFood vouchers\nCompetitive remuneration package and annual updates\nFriendly working environment with international working standards\nContinuous investment into your professional development\nUnique career opportunities in a rapidly growing international company\nAdvance you engineering career now by applying for our open positions for Software Developers and Electronics Engineers.\nSend your CV in English now! Yes, it is as simple as that!"
+    },
+    {
+      "id": "job-75",
+      "title": "Junior Automation QA Engineer",
+      "company": "СиСофт АД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8574655",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "SQL",
+        "TypeScript",
+        "JavaScript",
+        "Java"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "genuinely-junior",
+        "different-discipline"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Junior with senior guidance, in Varna; automation QA is adjacent to the candidate's automated-testing exposure but is not their target stack."
+      },
+      "description": "Junior Automation QA Engineer\nAt CSoft we specialise in developing technological solutions for the banking and financial sector — for over 30 years our software has supported the daily operations of institutions in Bulgaria and beyond, from core banking processes to digital banking channels. Our team is built of people who take their seriously, help each other out and find a way to have fun along the way. We are growing and looking for a Junior Automation QA Engineer to join our software development team in Varna.\nWHAT YOU WILL DO:\n• Test Planning & Design: Design and maintain test cases that validate use cases and verify specific business logic with guidance from senior team members.\n• Backend Automation: Develop and maintain automation tests that confirm release quality, with support and code review from experienced engineers.\n• Data Validation: Verify data integrity and check the correctness of database records following test scenario and internal processes.\n• Defect Analysis: Identify software bugs, document them clearly, and learn to distinguish between actual defects and intended system behavior.\n• Reporting & Analytics: Monitor automated test execution and prepare test result reports.\nJOIN US - HERE'S WHAT YOU'LL GET:\nThe craft\n• Attractive payment, updated according to your progress;\n• Acquire invaluable professional skills;\n• Ongoing trainings to improve your professional skills and personal qualities (we will help you to grow, but we also expect proactivity on your part);\n• Opportunity to become part of a united and friendly team.\nThe comfort\n• Additional health insurance and stimulus to do sports actively (yes, your health is important for us);\n• Excellent working atmosphere in one of the longest-lasting software companies in Bulgaria;\n• Modern offices in a well-connected locations in the city;\n• Participation in conferences;\n• Balance between your professional and personal commitments, supplemented by flexible working hours;\n• A chance to participate in various CSR initiatives and do more for a better world;\n• Multiple thematic events (what about a chocolate party at the office or a SPA team building).\nWE WOULD LIKE TO INVITE YOU IF YOU:\nCover these essentials\n• Testing Fundamentals: Understanding of software testing concepts, QA methodologies and the software development lifecycle, gained through study, an internship or practical projects.\n• Database Proficiency (SQL): Basic hands-on experience with SQL — able to write simple queries for data extraction, filtering and verification.\n• Automation Tools: Initial hands-on exposure to at least one automation framework or tool (e.g., Playwright, Postman or similar).\n• Programming Skills: Basic programming skills in at least one modern such as TypeScript, JavaScript or Java.\n• Architectural Knowledge: Understanding of client-server architecture, HTTP/HTTPS protocols and data structures (JSON/XML).\n• Analytical Mindset: Strong attention to detail, logical thinking and genuine interest in test automation.\nEven better if you possess the following:\n• Domain Knowledge: Interest in business processes within the banking and financial sector.\n• Web Automation: Any hands-on exposure to automation testing frameworks such as Playwright or TestComplete.\n• Test Management: Familiarity with a Test Management System (TMS).\n• AI & Innovation: Interest in AI Prompt Engineering techniques and how they can support QA workflows.\nSounds like you? Send us your CV!\nWe look forward to meeting you — and if this isn't quite your role, check our other openings.\nAll applications are treated in full confidentiality and in accordance with applicable regulations. Only shortlisted candidates will be invited to an interview. By applying, you voluntarily provide your personal data and consent to CSoft JSC processing it for the purposes of this selection."
+    },
+    {
+      "id": "job-61",
+      "title": "Junior Manual QA Tester",
+      "company": "КАЗУАЛИНО ЕАД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8601788",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Jira"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "genuinely-junior",
+        "different-discipline",
+        "varna"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Junior manual QA in a Varna office; viable but a discipline change."
+      },
+      "description": "Junior Manual QA Tester\nКазуалино ЕАД is a game development and publishing company looking for a candidate to support its goals. Our games are regularly played by more than 1,000,000 players worldwide, our company is growing at a fast pace and is looking for new and talented people.\nJoin the exciting world of evergreen card and board game development at Казуалино ЕАД! Our passionate team is dedicated to creating timeless, engaging, and strategic gaming experiences! As we continue to grow, we’re looking for a Junior Manual QA Tester to help us ensure the quality of our games! The position is for our office in Varna.\nAs a Junior Manual QA Tester, you will be on the front lines of game quality assurance, playing a critical role in identifying issues and ensuring the smooth functionality of our games. You’ll closely with developers, designers, and senior QA members to test new features, uncover bugs, and provide valuable feedback to improve the player experience.\nResponsibilities:\n● Perform manual game testing across various platforms (web, mobile) to identify bugs, glitches, and inconsistencies.\n● Create test scripts and manual test cases.\n● Document and report bugs clearly and concisely using tracking tools like JIRA.\n● Execute test cases and ensure test coverage for all features and functionalities.\n● Participate in team meetings to discuss project progress and provide testing insights.\n● Conduct regression testing to verify that previously fixed issues remain resolved.\n● Provide feedback on game mechanics, usability, and overall player experience.\nWhat We’re Looking For:\n● Passion for games & an ability to quickly learn new games & gameplay elements.\n● Strong analytical and problem-solving skills.\n● Ability to communicate clearly and document findings effectively.\n● A team player with a proactive mindset and eagerness to learn.\n● Basic understanding of software testing principles.\n● Previous experience as a Manual QA is an advantage.\n● Minimum 1 year of experience\nWhat We Offer:\n● Full-time contract with Казуалино ЕАД\n● A challenging full-time job in a dynamic environment and a young team\n● Extensive initial training to help you succeed in your role.\n● The chance to with a team of experienced professionals in the gaming industry.\n● Opportunity for professional growth and career development in an international company\n● Access to the latest tools and technologies in the gaming industry.\n● Casual working environment with a collaborative nature\n● Work with a young and engaged team\n● Entertainment area\n● Regular team building\nHow to Apply:\nIf you’re passionate about gaming and eager to impact a growing company, we'd love to hear from you! Please your resume and a cover letter explaining why you’re a perfect fit for this role"
+    },
+    {
+      "id": "job-55",
+      "title": "Стажант – Технически сътрудник (WordPress / OpenCart)",
+      "company": "ИНТЕРНЕТ РЕКЛАМА - ВАРНА ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8602044",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "WordPress",
+        "OpenCart"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "internship",
+        "below-level"
+      ],
+      "label": {
+        "decision": "review",
+        "is_it_role": true,
+        "seniority": "internship",
+        "location_fit": "exact_city",
+        "notes": "Internship open to candidates with no professional experience; WordPress/OpenCart is PHP-adjacent, but it is a step below the Laravel internship already held."
+      },
+      "description": "Стажант – Технически сътрудник (WordPress / OpenCart)\nИнтернет реклама - Варна ООД помага на бизнеса, като създава цялостна концепция за развитие в онлайн пространството.\nИмаме над 15 годишен опит на българския и международния пазар.\nФирмата се развива с бързи темпове и се нуждаем от креативни хора готови да усвоят нови знания и умения.\nИскаш да се развиваш в сферата на уеб технологиите и дигиталния бизнес? Ние ще ти дадем шанс да го направиш!\nТърсим мотивиран човек с базови технически познания, който иска да натрупа реален практически опит в поддръжката и развитието на уебсайтове и онлайн магазини.\nВсеки кандидат с желание за развитие ще получи обучение и подкрепа от нашия екип. Ще имаш възможност да работиш по реални клиентски проекти и да развиваш практически умения в WordPress и OpenCart.\nКакво търсим:\nБазови познания и опит с WordPress;\nБазови познания и опит с OpenCart;\nДобра компютърна грамотност;\nИнтерес към уеб технологии и техническа поддръжка на сайтове;\nАмбиция и желание за учене и развитие;\nСпособност за работа в екип и добра организация;\nВладеенето на английски език ще се счита за предимство;\nПодходящо образование в сферата на информационните технологии ще се счита за предимство;\nПозицията е подходяща за кандидати без професионален опит по специалността.\nКакво ще правиш:\nПоддръжка на сайтове, разработени на WordPress и OpenCart;\nКачване и редактиране на съдържание и продукти;\nРабота с плъгини, модули и различни функционалности;\nИзвършване на базови технически настройки;\nСъдействие при възникнали технически казуси;\nРабота по реални проекти на наши клиенти.\nКакво предлагаме:\nОбучение и стаж по програма;\nПрактически опит с реални уеб проекти;\nПодкрепа и обучение от опитен екип;\nДобри условия на труд в спокойна работна среда;\nНормално работно време;\nВъзможност за кариерно и финансово развитие;\nВъзможност за постоянна работа след успешно завършване на стажа.\nИскаш да превърнеш познанията си в WordPress и OpenCart в професионален опит?\nИзпрати ни своето CV и стани част от екипа ни."
+    },
+    {
+      "id": "job-42",
+      "title": "QA Automation Engineer, Sprintax",
+      "company": "CluneTech / ТАКСБЕК ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8603820",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "JavaScript",
+        "TypeScript",
+        "Jira",
+        "SQL"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "junior-title-senior-reality",
+        "english",
+        "long-description"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid_senior",
+        "location_fit": "exact_city",
+        "notes": "Title reads neutral, but the body describes a Mid-Senior engineer who mentors juniors and owns test strategy."
+      },
+      "description": "Description:\nCluneTech is a world-leading provider of international taxation, finance, and fulfilment services to clients in over 100 countries ranging from blue-chip financial service companies to individual investors & cross-border workers.\nSprintax, part of CluneTech, is a web-based tax return preparation software that provides a number of tax related services to non-residents in the United States. We help thousands of international visitors such as students, scholars, teachers, trainees, researchers, and travel participants and other foreign individuals that are temporary in the United States each year with the preparation of their tax returns.\nAbout the role:\nThe QA Automation Engineer is a key individual contributor responsible for designing, building and maintaining robust automated test solutions using Playwright as the primary automation framework. The role drives automation coverage across web and API layers, leads framework development and continuous improvement, integrates tests into CI/CD pipelines, and acts as a technical reference for automation best practices within the QA team. The Mid-Senior QA Automation Engineer works closely with developers, Business Analysts, Product Owners and Manual QA colleagues, and plays an active role in shaping test strategy, mentoring junior automation engineers, and evolving QA tooling and practices across the organization.\nResponsibilities:\nTest automation analysis, design & implementation\nReview and analyse requirements, user stories and acceptance criteria to identify test conditions suitable for automation and define appropriate coverage.\nDesign, implement and maintain automated functional and regression tests for web, API and other application layers in line with agreed standards and frameworks.\nCreate and maintain reusable test components, data builders and utilities to support efficient automated testing.\nEstimate effort for automation tasks and provide input into release planning.\nAutomated test execution, CI/CD & reporting\nIntegrate automated tests into CI/CD pipelines so that suites run reliably on every build and before releases.\nMonitor automated test runs, investigate failures and distinguish between product defects, script issues and environmental problems.\nEnsure test results and logs are clear, traceable and accessible, allowing quick identification of root causes.\nProvide regular reporting on automation coverage, pass rates and key quality indicators for assigned areas.\nDefect management & quality ownership\nLog defects identified through automated tests in the defect tracking system, with clear steps to reproduce, expected vs actual results and supporting evidence.\nRe-test fixed issues using both automated and targeted manual tests where required and verify that corrections have not introduced regressions.\nTake quality ownership for selected features, modules or flows, ensuring adequate automated and manual coverage across releases.\nProactively identify gaps in automation and propose additional tests or improvements to existing scripts.\nCollaboration & communication\nWork as an active member of the development team, participating in team meetings, planning sessions and reviews as required.\nCollaborate closely with developers to understand technical implementation details, agree on testability and support faster defect resolution.\nPartner with Manual QA colleagues to define the right split between automated and manual testing and to keep regression packs current.\nEscalate significant quality concerns or blockers to the QA Team Leader in a timely, structured way.\nFramework, tooling & continuous improvement\nContribute to the design, extension and refactoring of test automation frameworks to improve reliability, readability and maintainability.\nPromote good engineering practices in test automation (clean code, version control, code review, naming conventions, proper assertions).\nEvaluate and recommend new tools or approaches (for UI, API, performance or other test types) where they can add value.\nHelp document standards, guidelines and examples for automation within the QA team and wider engineering organisation.\nCompliance & security\nFollow data protection and information security guidelines when working with test data, environments and tools.\nEnsure automated tests and pipelines comply with internal quality standards and agreed procedures.\nRequirements:\nExperience in software testing / quality assurance, including focus on test automation.\nSolid understanding of the software development lifecycle (SDLC) and the role of QA within development teams.\nStrong hands-on experience with Playwright as the primary automation framework, including page object models, fixtures, API testing and parallel execution.\nProficient in JavaScript or TypeScript for automation scripting, with the ability to write clean, maintainable and reusable test code using Playwright.\nExperience integrating automated tests into CI/CD pipelines and working with version control systems (e.g. Git).\nStrong analytical and problem-solving skills; able to translate requirements into robust automated test scenarios.\nHigh level of attention to detail and accuracy when implementing tests and analyzing results.\nExperience with defect tracking and test management tools (e.g. Jira plus a test case management tool).\nAbility to write clear, maintainable test code and structured defect reports.\nExcellent written and spoken English.\nGood communication and interpersonal skills; able to effectively with developers, Business Analysts and other stakeholders.\nGood organizational skills and ability to plan and priorities own to meet agreed deadlines.\nPreferred Skills:\nExperience architecting and scaling Playwright test frameworks across large, multi-team product environments.\nExperience using Playwright’s API testing capabilities alongside REST clients (e.g. Postman) and contract testing approaches.\nBasic understanding of databases and ability to use SQL for test data preparation and verification.\nFamiliarity with performance or load testing concepts and tools (e.g. k6, Gatling) and ability to complement Playwright suites with non-functional tests.\nExperience mentoring junior automation engineers and leading automation guild or community of practice sessions.\nBenefits:\nWhat’s in it for you?\nFlexible Working Policy with a combination of remote and office working*\nMultisport Cards\n22 Annual Leave Days for all employees plus additional days with length of service\nLifework days: ½ day each quarter to get your life done\nFlex hours where you can your 40 hours across 4.5 days\nAdditional Health Insurance including dental and vision care\nTeam Buildings & Parties\nLife Insurance\nRefer a Friend Bonus\nDiscounts across various stores, theatres, restaurants\nEmployee CSR Programme, CluneTech Cares, with one paid Volunteer Day per year\nCluneTech Life – corporate wellness program\nMonthly Food Vouchers\nCompany Paid Trainings & Learning Accounts\n#OneTeam Awards and Annual Employee of the Year Awards\nMilestone Recognition Program\nFree Sports: Football, Tennis, Volleyball\nEmployee Assistance Program\nMeeting Free Days – a specific no meeting day where we encourage no meetings so you (and your team) can focus on getting things done!\nAre you ready to join our new team and help people from all over the world?\nIf our job offer is what you are looking for, please apply today — we want to hear from you! If you have a friend or two who may be a good fit for the position, please refer them.\nThank you for taking the time to review and apply for our job. We will review all applications and invite for an interview all candidates we find to be a fit for the position.\nWhen applying for the position, you voluntarily submit your personal data and we will process it for the following purposes: selection of candidates for this position; selection of candidates for future positions occurring within the next 6 months, unless you explicitly state your disagreement; connecting with candidates in connection with the objectives of labor market selection and research; signing an employment or other type of contract. Personal data provided for these purposes will be retained for up to 6 months. You have the right to request the deletion, correction or blocking of personal data if the processing does not meet the requirements of the current legislation or exceeds the stated objectives."
+    },
+    {
+      "id": "job-89",
+      "title": "Software Engineer III",
+      "company": "Immedis Ltd",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8562213",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "JUnit"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "generic-title-senior-reality",
+        "english"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "exact_city",
+        "notes": "Titled 'Software Engineer III' but the body asks for a Senior Software Engineer with technical leadership and mentoring."
+      },
+      "description": "Why UKG:\nAt UKG, the you do matters. The code you ship, the decisions you make, and the care you show a customer all add up to real impact. Today, tens of millions of workers start and end their days with our workforce operating platform. Helping people get paid, grow in their careers, and shape the future of their industries. That’s what we do.\nWe never stop learning. We never stop challenging the norm. We push for better, and we celebrate the wins along the way. Here, you’ll get flexibility that’s real, benefits you can count on, and a team that succeeds together. Because at UKG, your matters—and so do you.\nWe are looking for a Senior Software Engineer to join our dynamic team. This role provides an opportunity to lead projects and contribute to high-impact software solutions that are used by enterprises and users worldwide. As a Senior Software Engineer, you will be responsible for the design, development, testing, deployment, and maintenance of complex software systems, as well as mentoring junior engineers. You will in a collaborative environment, contributing to the technical foundation behind our flagship products and services.\n***UKG is unable to offer sponsorship for this position.***\nResponsibilities:\nSoftware Development: Write clean, maintainable, and efficient code or various software applications and systems.\nTechnical Leadership: Contribute to the design, development, and deployment of complex software applications and systems, ensuring they meet high standards of quality and performance.\nProject Management: Manage execution and delivery of features and projects, negotiating project priorities and deadlines, ensuring successful and timely completion, with quality.\nArchitectural Design: Participate in design reviews with peers and stakeholders and in the architectural design of new features and systems, ensuring scalability, reliability, and maintainability.\nCode Review: Diligent about reviewing code developed by other developers, provide feedback and maintain a high bar of technical excellence to ensure code is adhering to industry standard best practices like coding guidelines, elegant, efficient and maintainable code, with observability built from ground up, unit tests etc.\nTesting: Build testable software, define tests, participate in the testing process, automate tests using, tools (e.g., Junit, Selenium) and Design Patterns leveraging the test automation pyramid as the guide.\nService Health and Quality: Maintain the health and quality of services and incidents, proactively identifying and resolving issues. Utilize service health indicators and telemetry for action providing recommendations to optimize performance. Conduct thorough root cause analysis and drive the implementation of measures to prevent future recurrences.\nDev Ops Model: Understanding of working in a DevOps Model. Taking ownership from working with product management on requirements to design, develop, test, deploy and maintain the software in production.\nDocumentation: Properly document new features, enhancements or fixes to the product, contributing to training materials.\nMinimum Qualifications:\nBachelor’s degree in Computer Science, Engineering, or a related technical field, or equivalent practical experience.\n4+ years of professional software development experience.\nDeep expertise in .NET\nExtensive experience with software development practices and design patterns.\nProficiency with version control systems like GitHub and bug/ tracking systems like JIRA.\nUnderstanding of cloud technologies and DevOps principles.\nPreferred Qualifications:\nExperience with cloud platforms like Azure, AWS, or GCP.\nFamiliarity with CI/CD pipelines and automation tools.\nExperience with test automation frameworks and tools.\nKnowledge of agile development methodologies.\nFamiliarity with developing accessible technologies.\nDedicated to diversity and inclusion initiatives.\nExcellent communication and interpersonal skills, with the ability to effectively in a collaborative team environment.\nBenefits:\n25 to 28 days of annual leave.\nMedical coverage provided by Bulstrad for you and your dependents.\nLife, AD&D, Disability & critical illness coverage provided by DZI.\nMeal vouchers provided by Edenred – EUR 95 per month.\nEmployee Assistance Programs available 24/7.\nGlobal Tuition Reimbursement program – up to EUR 3 425 per year.\nFertility support – up to EUR 6 525 per year.\nAdoption assistance.\nBusiness travel insurance.\nU choose program – EUR 275 every quarter to be spent on eligible items.\nCompany Overview:\nUKG is the Workforce Operating Platform that puts workforce understanding to . With the world's largest collection of workforce insights, and people-first AI, our ability to reveal unseen ways to build trust, amplify productivity, and empower talent, is unmatched. It's this expertise that equips our customers with the intelligence to solve any challenge in any industry — because great organizations know their workforce is their competitive edge. Learn more at ukg.com.\nUKG is proud to be an equal opportunity employer and is committed to promoting diversity and inclusion in the workplace, including the recruitment process.\nDisability Accommodation in the Application and Interview Process\nFor individuals with disabilities that need additional assistance at any point in the application and interview process, please email UKGCareers@ukg.com\nThe pay range for this position is €31,200.00 to €42,100.00 gross/annually. The actual base pay offered may vary depending on skills, experience, job-related knowledge and location. In addition to base pay, employees may be eligible to participate in a performance-based bonus plan and to receive restricted stock unit awards as part of total compensation. Learn more about UKG’s benefits and rewards at https://www.ukg.com/about-us/careers/benefits"
+    },
+    {
+      "id": "job-69",
+      "title": "Mid-Senior Automation QA Engineer",
+      "company": "СиСофт АД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8586222",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "explicit-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid_senior",
+        "location_fit": "exact_city",
+        "notes": "Mid-Senior stated in the title."
+      },
+      "description": "Mid-Senior Automation QA Engineer\nAt CSoft we specialise in developing technological solutions for the banking and financial sector — for over 30 years our software has supported the daily operations of institutions in Bulgaria and beyond, from core banking processes to digital banking channels. Our team is built of people who take their seriously, help each other out and find a way to have fun along the way. We are growing and looking for a Mid/Senior Automation QA Engineer to join to join our software development team in Varna.\nWHAT YOU WILL DO:\n• Test Planning & Design: Independently design, maintain, and manage detailed test scenarios for complex backend processes and system integrations.\n• Backend Automation: Develop and maintain clean, stable, and scalable automation code to validate the system's business logic.\n• Data Validation: Verify data integrity and ensure the correctness of database records following test scenario execution.\n• Defect Analysis: Identify software bugs and architectural gaps, effectively distinguishing between actual defects and intended system features.\n• Reporting & Analytics: Monitor automated script execution and deliver comprehensive test result reports and metrics to technical teams.\nJOIN US - HERE'S WHAT YOU'LL GET:\nThe craft\n• Attractive payment, updated according to your progress;\n• Acquire invaluable professional skills;\n• Ongoing trainings to improve your professional skills and personal qualities (we will help you to grow, but we also expect proactivity on your part);\n• Opportunity to become part of a united and friendly team.\nThe comfort\n• Additional health insurance and stimulus to do sports actively (yes, your health is important for us);\n• Excellent working atmosphere in one of the longest-lasting software companies in Bulgaria;\n• Modern offices in a well-connected locations in the city;\n• Participation in conferences;\n• Balance between your professional and personal commitments, supplemented by flexible working hours;\n• A chance to participate in various CSR initiatives and do more for a better world;\n• Multiple thematic events (what about a chocolate party at the office or a SPA team building).\nWE WOULD LIKE TO INVITE YOU IF YOU:\nCover these essentials:\n• Professional Experience: Proven experience in testing backend platforms, API services, and core systems.\n• Database Proficiency (SQL): Hands-on experience with SQL, including the ability to write queries for data extraction, filtering, verification, and test data preparation.\n• Used Automation Tools: Practical experience or strong theoretical knowledge of at least one leading automation framework (e.g., Playwright for API/Web, Postman, or similar tools).\n• Programming Skills: Foundational knowledge of programming principles and a solid understanding of at least one modern – TypeScript, Java Script or others.\n• Architectural Knowledge: Strong understanding of client-server architecture, HTTP/HTTPS protocols, status codes, and data structures (JSON/XML).\n• Process-Driven Automation: Ability to independently translate complex, multi-step business workflows into end-to-end automated test cases.\nEven better if you possess the following:\n• Domain Knowledge: Experience or a strong understanding of business processes within the banking and financial sector.\n• Web Automation: Hands-on experience with web automation testing frameworks, such as Playwright and TestComplete.\n• Test Management: Experience working with modern Test Management Systems (TMS).\n• AI & Innovation: Knowledge and practical application of AI Prompt Engineering techniques to optimize QA workflows.\nSounds like you? Send us your CV!\nWe look forward to meeting you — and if this isn't quite your role, check our other openings.\nAll applications are treated in full confidentiality and in accordance with applicable regulations. Only shortlisted candidates will be invited to an interview. By applying, you voluntarily provide your personal data and consent to CSoft JSC processing it for the purposes of this selection."
+    },
+    {
+      "id": "job-62",
+      "title": "Senior Fullstack Java (Angular) Developer",
+      "company": "Nordic Recruitment &amp; Consulting EOOD",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8601649",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "explicit-senior",
+        "hybrid-varna"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "hybrid_city",
+        "notes": "Senior, Varna hybrid."
+      },
+      "description": "Senior Fullstack Java (Angular) Developer\nSenior Fullstack Java (Angular) Developer\nVarna/hybrid\nHighly competitive salary and bonus and unbeatable benefits package\nNordic Recruitment & Consulting offers efficient IT and Cyber Security recruitment and business consulting in Bulgaria - and beyond.\nHaving long experience in recruitment we value above all those things that make us successful because of our clients, candidates and partners success: trustworthiness, good communication, Can do-attitude, finding solutions, being flexible; being available. We also have genuine passion for what we do.\nThe client is a leading financial group and Forbes2000 member. The company provides services in multiple domains, including Anti-Money Laundering, Accounts controlling, Business Solutions Competence, Credits, Financing, and other business domains. Since 2021 the group has been going through enhanced digital transformation, demanding software development, QA, AI, Cyber Security and other IT solutions.\nAs our Java (Angular) developer, you would have the following responsibilities:\nDevelop frontend and backend code for website applications within the AEM (Adobe Experience Manager – it is similar to WordPress) environment;\nIntegrate AEM with backend services (Spring Boot and microservices REST APIs and databases)\nMaintain and upgrade our systems, ensuring high performance and security;\nCollaborate with graphic designers for web design features;\nWork through a project from concept to final product;\nWork in Agile (SAFe) environment, in which we incrementally towards a tangible result.\nKey competences that will help you succeed:\n4+ years of experience with Java, Spring, Spring Boot and Maven;\nFamiliarity with HTML, CSS, JavaScript; AngularTS;\nExperience working with REST API, JSON, HTTP;\nExperience with Jenkins, Kubernetes/OpenShift, Tomcat and Gitflow.\nYou are a perfect fit for us if you:\nSpeak and write English fluently;\nHave good technical and development skills;\nWork and think customer- and solution-oriented;\nWork pragmatically, even in time-critical circumstances;\nAre open-minded, willing to learn continuously and open to innovation;\nAre a real team player: working together in international multidisciplinary teams on a common result gives you energy;\nAre enthusiastic, driven and always want to improve. You like to take initiative and are good at making connections.\nNordic Recruitment & Consulting's recruitment rights and activities are based upon Recruitment Licence No. 2022 (issued 01.04.2016). Services of Nordic Recruitment & Consulting are fully free for the candidates."
+    },
+    {
+      "id": "job-59",
+      "title": "Senior Full-Stack WordPress Developer (PHP & MySQL)",
+      "company": "ЕЙ ЕФ ЕФ МЕДИА ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8571178",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "strong-stack-overlap-but-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "exact_city",
+        "notes": "The strongest stack overlap in the set (PHP, MySQL, WordPress) but the role demands senior ownership of the platform."
+      },
+      "description": "Senior Full-Stack WordPress Developer (PHP & MySQL)\nWe are looking for an experienced Senior Full-Stack WordPress Developer to take ownership of the development, performance, and ongoing improvement of our WordPress-based websites and applications.\nThis is a hands-on role for someone who is equally comfortable working with PHP and MySQL on the back end and building clean, responsive interfaces on the front end. You will across the full development lifecycle, from architecture and implementation to optimization, debugging, security, and deployment.\nKey Responsibilities:\n*Architect, develop, and maintain custom WordPress solutions, including custom plugins, themes, integrations, and REST APIs.\n*Write clean, maintainable, and secure PHP code, following WordPress coding standards and modern development practices.\n*Build responsive, accessible, and performant front-end interfaces using HTML5, CSS3/SCSS, and modern JavaScript.\n*Design, optimize, and maintain MySQL databases, including writing efficient SQL queries and working with complex data structures.\n*Extend WordPress functionality using hooks, filters, custom post types, taxonomies, metadata, and custom admin functionality.\n*Integrate WordPress with third-party and first-party platforms, services and datasets through REST APIs, JSON, webhooks, and other integrations.\n*Identify and resolve performance bottlenecks across PHP, MySQL, WordPress, and the front end.\n*Implement and maintain caching, database optimization, asset optimization, and other performance improvements.\n*Diagnose and resolve complex technical issues across the full application stack.\n*Apply WordPress security best practices and proactively identify and address potential vulnerabilities.\n*Review existing code and architecture and recommend improvements for maintainability, scalability, and performance.\n*Use Git-based development workflows and collaborate effectively on production codebases.\nRequirements:\n*3+ years of professional WordPress development experience, preferably in a full-stack role.\n*Strong knowledge of PHP, including object-oriented programming and custom WordPress plugin development.\n*Strong knowledge of MySQL, database design, query optimization, indexing, and performance troubleshooting.\n*Advanced knowledge of HTML5, CSS3/SCSS, and JavaScript (ES6+).\n*Deep understanding of the WordPress architecture and lifecycle, including actions, filters, WP_Query, custom post types, taxonomies, metadata, cron jobs, and the Options API.\n*Good understanding of WordPress performance optimization, caching, database optimization, and Core Web Vitals.\n*Strong understanding of WordPress security practices, including sanitization, validation, escaping, nonces, permissions, and secure database queries.\n*Experience with Git and modern development workflows.\n*Strong debugging and problem-solving skills.\n*Ability to independently, take ownership of technical problems, and make sound architectural decisions.\n*Working knowledge of the WordPress REST API and third-party API integrations."
+    },
+    {
+      "id": "job-34",
+      "title": "Software Developer with Java",
+      "company": "ЮНИКОРН СИСТЕМС ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8588611",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "JUnit",
+        "Java",
+        "HTML/CSS",
+        "Jenkins",
+        "AWS",
+        "Docker",
+        "Swift"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "long-description",
+        "missing-mandatory-skill"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "exact_city",
+        "notes": "Extensive Java 11+, J2EE, AWS serverless and architectural ownership are mandatory."
+      },
+      "description": "Software Developer with Java\nCompany Background\nAs the leading provider of software solutions for public and private sector transport management and smart ticketing, for over 20 years Unicard has been trusted by millions of passengers to get them where they need to be. Today, our solutions can be found throughout the UK, processing several billion transactions a year.\nSince we started in 2003, a wide range of local authorities, transport operators and hardware manufacturers have depended on our capabilities in strategy, design, development, testing and delivery to help deliver passenger transport services every day. We support a wide variety of customers, from simple single-user and concessionary travel programmes to complex multi-modal and multi-operator configurations. Examples include:\n• We deliver our cEMV tap on tap off solution delivering London style ticketing to Transport for Wales’ rail network\n• Our technology powers Transport for West Midlands’ trailblazing ‘Swift’ integrated ticketing system, one of the largest and most well-respected schemes in the UK, and the largest after “Oyster” in London\n• We are trusted by 58+ local authorities to deliver their vital concessionary travel programmes – more than 25% of the market\n• Over 30% of all ITSO card terminals in the UK run on Unicard software\n• We have over 3.5 million cardholders currently under management, with transaction values in the tens of millions annually\nEmploying approximately 115 people across the UK and Bulgaria, our in-house research, strategy and development capabilities give us an affordable, well-managed ability to develop market leading technologies and affordably maintain existing products. As a small-to-medium-sized enterprise, we pride ourselves on our reputation for outstanding products, technical support, delivery capability and high levels of customer service.\nAbout the Role\nThis an exciting opportunity for a Software Developer with Java to in a team of IT professionals (developers, testers, project managers and engineers) in an Agile environment. The purpose of the role is to contribute to the design, development, and continuous improvement of Smart office solutions that enhance workplace efficiency, automation, and employee experience. You will be part of a dynamic and collaborative team focused on delivering innovative software that integrates with hardware, sensors, and enterprise systems to create a truly intelligent office environment.\nYou will be responsible for:\n- ​Designing, developing, and maintaining scalable and robust software solutions for smart office platforms.\n​- Collaborating with product managers, UX designers, and other developers to implement new features and optimize existing ones.\n​- Integrating with various IoT devices, APIs, and enterprise tools to support automation and data-driven decisions.\n​- Writing clean, efficient, and testable code following best development practices.\nAccountabilities:\n- Develop, enhance, debug, and support software applications for business units and supporting functions\n- Participate in the design, development, and implementation of complex applications using a variety of technologies\n- Provide technical direction and define system architecture for individual initiatives\n- Recommend system solutions by evaluating the pros and cons of various development approaches\n- Analyze existing application behavior and implement optimizations or propose improved processing algorithms\n- Identify and resolve performance bottlenecks\n- Stay current by researching new internet/intranet technologies and emerging software products\n- Engage in educational opportunities to continuously improve technical knowledge\n​\nRole Requirements/Dimensions:\n- Extensive experience with Java 11+, J2EE 6/7, JSP, HTML, CSS, relational databases, and JSON/XML\nExperience with JSF and a solid understanding of MVC framework concepts\n- Proficient in developing SOAP and REST-based web services, including secure communication over certificate-based channels and the HTTP protocol\n- Familiar with technologies such as Wildfly, Maven, Docker, and Git\n- Strong ability to apply and communicate architectural design patterns across diverse technical challenges\n- Experience with CI/CD pipelines and tools such as Jenkins, GitLab CI, or GitHub Actions\n- Proficient in testing frameworks such as JUnit, Mockito\n- Hands-on experience with AWS services including Lambda, API Gateway, EventBridge, and other serverless technologies\n- Knowledge of cloud infrastructure concepts and experience with infrastructure-as-code tools like AWS\n- ​Strong command of English, both written and verbal\nRequired Personal Skills\n• Professional and presentable\n• Effective communication; verbal and written.\n• Excellent time management\n• Collaborative / Team player\n• Positive and proactive\n• Dependable and flexible\n• Ability to well under pressure\n• Attention to detail and focused\n• A desire to keep learning and driving new technologies\n• Confident decision making\n• Situational awareness\n• Appetite for growth and development\nWhat we offer\n• Compatitive remuneration package\n• Company funded health care plan\n​• Knowledge sharing (working with experienced professionals)\n​• Multisport cards with discount price\n• Hybrid working (minimum 3 days office attendance)\n​• Office in a central location\n​• Modern working environment and friendly atmosphere\n​• Charitable organisation"
+    },
+    {
+      "id": "job-25",
+      "title": "Python Developer",
+      "company": "Binc Partners Ltd",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8582341",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Firewall/WAF",
+        "ERP",
+        "Python",
+        "SQL",
+        "Linux",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "NoSQL",
+        "Flask",
+        "Docker"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "explicit-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid_senior",
+        "location_fit": "exact_city",
+        "notes": "Explicitly Middle/Senior, owning a production FastAPI server."
+      },
+      "description": "Do you feel comfortable working with both new FastAPI code and a legacy Flask system, without having to rewrite everything from scratch?\nIf so — read on.\nOn behalf of a product-focused software company building its own enterprise ERP system, we are looking for:\nPython Developer (Middle/Senior)\nFastAPI • Flask • SQL • Linux\nWe’re looking for a pragmatic Python Developer to join a small, product-oriented team working on a high-end ERP system used in the grain production, manufacturing, transport and logistics, and printing industries. You will take primary responsibility for the company’s production API server (FastAPI), as well as for an existing Flask system that remains in operation.\nYour key responsibilities would be:\nMaintenance, optimisation and development of the production API server built with FastAPI.\nParallel maintenance of an existing Flask project, with gradual consolidation of the logic where appropriate.\nManagement and optimisation of connections to several different databases (PostgreSQL/MySQL, FirebirdSQL).\nDesigning, maintaining and monitoring data imports/exports to external partners — EDI, CSV files, REST/SOAP integrations.\nImplementing best practices for API-layer security — authentication, authorisation, protection of sensitive data.\nWorking with asynchronous and scheduled tasks (Celery) for high-volume or long-running operations.\nDiagnosing and resolving issues in a production environment on Linux servers.\nWriting tests and maintaining code quality amidst frequent changes to integrations.\nWe are expecting from you:\n3+ years’ professional experience with Python in a production environment.\nPractical experience with FastAPI (or a similar asynchronous framework) and SQLAlchemy.\nExperience with Celery or another system for asynchronous/scheduled tasks.\nUnderstanding of API security principles — authentication, authorisation, data protection.\nConfidence in working with Linux in a production environment.\nExperience with Flask is an advantage, as you will be maintaining an existing project built on this technology.\nExperience with integrations (EDI/CSV/API) to external systems is a strong advantage.\nNice to have\nExperience with Docker and basic CI/CD processes.\nExperience with monitoring/logging of production systems (structured logging, alerting).\nExperience with other message brokers or task queues apart from Celery/Redis.\nExperience in an environment with a high volume of automated file exchanges (EDI standards such as EDIFACT/X12).\nA basic understanding of networking (TCP/IP, firewall rules, VPN) in the context of integrations with partners.\nWhat does our client offers\nDirect involvement in the development of modules for an ERP platform with real clients in manufacturing, logistics and printing.\nA small, close-knit team with a strong sense of initiative and a desire to learn.\nOpportunities for professional development, mentoring and technological influence.\nMarket-rate remuneration\nSupplementary health insurance\nDigital meal vouchers\nApply NOW!\nAll applications are treated in strict confidence, in accordance with GDPR and the Personal Data Protection Act.\nOnly shortlisted candidates will be contacted.\nBink Partners — Licence No. 3610 / 07.11.2023"
+    },
+    {
+      "id": "job-40",
+      "title": "AI Engineer (Banking Products & Internal Automation)",
+      "company": "СиСофт АД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8574715",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "attractive-title-weak-match"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid",
+        "location_fit": "exact_city",
+        "notes": "Attractive title, but demonstrated LLM/agent production experience and independent shipping are mandatory."
+      },
+      "description": "At CSoft we specialise in developing technological solutions for the banking and financial sector — for over 30 years our software has supported the daily operations of institutions in Bulgaria and beyond, from core banking processes to digital banking channels. Our team is built of people who take their seriously, help each other out and find a way to have fun along the way.\nWHAT YOU WILL DO:\nYou'll join our team in Varna, working across our banking products (BrightOS, bDigital) and our internal engineering tooling — bringing AI into both where it earns its place.\nBuild AI features into our banking products end-to-end — design, build, evaluate, ship (e.g. document understanding, in-product assistants, exception/anomaly triage).\nAutomate internal engineering and ops workflows with LLMs and agents — code-review assistance, test and documentation generation, ticket triage, internal data tasks.\nEstablish AI-assisted development practices across teams — patterns, guardrails, and tooling around the coding harnesses we already use.\nOwn integrations fully: prompt and agent design, API integration, evaluation harnesses, and ongoing monitoring of output quality and cost.\nPrototype fast, then harden what works into supported tools — keeping experiments and production clearly separated.\nDo all of the above in a team for which Clean Architecture does not mean \"cleaned building\" and Design Language is not the that designers speak.\nJOINS US - HERE'S WHAT YOU'LL GET:\nThe craft\nAttractive payment, updated according to your progress;\nAcquire invaluable professional skills;\nOngoing trainings to improve your professional skills and personal qualities (we will help you to grow, but we also expect proactivity on your part);\nOpportunity to become part of a united and friendly team.\nThe comfort\nAdditional health insurance and stimulus to do sports actively (yes, your health is important for us);\nExcellent working atmosphere in one of the longest-lasting software companies in Bulgaria;\nModern offices in a well-connected locations in the city;\nParticipation in conferences;\nBalance between your professional and personal commitments, supplemented by flexible working hours;\nA chance to participate in various CSR initiatives and do more for a better world;\nMultiple thematic events (what about a chocolate party at the office or a SPA team building).\nWE WOULD LIKE TO INVITE YOU IF YOU:\nCover these essentials:\nHave strong general software engineering skills and ship production code independently;\nHave demonstrated experience integrating LLMs or building agent workflows — prompting, RAG, tool/function calling, evaluation;\nAre comfortable with APIs, automation, and integrating systems;\nHave sound instincts around security and sensitive-data handling;\nHave at least 5 years of experience in software development.\nEven better if you:\nHave experience building internal developer tooling or platforms;\nAre familiar with LLM evaluation and observability — eval frameworks, tracing, cost monitoring.\nSound like you? Send us your CV!\nWe look forward to meeting you — and if this isn't quite your role, check our other openings.\nAll applications are treated in full confidentiality and in accordance with applicable regulations. Only shortlisted candidates will be invited to an interview. By applying, you voluntarily provide your personal data and consent to CSoft JSC processing it for the purposes of this selection."
+    },
+    {
+      "id": "job-13",
+      "title": "Database Administrator/DevOps",
+      "company": "GESTION SOFIA LTD",
+      "location_raw": "Варна; ул. „Младежка“ 48 ( виж карта )",
+      "source_url": "https://www.jobs.bg/job/8585359",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Firewall/WAF",
+        "SSRS",
+        "Data Warehouse",
+        "Shell Scripts",
+        "Azure",
+        "MS SQL",
+        "SQL",
+        "PostgreSQL",
+        "NoSQL",
+        "Redis",
+        "Terraform",
+        "Linux",
+        "Windows",
+        "Docker",
+        "Kubernetes",
+        "Python",
+        "Java",
+        "PHP"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "missing-mandatory-skill"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid_senior",
+        "location_fit": "exact_city",
+        "notes": "Azure AZ-900 and AZ-104 certifications plus a DBA-to-DevOps background are mandatory."
+      },
+      "description": "Database Administrator/DevOps\nWith nearly 2 million insured individuals, NoveoCare is a leading player in the insurance sector, operating for over 30 years. Our core business is managing supplementary Health and Welfare programs across the entire value chain, from enrolment to claims processing, either under our own brand or white-labelled for our partners.\nWe are looking for a candidate with a strong background in Data/Database Administration who has transitioned into DevOps Engineer. The ideal candidate combines expertise in database management, cloud infrastructure, automation, and data engineering to support the design, deployment, and maintenance of robust, scalable solutions.\nYour Profile:\n• Strong background in Data/Database Administration with experience transitioning into DevOps.\n• Experience working with Microsoft Azure cloud services.\n• Azure certifications AZ-900 and AZ-104.\n• AZ-305 certification is considered a strong advantage.\nYour main duties\nDevOps Responsibilities:\n• Design, implement, and maintain automation tools for application builds, testing, deployment, and monitoring.\n• Automate the deployment and configuration of application across on-premises, test, and production environments.\n• Manage cloud infrastructure, including container management, virtual machines, and cloud services.\n• Collaborate with development teams to ensure applications are designed with operations in mind and can be deployed and managed effectively.\n• Monitor application availability, performance, and security using monitoring tools and logs.\n• Integrate cybersecurity best practices throughout every stage of development (including risk analysis, integrity and confidentiality of source code and data, applying hardening, etc.)\n• Work with security teams to ensure application compliance with security standards and the rapid remediation of vulnerabilities.\n• Write clear and concise technical documentation to facilitate maintenance and troubleshooting.\n• Optimize and manage cloud infrastructure costs by selecting appropriate architectures, sizing resources efficiently, and evaluating build-versus-buy solutions (FinOps).\n• Manage secrets, credentials, and SSL/TLS certificates, including rotation, renewal, and environment separation.\nData Engineering Responsibilities:\n• Design, build, and maintain data lakes and data warehouses for large-scale data storage and analysis.\n• Implementation and management of data flows to ensure efficient data ingestion, transformation, and distribution.\n• Optimization of database and data storage system performance to guarantee fast access and data reliability.\n• Automation of data integration and transformation processes to improve the efficiency and repeatability of data workflows.\n• Implementation of data management policies to ensure data quality, security, and compliance with standards and regulations.\n• Collaboration with development and analytics teams to understand data needs and provide tailored solutions.\n• Monitor data integrity, quality, and security\nOur systems and tools\nDatabases:\n• Microsoft SQL Server\n• PostgreSQL\n• Azure Cosmos DB (NoSQL)\nMicrosoft Azure:\n• App Service\n• Virtual Machines (VMs)\n• App Gateway / WAF\no Networking (VNet, peering, NSG, DNS zones)\no Application Insights / Log Analytics (KQL)\n• Storage Accounts\n• Azure Key Vault\n• Azure Functions\n• Identity & Access Management (Microsoft Entra ID, Service Principals, Managed Identities, RBAC)\n• Azure Cache for Redis\nDevOps:\n• Terraform\n• CI/CD\n• Mobile deployment (Expo EAS)\n• GitHub Actions\nOther:\n• Linux/Windows Server\n• SSRS\n• Docker / Kubernetes\n• SSL (.csr, .pfx)\n• Data Lake / Data Warehouse / Data Flow\n• Python / Shell / Bash\n• Java Springboot\n• PHP"
+    },
+    {
+      "id": "job-15",
+      "title": "IT Team Lead",
+      "company": "МДЦ Дентапрайм ЕАД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8580321",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "explicit-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "lead",
+        "location_fit": "exact_city",
+        "notes": "Team lead role."
+      },
+      "description": "About Dentaprime\nFounded in Bulgaria in 2006, Dentaprime has grown into Europe’s largest dental clinic, trusted by over 14,000 patients each year. Since expanding to the UK in 2017, we continue to invest in digital innovation, automation, and outstanding patient experience.\nBehind every reliable system, smooth process, and successful digital project stands a strong IT team — and that’s where you come in.\nWhy Dentaprime?\nCompetitive salary package\n100€ food vouchers\nTransport to the office or travel expenses + company parking\nAdditional healthcare insurance\n27 days paid annual leave\nFree professional training & courses\nComplimentary dental services at Dentaprime\nDaily healthy two-course lunch\nFree smoothies, coffee, and drinks\nMultiSport card at a special price\nFriendly, international environment\nTeam-building events and social activities\nKey Responsibilities\nTake a leading role in the daily coordination of the IT department\nLead, support, and mentor team members while helping resolve challenges and blockers\nDistribute workload, set priorities, and ensure effective cooperation between IT teams\nManage small and mid-sized IT projects from planning to successful delivery\nDrive AI, automation, and digital transformation initiatives across the business\nCoordinate software implementations, integrations, upgrades, and hardware-related projects\nWork closely with external vendors and technology partners\nQualifications\nGood understanding of different IT functions, systems, infrastructure, and software environments\nExperience managing IT projects, priorities, resources, and external vendors\nStrong people-management and mentoring skills\nExcellent organizational and problem-solving abilities\nInterest in AI, automation, digital transformation, and emerging technologies\nReady to Lead What’s Next in IT?\nApply now and grow with us."
+    },
+    {
+      "id": "job-23",
+      "title": "Junior MS SQL Database Administrator",
+      "company": "DXC Technology / DXC Bulgaria EOOD",
+      "location_raw": "София",
+      "source_url": "https://www.jobs.bg/job/8588935",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "MS SQL",
+        "SQL"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "english",
+        "genuinely-junior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "other_city",
+        "notes": "Genuinely junior and mentored, but the team is in Sofia and the role is onsite there."
+      },
+      "description": "About DXC Bulgaria\nWe are DXC – a Fortune 500 global IT services leader.\nIn Bulgaria, we are among the largest IT employers, delivering the full spectrum of the company’s diverse technical portfolio. Our teams across cutting-edge technologies, contributing to projects that span industries and geographies.\nWe foster continuous learning and professional growth, offering access to targeted training and certifications aligned with individual interests and career aspirations.\nOur culture of collaboration, innovation, and shared values empowers professionals to grow and succeed.\nAbout the role\nWe provide support for MSSQL databases for clients across various industries such as automotive, pharmaceuticals, manufacturing  and financial institutions.\nOur team is formally divided into two sub-teams. In addition to the junior team, we also have a team of senior colleagues who directly with the client and are always ready to help the junior team when needed.\nDaily challenges\nWe mainly on automatically generated alerts from our monitoring systems, and our task is to perform the necessary checks to identify the problem and execute commands that lead to its resolution.\nEach new colleague has a mentor during their first months in the team, who helps onboard them, and together they go through all the tools, tasks, and team-specific processes.\neXperience and skills required\nRelevant IT education or junior level background.\nPrevious experience in database support and/or courses and certifications related to this field will be considered an advantage.\nFluency in English.\nWillingness to on 12-hour shifts.\nCompany benefits\nAt DXC Technology, we don’t just offer jobs - we build careers. Here’s what you can look forward to when you join us:\nEnjoy competitive compensation and grow your career in a fast-paced, international environment.\nBenefit from 24 days of paid vacation to rest, explore, and recharge - plus comprehensive medical and life insurance, and monthly food vouchers to support your lifestyle.\nAccess premium learning platforms, get company-sponsored certifications, and grow your skills with continuous development opportunities tailored to you.\nGet recognized through our Employee Recognition Program - your contributions deserve the spotlight.\nRefer great talent through our Employee Referral Program and get rewarded for helping shape our future.\nEnjoy discounts and special offers with your employee badge - it pays to be part of the team.\nAccess 24/7 support for you and your family, with a wide range of wellbeing resources to help you thrive.\nJoin meaningful initiatives that give back to the community and connect you with like-minded colleagues through fun and impactful experiences.\nAt DXC Technology, we believe strong connections and community are key to our success. Our model prioritizes in-person collaboration while offering flexibility to support wellbeing, productivity, individual styles, and life circumstances. We’re committed to fostering an inclusive environment where everyone can thrive.\nIf you feel comfortable with the above-mentioned requirements, please us your CV in English.\nPlease note only shortlisted candidates will be contacted.\nDXC Technology stands for equal opportunities, namely, we do not discriminate on the basis of race, religion, color, sex, age, disability, or sexual orientation.  All recruitment decisions are based solely on qualifications, skills, knowledge and experience, and relevant business requirements."
+    },
+    {
+      "id": "job-2",
+      "title": "Design Verification Engineer (PCIe, CXL, UVM, System Verilog)",
+      "company": "ПЛДА ЕООД",
+      "location_raw": "София",
+      "source_url": "https://www.jobs.bg/job/8598792",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Shell Scripts",
+        "Verilog",
+        "Express.js",
+        "Python",
+        "FPGA"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "english",
+        "long-description"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid",
+        "location_fit": "other_city",
+        "notes": "Returned by a Varna search; the body places the team in Sofia."
+      },
+      "description": "Design Verification Engineer (PCIe, CXL, UVM, System Verilog)\nDesign & Verification Engineer\nPLDA part of Rambus, a premier chip, and silicon IP provider, is seeking to hire an exceptional mid-level Design and Verification Engineer to join our PHY integration team in Sofia, Bulgaria. The successful candidate will participate in pre-silicon RTL Design and Verification activities related to PCIe Controller Soft IP development and PHYs integrations, on leading-edge PCI-Express and CXL controller technologies. This is a Full Time position.\nRambus offers a flexible environment, embracing a hybrid approach for the majority of our office-based roles. We encourage employees to spend an average of at least three days per week working onsite while also allowing for two days of remote if you are located in Sofia.\nYour main responsibilities will be:\n• Verilog RTL design in order to integrate different IPs together such as PCIe IP with vendor PHY module\n• Verifying the IP integration with dedicated simulation environment\n• Development and support test cases of different verification environments\n• Support worldwide customers on the IP integration\n• Get familiar to existing verification process, propose improvements\n• Maintain the traceability from the customer specification or the product specification to the architecture and verification results.\n• Track and maintain verification productivity metrics\n• Reporting periodically on progress and difficulties\nYour Qualifications:\nPositive and self-driven achiever with:\n• \"Can Do\" Attitude\n• Bachelor or Master's degree in Electronics Engineering, Computer Science, or related disciplines\n• Strong analytical and problem-solving skills\n• Excellent interpersonal skills\n• Open for traveling abroad\n• Work in international organization and specially with teams in France, USA, Taiwan and India\n• Because Rambus operates internationally, very good English is important for the position\nYour technical experience:\n• 5+ years experience verification with Verilog, SystemVerilog, FPGA prototyping\n• 5+ years experience with complex ASIC/VLSI verification\n• 5+ years experience with Avery or UVM. Any 3rd party VIP experience is a plus.\n• 5+ years experience in multinational company\n• Experience with creating documentation, python, shell & etc.\nWe will offer you:\n• Participation in unique projects for Bulgarian hi-tech industry\n• Gaining strong and valuable engineering experience, opportunity to fulfill an exciting career.\n• An opportunity to be a part of a proud and motivated team, be in a company which inspires performance, achievements, creativity\nBenefits:\n• Attractive salary\n• Full pension, health, unemployment contribution based on the gross salary\n• 25 days paid leave\n• Optionally 4 days additionally paid leave\n• Additional ( private ) health insurance\n• Life insurance\n• Long term disability insurance\n• Food vouchers\n• Additional bonus\n• Hybrid or fully remote ( if you are outside of Sofia )\n• Additional ( private ) health care insurance\n• Multisport card\n• Public transport card (if you are in Sofia)\n• Optionally office parking space\n• Modern and convenient office space\n• Free lunch Twice per week at the office\n• Free tea, coffee, snacks, etc\n• Company training\n• Team buildings events\nIf you are interested, please sent your CV in English.\nWe will be happy to invite you to an interview!"
+    },
+    {
+      "id": "job-1",
+      "title": "Snowflake Data Engineer",
+      "company": "DXC Technology / DXC Bulgaria EOOD",
+      "location_raw": "София; Бизнес парк София, сграда 8 ( виж карта )",
+      "source_url": "https://www.jobs.bg/job/8596475",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "ETL",
+        "Data Warehouse",
+        "SQL",
+        "Python",
+        "Azure",
+        "AWS"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "english"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid",
+        "location_fit": "other_city",
+        "notes": "Sofia-based, and ETL/data-warehouse experience is mandatory."
+      },
+      "description": "About DXC Bulgaria\nWe are DXC – a Fortune 500 global IT services leader.\nIn Bulgaria, we are among the largest IT employers, delivering the full spectrum of the company’s diverse technical portfolio. Our teams across cutting-edge technologies, contributing to projects that span industries and geographies.\nWe foster continuous learning and professional growth, offering access to targeted training and certifications aligned with individual interests and career aspirations.\nOur culture of collaboration, innovation, and shared values empowers professionals to grow and succeed.\nAbout the role\nOur Data & AI team is looking for you!\nWe have strong traditions in building large data platforms and AI solutions. Here you will gain hands-on experience working with world-famous brands and Fortune 500 companies.\nAs a Snowflake Data Engineer you will be working on building, deploying and optimizing complex data environments using the latest technologies.\nDaily challenges\nDesigning and implementing data warehouses, data lakes, data models and data pipelines;\nBuilding the code and logic required for optimal extraction, transformation, and loading data from various data sources using various tools;\nBuilding analytics solutions that provide valuable insights for clients and end users;\nWorking in an agile engineering team which has specific goals and deliverables.\neXperience and skills required\nExperience with ETL tools;\nExperience with Data Warehouse technologies;\nExperience with SQL or Python;\nDesire to grow skills in the Cloud technologies used for Data Analytics such as Snowflake, Azure Synapse, Azure Data Factory, AWS Redshift, or Databricks;\nFluent English;\nExperience with cloud-based data products such as Snowflake will be great advantage.\nCompany benefits\nAt DXC Technology, we don’t just offer jobs – we build careers. Here’s what you can look forward to when you join us:\nEnjoy competitive compensation and grow your career in a fast-paced, international environment.\nBenefit from 24 days of paid vacation to rest, explore, and recharge – plus comprehensive medical and life insurance, and monthly food vouchers to support your lifestyle.\nAccess premium learning platforms, get company-sponsored certifications, and grow your skills with continuous development opportunities tailored to you.\nGet recognized through our Employee Recognition Program – your contributions deserve the spotlight.\nRefer great talent through our Employee Referral Program and get rewarded for helping shape our future.\nEnjoy discounts and special offers with your employee badge – it pays to be part of the team.\nAccess 24/7 support for you and your family, with a wide range of wellbeing resources to help you thrive.\nJoin meaningful initiatives that give back to the community and connect you with like-minded colleagues through fun and impactful experiences.\nAt DXC Technology, we believe strong connections and community are key to our success. Our model prioritizes in-person collaboration while offering flexibility to support wellbeing, productivity, individual styles, and life circumstances. We’re committed to fostering an inclusive environment where everyone can thrive.\nIf you feel comfortable with the above-mentioned requirements, please us your CV in English.\nPlease note only shortlisted candidates will be contacted.\nDXC Technology stands for equal opportunities, namely, we do not discriminate on the basis of race, religion, color, sex, age, disability, or sexual orientation.  All recruitment decisions are based solely on qualifications, skills, knowledge and experience, and relevant business requirements."
+    },
+    {
+      "id": "job-11",
+      "title": "Senior Mainframe Support Engineer",
+      "company": "DXC Technology / DXC Bulgaria EOOD",
+      "location_raw": "София",
+      "source_url": "https://www.jobs.bg/job/8592079",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "ITIL",
+        "ITSM"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "english",
+        "explicit-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "other_city",
+        "notes": "Senior and Sofia-based."
+      },
+      "description": "About DXC Bulgaria\nWe are DXC – a Fortune 500 global IT services leader.\nIn Bulgaria, we are among the largest IT employers, delivering the full spectrum of the company’s diverse technical portfolio. Our teams across cutting-edge technologies, contributing to projects that span industries and geographies.\nWe foster continuous learning and professional growth, offering access to targeted training and certifications aligned with individual interests and career aspirations.\nOur culture of collaboration, innovation, and shared values empowers professionals to grow and succeed.\nAbout the role\nThe Mainframe Senior Support Engineer is responsible for delivering operational services to outsourcing accounts on time, on target with quality. The main goal is to minimize the amount of unplanned downtime in the customer's production environment and to achieve a high level of customer satisfaction. He/she works in close relationship with other teams and is under direct supervision by the team management.\nDaily challenges\nCollaboration & Relationship Building: Work closely with the Team Technology Lead, Account Support Team, and other support teams.\nCustomer Knowledge: Maintain a deep understanding of the customer’s business, environment, and support processes.\nIncident Management: Follow ITIL standards, proactively addressing service issues.\nDocumentation: Maintain and update technical documentation and ensure compliance with internal standards.\nQuality & Compliance: Participate in quality and productivity projects, ensuring process compliance.\nTechnical Support & Training: Provide technical consultation, training, and lead workshops. Keep up with mandatory training requirements.\nTroubleshooting & Problem Management: Conduct deep-level troubleshooting, participate in Root Cause Analysis, and manage problem lifecycles.\nChange & Configuration Management: Implement and plan changes, participate in advisory boards, and maintain Configuration Management Database (CMDB).\nProject Management: Implement technical projects related to the responsible platform/technology.\neXperience and skills required\nPrimary requirement - CICS expertise\nMinimum of 5+ years hands-on Mainframe knowledge\nDegree/Diploma in Computer Science, Computer Engineering, Electrical Engineering, Management Information Systems.\nPreferably 10+ years experience within IT Operations, infrastructure services support\nExcellent understanding of ITSM/ITIL processes\nFluent in English\nCompany benefits\nAt DXC Technology, we don’t just offer jobs - we build careers. Here’s what you can look forward to when you join us:\nEnjoy competitive compensation and grow your career in a fast-paced, international environment.\nBenefit from 24 days of paid vacation to rest, explore, and recharge - plus comprehensive medical and life insurance, and monthly food vouchers to support your lifestyle.\nAccess premium learning platforms, get company-sponsored certifications, and grow your skills with continuous development opportunities tailored to you.\nGet recognized through our Employee Recognition Program - your contributions deserve the spotlight.\nRefer great talent through our Employee Referral Program and get rewarded for helping shape our future.\nEnjoy discounts and special offers with your employee badge - it pays to be part of the team.\nAccess 24/7 support for you and your family, with a wide range of wellbeing resources to help you thrive.\nJoin meaningful initiatives that give back to the community and connect you with like-minded colleagues through fun and impactful experiences.\nAt DXC Technology, we believe strong connections and community are key to our success. Our model prioritizes in-person collaboration while offering flexibility to support wellbeing, productivity, individual styles, and life circumstances. We’re committed to fostering an inclusive environment where everyone can thrive.]\nIf you feel comfortable with the above-mentioned requirements, please us your CV in English.\nPlease note only shortlisted candidates will be contacted.\nDXC Technology stands for equal opportunities, namely, we do not discriminate on the basis of race, religion, color, sex, age, disability, or sexual orientation.  All recruitment decisions are based solely on qualifications, skills, knowledge and experience, and relevant business requirements."
+    },
+    {
+      "id": "job-22",
+      "title": "Senior Security Analyst",
+      "company": "DXC Technology / DXC Bulgaria EOOD",
+      "location_raw": "София",
+      "source_url": "https://www.jobs.bg/job/8592910",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "CCNA",
+        "CCNP",
+        "SIEM"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "english",
+        "explicit-senior"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "senior",
+        "location_fit": "other_city",
+        "notes": "Senior and Sofia-based."
+      },
+      "description": "About DXC Bulgaria\nWe are DXC - a Fortune 500 global IT services leader. In Bulgaria, we are among the largest employers with over 4,000 employees working on the company's entire IT portfolio. We are flexible - we provide everything you need to comfortably from home, but we also keep our offices open for collaboration, meetings, and building a strong team spirit. We tailor everyone’s development path to their individual interests through training and additional certifications.\nOur experience and desire to grow, our mission, and our values ​​create an environment where ambitious people become successful at home. At home - in Bulgaria.\nAbout the role\nThe Senior Security Analyst is an integral part of the Security Incident Response Process within the Intelligent Security Operations Center team. The primary function of the role will be to provide a technical escalation point during Security Incidents, establishing the extent of the threat, the business impacts and advising the most suitable course of action to contain and remedy the incident. Outside of the Incident Process the Senior Security Analyst is expected to maintain a good knowledge of the Current Threat Landscape, help enhance current techniques and identify new methods of detecting threats on our customers' networks. They must also demonstrate the ability to communicate effectively with the other key stakeholders in the incident process.\nDaily challenges\nPerform detail analysis of events during the incident process, combining sound analytical skills with advanced knowledge of IT Security and Network Threats.\nPerform daily follow up on all tickets that were not resolved by Security analysts\nProvide out-of-office hours, on-call support and guidance to the junior team members.\nFull understanding of the Cyber Kill Chain methodology\nEscalation to Security support teams as needed.\nPerform alert analysis and investigation activities according to SLAs and defined timelines\nDaily reviews all ongoing incidents.\n​\neXperience and skills required\nDegree/Diploma in Computer Science, Computer Engineering, Electrical Engineering, Management Information Systems or equivalent certifications (MCSE, MCP, HP-UX, CCNA, CCNP, SNIA, SANS).\nMinimum of 2-3 years’ hands-on technical knowledge of the applicable technology platform that you will be responsible for: SIEM, Network management, Security and HP Open View Products.\nMust be able to demonstrate troubleshooting and problem-solving skills.\nFluent in written and verbal English.\nExperienced with Intrusion Detection System, Proxy Support, Security Client Support, Security Devices Administration, Security Server Compliance Monitoring & Reporting, Wireshark, SIEM and XDR tools such as MS Sentinel, ArcSight, Splunk, SumoLogic, MS Defenders, CrowdStrike, Carbon Black, Linux.\nUnderstanding of 24x7 mission critical enterprise computing environments and the impact of service disruption on a company’s bottom line.\nGood communication skills and customer centric focus - ability to communicate clearly and in a timely manner with all customers, partners and users, internal and external.\nCompany benefits\nEnjoy competitive compensation and grow your career in a fast-paced, international environment.\nBenefit from 24 days of paid vacation to rest, explore, and recharge - plus comprehensive medical and life insurance, and monthly food vouchers to support your lifestyle.\nAccess premium learning platforms, get company-sponsored certifications, and grow your skills with continuous development opportunities tailored to you.\nGet recognized through our Employee Recognition Program - your contributions deserve the spotlight.\nRefer great talent through our Employee Referral Program and get rewarded for helping shape our future.\nEnjoy discounts and special offers with your employee badge - it pays to be part of the team.\nAccess 24/7 support for you and your family, with a wide range of wellbeing resources to help you thrive.\nJoin meaningful initiatives that give back to the community and connect you with like-minded colleagues through fun and impactful experiences.\nWe Deliver eXcellence for our Customers and colleagues every day. Our values form the foundation of everything we do and every decision we make.\nIf you feel comfortable with the above-mentioned requirements, please us your CV in English. We continue with stay-at-home recruiting and video interviewing for the foreseeable future.\nPlease note only shortlisted candidates will be contacted."
+    },
+    {
+      "id": "job-19",
+      "title": "Wordpress Frontend Developer",
+      "company": "АТЛАНТИС ЛАБС ООД",
+      "location_raw": "public Дистанционна работа",
+      "source_url": "https://www.jobs.bg/job/8570173",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "WordPress",
+        "HTML/CSS",
+        "JavaScript",
+        "jQuery",
+        "Bootstrap",
+        "Adobe XD",
+        "Creative Cloud",
+        "Figma",
+        "React"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "remote",
+        "missing-mandatory-experience",
+        "english"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "mid",
+        "location_fit": "remote",
+        "notes": "Remote and PHP/WordPress-adjacent, but 3+ years of professional experience is the first mandatory line."
+      },
+      "description": "About our developer:\nOur ideal developer completes projects quickly while adhering to WordPress best practices and any of the other standard operating procedures in place for the project. They manage their time wisely and efficiently to complete projects on time. They are skillful problem solvers, able to distill complex challenges into clear, simplified solutions that support digital product objectives. Our ideal developer is diligent and efficient. They are superb communicators who collaborate with different teams, identify and flag potential issues and deliver quality code based on timelines.\nIn this role, you will:\nHandle WordPress site build-outs with focus on the front-end\nWorking in a team with a back-end developer using tools like ACF, Timber and similar technologies.\nWork in a remote position with regular online team calls\nBecome familiar with our approach which does not include page builders and is mostly founded in being lean in 3rd party plugins and more emphasizing on custom builds\nWill be expected to convert high-quality designs into pixel-perfect sites using best practices and modern front-end techniques.\nYou’re qualified for this role if you have the following skills:\n3+ years of working experience\nWordPress\nA deep understanding of WordPress and its defined best practices\nAn understanding of the structure of a WordPress website from themes and plugins to the requisite files\nKnowledge of common WordPress issues and conflicts\nA deep knowledge of the WordPress admin panel\nFront-end\nStrong CSS understanding, both SAAS and flat.\nBootstrap, Foundation or similar framework\nAdobe XD / Figma\nCross-device compatibility and testing\nGit, GitLab\nStrong JS/Jquery understanding\nAbility to analyze and prioritize build order of components to optimize the process for the other developers\nAbility to define and demonstrate other development skills apart from those listed above. Examples of these other skills include but are not limited to:\nWorking with hosting environments (WPE, Pantheon, Vercel)\nProven React / Next.js experience\nExperience with CMS other than WordPress, classic and headless.\nKnowledge of code languages that aren’t inherently used for WordPress\nIf you thrive on challenges and possess a passion for getting things done, we invite you to submit the following:\nDetails of projects you have worked on, including your role and contributions\nCode examples from your GitHub repositories or a similar platform"
+    },
+    {
+      "id": "job-8",
+      "title": "QA Engineer – German Energy Market",
+      "company": "РЕГИОКОМ ЕВРОПЕЙСКО ДРУЖЕСТВО - КЛОН БЪЛГАРИЯ КЧТ Централен офис Варна",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8592843",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "SAP"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "german-required",
+        "bulgarian",
+        "hybrid-varna"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "hybrid_city",
+        "notes": "Junior-friendly and hybrid in Varna, but German is mandatory and the candidate does not speak it."
+      },
+      "description": "Your mission\nWe are developing a SAP-based billing platform for the German energy market, supporting business-critical processes in an increasingly complex and highly regulated environment.\nAs the complexity of energy-market processes, integrations and regulatory requirements continues to grow, our goal is to deliver new functionality quickly, reliably and with a consistently high level of quality. For us, speed and quality are not opposing goals — effective quality assurance is what enables us to move fast with confidence.\nAs a QA Engineer, you will play a key role in making this possible. You will across the entire software development lifecycle, from requirements and solution design through implementation, testing and release, helping ensure that our platform is stable, reliable and fit for the demanding requirements of the German energy market.\nYou will\nContribute to quality assurance throughout the entire software development lifecycle, from requirements analysis to release\nAnalyse business and technical requirements and translate them into effective test scenarios and test cases\nCreate, maintain and continuously improve test plans, test cases and testing documentation\nPerform functional, regression, integration and end-to-end (E2E) testing\nExecute tests systematically and analyse test results to identify deviations, risks and potential quality issues\nICollaborate closely with developers and analysts in international, cross-functional teams\nContribute to improving test coverage, test processes and overall quality assurance practices\nSupport the continuous improvement and automation of testing activities\nHelp establish and promote a quality-first mindset across the development team\nTake ownership of assigned testing activities and proactively identify opportunities to improve quality and efficiency\nWhat makes you successful in this role\nWe're looking for someone who combines strong analytical thinking with a genuine passion for software quality and a structured approach to testing.\nYou bring\nA Bachelor's degree in Computer Science, Engineering or a related field, or equivalent practical experience\nVery good command of German, both written and spoken\nStrong analytical and problem-solving skills\nExcellent attention to detail and a structured, systematic approach to\nGood understanding of software development processes and the software development lifecycle\nA proactive mindset and willingness to take ownership\nCuriosity, adaptability and a desire to continuously learn and grow\nThe following experience is a strong advantage\nPrevious experience with SAP R/3 or SAP S/4HANA, ideally in a testing or quality assurance context\nPrevious experience in the German energy market, including experience with energy suppliers, grid operators, billing systems or related business processes\nExperience with test automation or a willingness to develop automation skills\nISTQB certification or comparable formal training in software testing\nExperience with API, integration or end-to-end testing\nExperience with test management and defect tracking tools\nWhy join regiocom?\nBecause great people deserve a great environment.\nWe offer\nA modern, collaborative and people-oriented workplace\nLong-term projects with real business impact\nThe opportunity to with experienced professionals and learn from experts in the energy and technology sectors\nCompetitive salary and attractive benefits package\nUp to 26 days of paid annual leave\nAdditional health insurance including dental care\nFood vouchers and home office allowance\nWe offer the flexibility to from the office, in a hybrid setup, or fully remotely — depending on the role, team setup and agreed working conditions\nRegular team events and a supportive company culture\nWhat we value\nWe don't expect every candidate to meet every requirement. What matters most is a strong foundation in software testing, analytical thinking and a willingness to learn.\nExperience with SAP and the German energy market is a significant advantage, as it will help you understand the business context and complexity of the platform more quickly.\nMost importantly, you understand that high delivery speed only creates value when it is supported by high quality. You want to help us build a QA approach that allows our teams to move fast, release with confidence and continuously improve the reliability of our platform."
+    },
+    {
+      "id": "job-67",
+      "title": "CAD Data Developer with German and English",
+      "company": "Импакт Хайър ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8587859",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "CAD"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "german-required",
+        "mixed-language",
+        "non-it-with-tech-words"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "German and English at B2 are mandatory; the work is CAD/technical data rather than software engineering."
+      },
+      "description": "CAD Data Developer with German and English\nImpacT Hire is actively seeking a CAD Data Developer with German and English for one of our clients — a leading international company specializing in professional software solutions for planning, design, and manufacturing in the furniture and interior design industry.\nThe role focuses on working with CAD/CAM (AutoCAD-based) software to implement and configure digital product data and technical specifications for a well-established German partner. You will contribute to building structured digital catalogs and 3D models used directly in real manufacturing and production environments.\nThis position is ideal for candidates with an engineering or technical background who enjoy working with CAD systems, structured data, and precise technical implementation.\nResponsibilities:\n➢ Work with imos CAD/CAM software to configure and implement furniture design and manufacturing solutions;\n➢ Develop and maintain 3D models and technical data based on predefined customer specifications;\n➢ Create and structure furniture hardware and product data, including components from a wide range of partner products;\n➢ Support the development of online product catalogs and digital libraries used in design and production processes;\n➢ Document development workflows, standards, and project requirements in the internal content management system;\n➢ Collaborate closely with internal engineering and project teams to ensure accuracy and consistency of technical data.\nRequirements:\n➢ Fluency in German and English (minimum B2 level, written and spoken);\n➢ Higher education completed or in progress (Bachelor’s or Master’s) in Engineering, Automation, Computer Systems, Industrial Design, or related technical field;\n➢ Basic understanding or interest in CAD/CAM or technical design software;\n➢ Good computer literacy and confidence working with modern digital tools.\nNice to Have:\n➢ Experience with CAD software (AutoCAD, imos, SolidWorks, or similar);\n➢ Experience working with technical or product data;\n➢ Background in manufacturing, engineering design, or production processes.\nWhat We Offer:\n➢ Exciting tasks in a secure, international company offering diverse career perspectives;\n➢ Comprehensive training and onboarding programs to get you started (no prior imos experience required);\n➢ Home office options — up to 5 days per month;\n➢ Standard working hours with no shift ;\n➢ Opportunity to on real-world engineering and production solutions.\nWork Location:\n➢ The office is located in Varna, Bulgaria, and on-site is required.\nIf you are detail-oriented, technically minded, and interested in working with CAD systems and engineering data in an international environment, we’d love to hear from you.\nImpacT Hire has License №3355/13.07.2022 for providing HR services."
+    },
+    {
+      "id": "job-58",
+      "title": "Technical Support Specialist with German",
+      "company": "Импакт Хайър ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8572271",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "german-required",
+        "different-discipline"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Technical support with mandatory German."
+      },
+      "description": "Technical Support Specialist with German\nImpacT Hire is actively seeking a Client Support Specialist with German for one of our clients, a leading company specializing in business and professional software solutions for planning, construction, and manufacturing in the furniture and interior design industry. This role involves maintaining the systems of a reputable German company.\nResponsibilities:\n➢ Manage user inquiries from initial contact through error analysis to developing solutions via phone or ticketing system;\n➢ Process inquiries effectively—from the initial inquiry, through fault analysis, to solution development;\n➢ Perform software installation and management tasks;\n➢ Collaborate with various departments to ensure smooth operations.\nRequirements:\n➢ Completed secondary or higher education, ideally in IT;\n➢ Solution-oriented approach with a strong focus on service excellence;\n➢ Fluency in German and English, both spoken and written (minimum Level B2).\nNice to have:\n➢ Previous experience in IT service and support.\nWhat We Offer:\n➢ Exciting tasks in a secure, international company offering diverse career perspectives;\n➢ Comprehensive training and onboarding programs to get you started;\n➢ Home office options—up to 5 days per month;\n➢ Standard working hours with no shift .\nWork Location:\nThe office is located in Varna, Bulgaria, and on-site is required.\nIf you feel the challenge, apply now!\nImpacT Hire has License №3355/13.07.2022 for providing HR services."
+    },
+    {
+      "id": "job-26",
+      "title": "IT Support mit Deutsch und Englisch",
+      "company": "ИМОС СЪРВИС ООД",
+      "location_raw": "Варна; Бизнес парк, сграда B8 ( виж карта )",
+      "source_url": "https://www.jobs.bg/job/8575532",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "german-required",
+        "different-discipline"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "mid",
+        "location_fit": "exact_city",
+        "notes": "IT support with mandatory German."
+      },
+      "description": "Warum Würth IT?\nWeil mir die Gestaltungsfreiraum genauso wichtig ist wie ein kollegiales Arbeitsumfeld\nDie WÜRTH IT ist der IT-Dienstleister der Würth-Gruppe. Sie unterstützt die weltweiten Gesellschaften der Gruppe mit modernen IT‑Lösungen – von Softwareentwicklung über IT‑Infrastruktur bis hin zu digitalen Geschäftsprozessen. Dabei arbeitet WÜRTH IT international, praxisnah und eng am Kerngeschäft eines der erfolgreichsten Handelsunternehmen der Welt.\nIT Support – System Support und Mitarbeiterbetreuung\nfür den Bereich Software Remote Services\nDas erwartet Sie:\nSie werden Partner und Mitarbeiter weltweit über Telefon oder Remote Access Systemen unterstützen, Probleme lösen und Lösungen für diverse Software- oder Möbelthemen anbieten\nBearbeitung von Nutzeranfragen - vom Erstkontakt über die Fehleranalyse bis hin zur Entwicklung von Lösungen\nInstallation und Verwaltung von Clients\nSie werden auch eng mit verschiedenen Abteilungen zusammenarbeiten\nDas erwarten wir:\nSie haben erste Erfahrungen im Bereich IT-Service und IT-Support\nEine lösungsorientierte Arbeitsweise mit einem hohen Maß an Serviceorientierung gehört zu Ihren Stärken\nSie besitzen sehr gute Deutsch und Englischkenntnisse in Wort und Schrift, (Niveau B2)\nDas bieten wir Ihnen:\nFestes Arbeitsvertrag mit imos Service OOD\nTeil eines Weltkonzerns und doch vertraut\nFreuen Sie sich auf spannende Aufgaben in einem sicheren, internationalen Unternehmen mit vielfältigen Perspektiven. Wir bieten Ihnen:\nUmfassendes Schulungs- und Onboardingsprogramm\nHome Office Optionen / 5 Tage im Monat /\nMultiSport card\nWir freuen uns auf Ihre Bewerbung über unser Bewerbungsformular."
+    },
+    {
+      "id": "job-29",
+      "title": "Младши Системен администратор",
+      "company": "ЛИРЕКС БС АД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8598525",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "Shell Scripts",
+        "Windows",
+        "VMware"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "different-discipline",
+        "missing-mandatory-experience"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Junior and in Varna, but mandatory Windows administration experience is absent and the work is not development."
+      },
+      "description": "Младши Системен администратор\nКомпаниите LIREX COM са водещи в областта на информационните и комуникационни технологии в България вече повече от 30 години. Ние предлагаме консултантски и аутсорсинг услуги, цялостно проектиране, изграждане и поддържане на ИКТ решения и системи. Предоставяме на нашите клиенти и поддръжка на софтуер, компютърна, мрежова и офис техника.\nTърсим Младши Системен администратор за поддръжка на системите на наши международни клиенти в град Варна. Стартираме с трудов договор с фиксиран срок, спрямо различните проекти, които предстоят.\nОсновни отговорности:\n• Отдалечено администриране на Windows-базирани системи;\n• Мониторинг на виртуални и физически сървъри и инфраструктури;\n• Диагностициране и анализиране на проблеми по физически и виртуални машини, администриране и своевременно отстраняване;\n• Разрешаване на инциденти/ troubleshooting;\n• Ъпдейти на операционна система; миграция от една към друга версия на OS; инсталиране на security patches;\n• Администриране на MS Active Directory и DNS сървър.\nИзисквания:\n• Опит с Windows базирани системи - инсталиране, конфигуриране, обновяване и наблюдение;\n• Добро владеене на бизнес английски език (писмено и говоримо - B1+);\n• Комуникативни умения и умения за работа в екип;\n• Желание за развитие и придобиване на нови знания;\n• Гъвкавост при разрешаване на работни казуси;\n• Аналитично мислене;\n• Желание за работа на сменен график 24/7 (възможност за дистанционна работа).\nПредимства:\n• Образование в сферата на Информационните технологии;\n• Опит на подобна позиция;\n• Сертификати от завършени курсове (MCSE, MCSA, MCP);\n• Опит със скриптове и автоматизации (PowerShell, VBS, etc.);\n• Опит с VMware инфраструктура.\nLIREX Ви предлага възможност да станете част от екипа на нашата високотехнологична българска компания, която:\n• участва в мащабни, иновативни проекти в България и на международно ниво;\n• предоставя периодични професионални обучения, квалификации и сертификации;\n• предлага възнаграждение, съобразено със знанията, уменията и темповете на развитие.\nАко нашето предложение представлява интерес за Вас и отговаряте на посочените изисквания, моля изпратете Вашето актуално CV.\nНашата компания приветства и разглежда в детайли всяка постъпила кандидатура.\nНие като компания се ангажираме, във всички етапи на нашия процес по подбор, да се отнасяме справедливо с кандидатите, като оценяваме само техните лични и професионални компетенции. Не допускаме дискриминация по раса, национален, етнически и социален произход, пол, възраст, физически и семеен статус, религия, сексуална ориентация, полово самоопределение, членство в обществени и неправителствени организации или друг незаконен критерий, съгласно приложимия в страната закон.\nПодборът в компанията включва: подбор по автобиография (за всички кандидати), интервю (за избрани по CV кандидати) и обратна връзка (за избрани по CV кандидати). За определени обяви/позиции може да се включи (преди, по време или след интервю) изпълнението на набор от професионални задачи и/или въпросници.\nПредоставянето на личните данни от страна на кандидатите е доброволно. Тяхното обработване и съхранение се извършва само и единствено във връзка с подбора и в пълно съответствие със Закона за защита на личните данни и Регламент (ЕС) 2016/679 в законоустановения 6-месечен срок. При съгласие от страна на кандидат, може да се договори последващ срок на съхранение и обработване на личните му данни, само и единствено във връзка с други подбори в компанията. Във всеки момент всеки кандидат може да получи достъп до личните си данни и да оттегли съгласието си във връзка с по-горното.\nНие се грижим да управляваме съхранението и обработването на лични данни, за да запазим тяхната цялостност, наличност и конфиденциалност.\nАко имате въпроси, свързани с поставените изисквания и/или условия в обявата и/или с процеса за подбор, можете да се свържете с нас."
+    },
+    {
+      "id": "job-56",
+      "title": "IT Helpdesk / NOC оператор",
+      "company": "Варна ЛАН ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8581689",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "different-discipline"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Network helpdesk rather than development."
+      },
+      "description": "IT Helpdesk / NOC оператор\nIT Helpdesk / NOC оператор – платено обучение\nВарна ЛАН ООД търси мотивиран специалист за екипа си за 24/7 техническа поддръжка. Работата е динамична и има пряко влияние върху качеството на мрежата и обслужването на клиентите.\nПозицията е подходяща и за кандидати без професионален опит, но със силен интерес към компютърни мрежи и желание да придобият реален практически опит с мрежи и Linux.\nИзисквания:\nОсновни технически познания;\nОсновни познания по компютърни мрежи;\nИнтерес към Linux и мрежови технологии;\nУмения за работа с LAN оборудване и домашни/офис рутери;\nАнглийски език на работно ниво.\nКакво ще правиш:\nНаблюдение на системи за мониторинг на мрежата;\nПриемане на обаждания и обработка на клиентски заявки;\nОказване на техническа помощ по телефон и имейл;\nДиагностика и решаване на мрежови проблеми;\nЛокализиране на повреди и подаване на точна информация към техниците;\nПоддръжка и актуализиране на вътрешни системи и данни.\nКакво очакваме:\nОтговорност, дисциплина и коректност;\nДобра комуникация и работа в екип;\nАналитично мислене и желание за учене;\nИнтерес към IT и мрежови технологии.\nКакво предлагаме:\nПлатено обучение – до 4 седмици;\nРеален практически опит с ISP мрежа;\nРабота с Linux и мрежово оборудване;\nРабота в стабилна компания с дългогодишен опит;\nРабота на сменен режим (24/7), включително нощни смени;\nКоректно заплащане и сигурни условия на труд;\nВъзможност за развитие към NOC / Network Engineer.\nКак да кандидатстваш:\nИзпрати автобиография и актуална снимка.\nВсички кандидатури се разглеждат поверително. Само одобрените кандидати ще бъдат поканени на интервю."
+    },
+    {
+      "id": "job-57",
+      "title": "Системен администратор",
+      "company": "ТРАНСПОРТ И АВТОМАТИЗИРАНА СИСТЕМА ЗА РЕГУЛИРАНЕ НА УЛИЧНОТО ДВИЖЕНИЕ ОП",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8581215",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "different-discipline",
+        "missing-mandatory-experience"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Completed higher technical education and a category B driving licence are mandatory."
+      },
+      "description": "Системен администратор\nИзисквания към кандидата:\nВисше техническо образование: Компютърни системи и технолигии, Комуникационна техника и технологии или сходна специалност;\nТрудов опит на подобна позиция не е задължителен, но ще бъде считан за предимство;\nШофьорска книжка кат. В;\nТехническо и аналитично мислене;\nГотовност за работа в динамична среда;\nУмения за работа в екип.\nПозицията е подходяща и за жени.\nОсновни задължения:\nАдминистрира, поддържа, тества и отговаря на сигналите постъпили както в раздела за обратна връзка на приложенията от Автоматизираната билетна система на предприятието, така и в различните канали за жалби.\nНа базата на сигналите на граждани изработва тестови примери за емулиране на съобщените проблеми.Комуникира с доставчиците на приложния софтуер за отстраняване на проблема и отговаря на гражданите за предприетите мерки.\nНеобходимо е да се запознае с отделните модули на Интегрирана Система за Електронно Таксуване, както и с хардуерът използван от тях.\nВсички кандидатури ще бъдат разгледани при строга конфиденциалност, съгласно Регламента GDPR.\nОчакваме Вашата Автобиография.\nОдобрените за интервю кандидати, ще бъдат уведомени."
+    },
+    {
+      "id": "job-88",
+      "title": "IT Support Technician II",
+      "company": "Immedis Ltd",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8582707",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "ITIL"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "different-discipline"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": true,
+        "seniority": "junior",
+        "location_fit": "exact_city",
+        "notes": "Device and service-desk support rather than development."
+      },
+      "description": "Why UKG:\nAt UKG, the you do matters. The code you ship, the decisions you make, and the care you show a customer all add up to real impact. Today, tens of millions of workers start and end their days with our workforce operating platform. Helping people get paid, grow in their careers, and shape the future of their industries. That’s what we do.\nWe never stop learning. We never stop challenging the norm. We push for better, and we celebrate the wins along the way. Here, you’ll get flexibility that’s real, benefits you can count on, and a team that succeeds together. Because at UKG, your matters—and so do you.\nAbout the role:\nWe are looking for a motivated IT Support Technician to join our team in Varna. In this role, you’ll provide reliable, user-focused technical support to employees both onsite and remotely—through phone, chat, incident management, service requests, and in-person assistance.\nYou’ll play an important part in keeping our local IT operations running smoothly while also contributing to global service desk activities. Your responsibilities will include:\nSupporting new-hire onboarding and employee offboarding\nConfiguring, deploying, collecting, and maintaining laptops and other IT equipment\nProviding executive and day-to-day employee support\nManaging incidents and service requests from start to resolution\nSupporting IT procurement and inventory management\nOverseeing the complete lifecycle of company devices\nThis is a hands-on opportunity to build your technical expertise, across a broad range of IT operations, and make a visible impact on the employee experience.\nPrimary Responsibilities:\nProvide onsite and remote support for Windows and Mac devices, applications, peripherals, meeting-room technology, network connectivity, and access-related issues.\nResolve incidents and service requests through phone, chat, remote-support tools, and in-person assistance while delivering a high-quality employee experience and meeting service-level expectations.\nConfigure, image, deploy, replace, collect, securely wipe, and redeploy laptops and other IT equipment.\nSupport smooth and efficient new-hire onboarding and employee offboarding.\nProvide local IT support, workstation setup, office-move assistance, and executive or priority-user support.\nMaintain accurate records for tickets, assets, inventory, and device assignments.\nManage the full device lifecycle, from procurement and deployment through repair, refresh, return, and disposal.\nCoordinate with vendors on procurement, warranties, repairs, replacements, and related services.\nEscalate complex or unresolved issues to the appropriate technical teams while maintaining ownership through resolution.\nCreate and maintain knowledge articles, procedures, and other support documentation.\nFollow all company requirements related to security, compliance, patching, encryption, and data protection.\nRequired Qualifications:\nExperience in desktop support, service desk, end-user computing, or a similar technical-support role.\nExperience supporting employees through onsite assistance, phone, chat, and remote-support channels.\nPractical knowledge of Windows and macOS, along with Dell and Apple hardware.\nHands-on experience with device imaging, provisioning, deployment, troubleshooting, and lifecycle management.\nExcellent customer-service, communication, analytical, and problem-solving skills.\nAbility to independently, stay organized, and manage multiple priorities effectively.\nFluent spoken and written English.\nAssociate degree in an IT-related field, or equivalent professional experience.\nPreferred Qualifications:\nExperience working with ServiceNow or a similar IT service-management platform.\nFamiliarity with Intune, Autopilot, SCCM, Jamf, Active Directory, and Microsoft 365.\nBasic understanding of networking principles and endpoint security.\nExperience supporting IT procurement, inventory, asset management, and vendor coordination.\nITIL Foundation certification or other relevant technical certifications.\nBachelor’s degree in Information Technology, Computer Science, or a related field.\nPhysical Requirements:\nAbility to lift and move IT equipment weighing up to 30 pounds, with reasonable accommodation provided where applicable.\nBenefits:\n25 to 28 days of annual leave\nMedical coverage provided by Bulstrad for you and your dependents.\nLife, AD&D, Disability & critical illness coverage provided by DZI.\nMeal vouchers provided by Edenred – EUR 85 per month.\nEmployee Assistance Programs available 24/7.\nGlobal Tuition Reimbursement program – up to EUR 3 425 per year.\nFertility support – up to EUR 6 525 per year.\nAdoption assistance.\nBusiness travel insurance.\nU choose program – EUR 275 every quarter to be spent on eligible items.\nCompany Overview:\nUKG is the Workforce Operating Platform that puts workforce understanding to . With the world's largest collection of workforce insights, and people-first AI, our ability to reveal unseen ways to build trust, amplify productivity, and empower talent, is unmatched. It's this expertise that equips our customers with the intelligence to solve any challenge in any industry — because great organizations know their workforce is their competitive edge. Learn more at ukg.com.\nUKG is proud to be an equal opportunity employer and is committed to promoting diversity and inclusion in the workplace, including the recruitment process.\nDisability Accommodation in the Application and Interview Process\nFor individuals with disabilities that need additional assistance at any point in the application and interview process, please email UKGCareers@ukg.com\nThe pay range for this position is €13,100 to €17,650 EUR Gross/annually. The actual base pay offered may vary depending on skills, experience, job-related knowledge and location. In addition to base pay, employees may be eligible to participate in a performance-based bonus plan and to receive restricted stock unit awards as part of total compensation. Learn more about UKG’s benefits and rewards at https://www.ukg.com/about-us/careers/benefits"
+    },
+    {
+      "id": "job-44",
+      "title": "СПЕЦИАЛИСТ ДИГИТАЛЕН МАРКЕТИНГ",
+      "company": "ЕНЕРГО-ПРО ВАРНА ЕАД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8594284",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "SEO"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "non-it-with-tech-words"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "mid",
+        "location_fit": "exact_city",
+        "notes": "Digital marketing."
+      },
+      "description": "ЕНЕРГО-ПРО Варна ЕАД е собственик и осъществява всички административни и обслужващи функции за дейностите на Електроразпределение Север АД за разпределение на електрическа енергия, ЕНЕРГО-ПРО Продажби АД за снабдяване с електрическа енергия и ЕНЕРГО-ПРО Енергийни Услуги ЕАД за търговия с електрическа енергия на свободен пазар. Компаниите от групата на ЕНЕРГО-ПРО Варна са част от чешката ENERGO-PRO A.S., която притежава и управлява общо 37 водноелектрически централи в Централна и Източна Европа и е работодател на над 9000 служители в Чехия, България, Грузия, Турция, Испания, Бразилия и Колумбия. Kлючовите ценности на компаниите от групата ENERGO-PRO са ефективност, експертност, отговорност, безопасност и толерантност.  Предоставяме Ви възможност да откриете своето място в нашия екип.\nЕНЕРГО-ПРО Варна ЕАД обявява за град Варна свободна позиция:\n________________________________________________________________________\nСПЕЦИАЛИСТ ДИГИТАЛЕН МАРКЕТИНГ\nДирекция: „Маркетинг“\nПозицията отговаря изцяло за изпълнение на дигиталната маркетингова стратегия в компанията\nОсновни задължения и отговорности:\nДейности в направление „управление на дигитални канали“:\n-  администрира и развива присъствието на компанията в социалните мрежи;\n-  управлява съдържанието на корпоративният уебсайт и лендинг страници;\n-  координира публикуването на съдържание във всички дигитални канали;\n-  следи за консистентност на бранда и комуникацията.\nДейности в направление „рекламни кампании“ – създава, настройва и оптимизира платени кампании в: Google Ads, Meta Ads (Facebook и Instagram), LinkedIn Ads;\nДейности в направление SEO и органичен трафик:\n-  участва в планирането и изпълнението на SEO дейности;\n-  извършва анализ на ключови думи;\n-  следи органичния трафик и позиционирането в търсачката;\n-  работи с външни SEO агенции или специалисти.\nДейности в направление „email маркетинг и автоматизации“:\n-   създава и управлява email кампании;\n-   сегментира аудитории и анализира резултатите;\n-   настройва автоматизирани маркетингови сценарии и потребителски пътеки;\nСледи и анализира маркетингови показатели, изготвя регулярни отчети и препоръки за подобрения;\nРаботи с вътрешни и външни клиенти (дизайнери, копирайтъри, агенции и външни доставчици);\nСледи пазарни тенденции, конкуренти и нови дигитални инструменти.\nПодпомага директор дирекция Маркетинг в разработването на дигиталната маркетингова стратегия, следене на показатели за ефективност, според бизнес целите, изготвяне на бюджети.\nПрофил на кандидата:\nВисше образование в областта на маркетинг, бизнес, комуникации или релевантна специалност;\nОпит – минимум 2 години в сферата на дигиталния маркетинг;\nСертификати, свързани с дигитална реклама са предимство;\nОпит с Google Ads, Meta Ads, Google Analytics, HubSpot;\nДобро владеене на английски език;\nОтлични комуникационни умения и проактивен подход;\nВнимание към детайла и спазване на срокове в динамична работна среда;\nДобри аналитични и организационни умения.\nЕНЕРГО-ПРО предлага:\nСигурна работа с възможност за дългосрочна заетост;\nМотивиращо възнаграждение;\nВътрешни придобивки: ваучери за храна, допълнително здравно осигуряване, офис клас „А“ с възможност за безплатно паркиране, Мултиспорт карта на преференциална цена и други.\nКандидатствайте с автобиография и референтен код S_DM_VN_280826 не по-късно от 13.09.2026 г. чрез бутон „Кандидатствай за тази позиция“.\nСамо одобрените по документи кандидати ще бъдат поканени на интервю.\n____________________________________________________________________\nЗа повече информация относно защитата на личните Ви данни и правата Ви, можете да се запознаете с Политиката за поверителност и защита на личните данни на дружествата от Групата ЕНЕРГО-ПРО Варна при подбор на персонал, публикувана на интернет страницата на Компанията."
+    },
+    {
+      "id": "job-45",
+      "title": "Преподавател по Компютърна Грамотност за ПРИСЪСТВЕНИ Занятия",
+      "company": "БЕЛЛ КАРИЕР ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8591441",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "non-it-with-tech-words"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "mid",
+        "location_fit": "exact_city",
+        "notes": "Teaching computer literacy, not software work."
+      },
+      "description": "Белл Кариер ЕООД е лицензиран посредник за подбор на персонал /лиценз № 3287/08.02.2022, безсрочен/. Ние сме динамична консултантска компания в сферата на човешките ресурси в гр. Варна, с партньори в България, Германия и Скандинавия.\nЗа наш дългогодишен клиент: Утвърден образователен център за професионално обучение във Варна, предлагащ курсове в сферите на езиково обучение, IT, бизнес, финанси и beauty услуги, търсим преподавател по компютърна грамотност за ПРИСЪСТВЕНИ занятия.\nАко вярваш, че технологиите могат да бъдат разбрани и харесани от всеки, и умееш да го докажеш...\nПродължавай да четеш!\nТърсим човек, който да се почувства част от екипа и да остане в него. При нас това не е клише: работим в малък, сплотен екип, познаваме се лично, подкрепяме се в реалния смисъл на думата, а не само на хартия.\nАко цениш спокойната работна среда, в която те познават по име и разчитат на теб, ще си на мястото си.\nИЗИСКВАНИЯ:\n• Завършено висше образование: Информатика, Бизнес Информатика, Компютърни системи и технологии или сходна специалност;\n• Отлични умения за работа с MS Office (Word, Excel, PowerPoint);\n• Задълбочени познания за операционната система Windows и нейните компоненти;\n• Умения за работа с различни интернет браузъри, облачни услуги и социални мрежи;\n• Познания за работа с външни устройства, инсталиране и поддръжка на програми;\n• Умение да обясняваш технически понятия по ясен и достъпен за курсистите начин;\n• Адаптивност, търпение и креативност при работа с различни възрастови групи;\n• Опит в преподаването е предимство;\n• Мотивация да се задържиш и да растеш в екип, който цени постоянството.\nКАКВО ПРЕДЛАГАМЕ:\n• Граждански договор с ПЪЛНИ осигуровки с възможност за преминаване на трудов договор при доказана ангажираност;\n• Атрактивно възнаграждение;\n• Дневни занятия с продължителност 6/7 учебни часа по 45 минути;\n• Гъвкав график;\n• Малки групи (до 12 курсисти) - достатъчно малки, за да познаваш всеки курсист по име;\n• Работа в сплотен екип от млади и подкрепящи специалисти;\n• Възможност за Multisport карта;\n• Участие във фирмени тиймбилдинги.\nНе пропускай възможността да се присъединиш към екип, в който хората остават не по инерция, а защото искат. Изпрати ни своята актуална автобиография и направи следващата стъпка в кариерата си!"
+    },
+    {
+      "id": "job-80",
+      "title": "Компютърен оператор",
+      "company": "ЮНИСОФТ СОЛЮШЪНС ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8569910",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "non-it-with-tech-words",
+        "short-description"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Computer operator, an administrative role."
+      },
+      "description": "Компютърен оператор\n• Ако желаете да увеличите и затвърдите познанията си в сферата на Информационните технологии и да се развиете в работата, придружено с отговорно отношение;\n• Ако сте комуникативен, лоялен, организиран и умеете лесно да работите в екип;\n• Ако имате възможност за работа на смени, на пълен работен ден;\n• Ако имате свидетелство за управление на МПС и сте активен шофьор…\nНие Ви очакваме, в екипа на една от водещите фирми в страната.\nРаботата при нас изисква:\n• Общи познания на сървърни операционни системи и свободно боравене с тях;\n• Опит в инсталация на потребителски софтуер и периферия;\n• Минимален опит в изграждане и поддръжка на мрежи;\n• Свободна работа с принтери, скенери и разнообразна компютърна периферия;\n• Добро ниво на владеене на MS Office пакет;\n• Поддръжка и подмяна на техника в обектите, които обслужваме;\n• Пътуване в командировки със служебен автомобил.\nНие Ви предлагаме:\n• Необходимия период на обучение за въвеждане в работния процес;\n• Приятна работна атмосфера;\n• Работа в офис с млад и сплотен екип;\n• Дългосрочно професионално развитие;\n• Лоялно отношение;\n• Възможност за по-високо заплащане, обвързано с положените усилия и постигнатите резултати.\nАко смятате, че Вие сте правилният човек за нас използвай бутона за кандидатстване.\nЩе се свържем с всички одобрени кандидати за интервю."
+    },
+    {
+      "id": "job-70",
+      "title": "Техник комуникационни системи",
+      "company": "ЦИКОНИЯ ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8581944",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "non-it-with-tech-words"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Fire-safety systems technician."
+      },
+      "description": "Техник комуникационни системи\nЦикония ЕООД е компания с дългогодишен опит в изграждането и поддръжката на пожароизвестителни и пожарогасителни системи.\nВъв връзка с разширяване на дейността си търсим техник, който да стане част от нашия екип.\nОсновни отговорности:\n• Поддръжка и диагностика на комуникационни системи и системи за автоматизация;\n• Конфигуриране и настройка на оборудване чрез специализиран софтуер;\n• Спазване на утвърдени стандарти за качество и безопасност при работа, с цел гарантиране на надеждността и дългосрочната експлоатация на системите.\nИзисквания:\n• Технически познания в областта на комуникационните системи, компютърните мрежи, електрониката или сходна техническа област;\n• Умения за работа със софтуер за настройка, конфигуриране и диагностика на специализирано оборудване;\n• Чисто съдебно минало;\n• Свидетелство за управление на МПС (кат. B);\n• Готовност за командировки в страната;\n• Организираност, инициативност, отговорност и прецизност при изпълнение на задачите.\nНие предлагаме:\n• Конкурентно заплащане;\n• Бонусна система при успешно изпълнение на задачите;\n• Обучение за работа със специализирано оборудване и софтуер;\n• Застраховка;\n• Гъвкаво работно време с възможност за индивидуално планиране на деня."
+    },
+    {
+      "id": "job-73",
+      "title": "Стажант \"Хардуерен техник\" 4 или 8 часа",
+      "company": "АКС БГ ЕООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8577759",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "non-it-with-tech-words",
+        "internship"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "internship",
+        "location_fit": "exact_city",
+        "notes": "Hardware repair internship, not software."
+      },
+      "description": "Стажант \"Хардуерен техник\" 4 или 8 часа\nAKS търси човек, който обича да разглобява, сглобява и да разбира какво има вътре в техниката.\nАко компютрите и телефоните са ти интересни не само като потребител, а и ти се иска да разбереш как работят, защо се повреждат и как се ремонтират, този стаж е точно за теб.\nВ AKS ще имаш възможност да се докоснеш до реална сервизна работа, а не просто да гледаш отстрани.\nКакво ще правиш?\nЩе започнеш от основите и постепенно ще преминеш към реални практически задачи:\nРазглобяване и сглобяване на лаптопи и компютри.\nРазпознаване на основните хардуерни компоненти и тяхната функция.\nДиагностика на хардуерни проблеми.\nСмяна на RAM, SSD, батерии, дисплеи, клавиатури, вентилатори и други компоненти.\nПочистване и профилактика на техника.\nРабота с измервателни инструменти и базова електроника.\nТестване на компоненти и откриване на повреди.\nРабота с реални клиентски устройства под ръководството на нашия сервизен екип.\nВодене на документация за извършената работа.\nНяма да очакваме да знаеш всичко предварително. По-важното е да имаш интерес към техниката, желание да се учиш и да не те е страх да си изцапаш ръцете.\nКакво търсим?\nТърсим човек, който:\nима интерес към компютри, лаптопи, телефони и електроника;\nиска да разбере как работи хардуерът, а не просто да умее да инсталира Windows;\nе любопитен и задава въпроси;\nработи внимателно и отговорно;\nможе да следва инструкции;\nима желание постепенно да поема самостоятелни задачи.\nПредишен опит не е задължителен. Ако си учил или учиш компютърни системи, електроника, мехатроника, автоматизация, телекомуникации или друга техническа специалност, това е предимство.\nКакво ще получиш от стажа?\nРеален практически опит в действащ сервиз.\nРабота с реална техника и реални казуси.\nОбучение от хора, които ежедневно се занимават с диагностика и ремонт.\nПрактически знания, които трудно се получават само в университета или училище.\nВъзможност да видиш дали сервизната работа действително е за теб.\nПри добро представяне — възможност за продължаване на работа в AKS след стажа."
+    },
+    {
+      "id": "job-66",
+      "title": "ХОНОРУВАН ПРЕПОДАВАТЕЛ ПО УЕБ ДИЗАЙН (WORDPRESS)",
+      "company": "ДАВИТОЗ ООД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8593195",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "WordPress"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "bulgarian",
+        "short-description",
+        "non-it-with-tech-words"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "exact_city",
+        "notes": "Excellent WordPress knowledge is mandatory and the actual work is part-time teaching."
+      },
+      "description": "ХОНОРУВАН ПРЕПОДАВАТЕЛ ПО УЕБ ДИЗАЙН (WORDPRESS)\nЦентър Давитоз е образователен център, предлагащ висококачествено обучение по езици, компютри и професии. Образователен Център Давитоз обявява позицията на хоноруван преподавател по УЕБ ДИЗАЙН (работа с WORDPRESS) в град Варна.\nУсловия на работа:\n- Курсовете се провеждат като дневни и вечерни, през седмицата и събота и неделя. Има започващи курсове целогодишно.\n- Часът на провеждане е по уговорка с преподавателя, във време, удобно за курсиста.\n- Занятията са индивидуални или с групи до 3ма курсиста.\n- Обучението се провежда в компютърната база на образователния център.\n- Хонорарът за един курс от 10 посещения по два астрономически часа на посещение (общо за 20 астрономически часа) е 140 евро.\n- Тип договор - граждански договор с Давитоз ООД\nИзисквания:\n- Отлични познания при работата с WORDPRESS.\n- Опитът в преподаването е предимство, но не задължително условие.\nКандидатстване:\n- Изпращане на автобиография чрез jobs.bg или на адрес град Варна, бул. Владислав Варненчик 43"
+    },
+    {
+      "id": "job-31",
+      "title": "Platform Administrator (Legal Technology & AI)",
+      "company": "ХАЙДЕЛБЕРГ МАТИРИЪЛС ДИГИТАЛЕН ХЪБ ВАРНА ЕАД",
+      "location_raw": "Варна",
+      "source_url": "https://www.jobs.bg/job/8580287",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [],
+      "languages_raw": [],
+      "tags": [
+        "english",
+        "attractive-title-weak-match"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "mid",
+        "location_fit": "exact_city",
+        "notes": "Legal-operations platform administration despite the 'AI' in the title."
+      },
+      "description": "Your chance to shape the digital future of the building materials industry. Join us and become a real #Heidelmate!\nWe are looking for:\nPlatform Administrator (Legal Technology & AI)\nThe Global Legal Operations team is responsible for enabling efficient legal service delivery through modern technology, streamlined processes, and reliable data management.\nIn this role, you will take ownership of the day-to-day administration and continuous improvement of the legal technology ecosystem, including contract lifecycle management, matter management, e-billing, and AI-powered solutions. You will closely with the Head of Legal Operations, vendors, and business stakeholders to ensure platforms operate reliably, data remains accurate, and users receive the support they need to effectively. Combining technology, process optimisation, and AI enablement, you will play a key role in shaping how a global legal function leverages digital solutions to deliver greater efficiency and business value.\nYOUR NEXT CHALLENGE:\nSupport the administration, configuration, and maintenance of legal technology platforms across the legal function\nMaintain workflows, taxonomies, approval processes, billing rules, and system configurations in accordance with business requirements\nMonitor integrations between legal systems, finance platforms, identity management solutions, and external vendors\nManage user access, permissions, and role-based security controls across legal technology applications\nSupport troubleshooting and resolution of platform, integration, and data quality issues\nCoordinate with software providers and internal technical teams to manage incidents, enhancements, and platform improvements\nContribute to system upgrades, platform rollouts, migrations, and user acceptance testing activities\nMonitor platform performance, availability, and service quality to ensure reliable operations\nSupport administration and governance of AI-powered legal technology solutions, including Harvey\nMaintain documentation covering system configurations, operational procedures, and support processes\nEnsure data integrity and compliance with established governance standards across legal platforms\nContribute to the continuous improvement of legal technology capabilities, user experience, and operational efficiency\nYOUR PROFILE:\nFirst experience in systems administration, application support, legal technology, or a comparable technology-focused role\nFamiliarity with enterprise software platforms, workflow systems, or legal technology tools is an advantage\nUnderstanding of integrations, APIs, identity management, data feeds, or workflow automation concepts\nStrong troubleshooting and problem-solving skills with a structured and methodical approach\nKnowledge of data governance, system administration, and platform support principles\nAbility to communicate technical concepts clearly to non-technical stakeholders\nExperience working with external vendors, service providers, or cross-functional teams is beneficial\nStrong organisational and prioritisation skills with the ability to manage multiple activities simultaneously\nBachelor’s degree in Information Systems, Computer Science, Business Informatics, or a related field, or equivalent practical experience\nStructured, proactive, and service-oriented working style\nExcellent command of English, both spoken and written\nWHAT WE OFFER:\nOpportunity for professional development\nin an established international company\nCompetitive compensation +\nannual bonus\nAnnual salary\nreviews\nAdditional health\nand pension\ninsurance\nCentral office\nlocation and a\nmodern\nworkspace\nDaily lunch\nbudget\n25+ vacation\ndays\nSupport for advanced\ntraining and\ncontinuing education\nMultisport\ncard\nReferral\nprogramme\nBonuses for personal\nevents & initiatives for\nthe team\nHybrid working\nmodel and\nflexibility\nIf this role matches your experience and ambitions, we'd be happy to receive your application.\nShortlisted candidates will be contacted within 10 business days after a careful review."
+    },
+    {
+      "id": "job-47",
+      "title": "Technical SEO Assistant",
+      "company": "Мъркъл ЕООД",
+      "location_raw": "София",
+      "source_url": "https://www.jobs.bg/job/8587809",
+      "level_raw": null,
+      "experience_raw": null,
+      "salary_raw": null,
+      "employment_raw": null,
+      "work_mode_raw": null,
+      "tech_tags": [
+        "SEO"
+      ],
+      "languages_raw": [],
+      "tags": [
+        "sofia-in-varna-search",
+        "non-it-with-tech-words",
+        "english"
+      ],
+      "label": {
+        "decision": "skip",
+        "is_it_role": false,
+        "seniority": "entry",
+        "location_fit": "other_city",
+        "notes": "SEO assistant work, and Sofia-based."
+      },
+      "description": "Technical SEO Assistant\nMerkle powers the experience economy. For more than 35 years, the company has put people at the heart of its digital business transformation approach. As the world's only integrated experience consultancy with a heritage in data science and business performance, Merkle delivers holistic, end-to-end experiences that drive growth, engagement, and loyalty. With more than 16,000 employees, Merkle operates in 30+ countries throughout the Americas, EMEA, and APAC.\nIn Bulgaria, we manage a global client portfolio, providing a single source of expertise, technology, and operational support. We have a proven track record for delivering, managing, and innovating multi-channel commerce platforms for major international brands and retailers, including adidas, Clarins, ASDA, Shiseido, and more. Our world-class team has delivered sites for over 35 brands, including more than 400 transactional e-commerce sites across 60 locations on 6 continents. Our scope is expanding with new data engineering practices, paid and social advertising, and SEO.\nWe look forward to what's next.\nWe're hiring a Technical SEO Assistant at Merkle in Sofia.\nThe SEO Specialist is responsible for improving the visibility and organic performance of digital platforms across markets. This role covers technical SEO, content optimisation, and authority-building activities, ensuring websites are fully optimised for users and engines. The ideal candidate will proactively identify opportunities, translate audits into action, and track performance improvements. A future-focused mindset, including awareness of AI-driven changes in behaviour, is key to success.\nKey Responsibilities:\n* Define and align localised SEO strategies with global marketing goals\n* Conduct technical and on-page SEO audits, delivering actionable recommendations\n* Monitor and report on organic performance using SEO tools and analytics platforms\n* Improve indexing health and site performance metrics across mobile and desktop\n* Collaborate with content, development, and analytics teams to implement SEO best practices\n* Provide regular insights on market trends, including emerging technologies and behaviours\nKey Performance Indicators for this role include:\n* Number of completed SEO strategies and action plans across regions\n* Crawl/index health improvements and Core Web Vitals score uplift\n* Volume and quality of shared insights or trends across teams\n* Contribution to organic traffic growth and visibility\n* Timeliness and quality of quarterly SEO reporting\nSkills and Experience:\n* 1-2 years of experience in SEO, including technical and content optimisation\n* Strong knowledge of Google Search Console, Lighthouse, SEMrush, Ahrefs, Screaming Frog\n* Understanding of structured data, Core Web Vitals, mobile-first indexing, and international SEO\n* Ability to translate data into an actionable strategy and communicate findings effectively\n* Up-to-date with engine algorithm changes and industry trends\n* Fluent in English, written and spoken\nWhat do we offer:\n* We are strong advocates of -life balance, so we provide all our staff with 25 days of paid leave and 3 fixed days of well-being annually.\n* A hybrid model for our teams so they can from the office or the comfort of their home.\n* Free parking spaces for all our employees working from the office.\n* Complimentary drinks and snacks in the office to keep energy levels up.\n* Parent-friendly culture and potential for additional days off to create new memories with your loved ones.\n* Life Insurance, Health and dental insurance plans or, if selected, gift vouchers instead.\n* Sports card, partially covered by the company and food vouchers.\n* 2 days off for volunteering and numerous charity initiatives throughout the year.\n* Opportunity to attend training, conferences and get certification sponsored by the company upon availability and business need.\nThe contract will be signed with Merkle Bulgaria.\nAbout dentsu:\nTaking a people-centred approach to business transformation, we use insights to connect brand, content, commerce and experience, underpinned by modern creativity. As part of Dentsu Group Inc., we are headquartered in Tokyo, Japan, and our 65,000-strong team of dedicated professionals works across four regions (Japan, Americas, EMEA, and APAC). Dentsu combines Japanese innovation with a diverse, global perspective to drive client growth and to shape society"
+    }
+  ]
+}

@@ -182,9 +182,34 @@ def job_detail(session: Session, job_id: int) -> dict[str, Any] | None:
         ).all()
     )
     application = session.scalar(select(Application).where(Application.job_id == job_id))
+
+    from jobhunter.db.models import JobEvaluation as EvaluationRow
+    from jobhunter.db.models import UserFeedback
+    from jobhunter.pipeline.evaluation_store import to_domain
+
+    evaluation_rows = list(
+        session.scalars(
+            select(EvaluationRow)
+            .where(EvaluationRow.job_id == job_id)
+            .order_by(desc(EvaluationRow.id))
+        ).all()
+    )
+    current = next((row for row in evaluation_rows if row.is_current), None)
+    feedback = list(
+        session.scalars(
+            select(UserFeedback)
+            .where(UserFeedback.job_id == job_id)
+            .order_by(desc(UserFeedback.id))
+        ).all()
+    )
+
     return {
         "job": job,
         "match": matches[0] if matches else None,
         "history": matches[1:],
         "application": application,
+        "evaluation": to_domain(current) if current is not None else None,
+        "evaluation_row": current,
+        "evaluation_history": [row for row in evaluation_rows if not row.is_current][:5],
+        "feedback": feedback,
     }

@@ -28,6 +28,13 @@ class DetailSelectors:
     """Single job page."""
 
     CONTENT: Final = "#jobViewContent"
+    # The description body is rendered inside a sandboxed iframe, not in the
+    # page DOM. Without entering it the listing has no requirements text at all.
+    DESCRIPTION_IFRAME: Final = "iframe#customJobIframe, iframe.job-view-iframe"
+    DESCRIPTION_IFRAME_URL_MARKER: Final = "job_view_sandboxed"
+    # Some listings render the body inline instead of in the iframe.
+    DESCRIPTION_INLINE: Final = ".job-view-left-column .bg-white"
+    DESCRIPTION_CHROME: Final = ".no-print, .apply-actions, .view-extra, script, style"
     TITLE: Final = "div.card-title, h1"
     SKILL_TAG: Final = ".skill"
     COMPANY_DETAILS: Final = '[data-action="openCompanyDetailsBottomUp"]'

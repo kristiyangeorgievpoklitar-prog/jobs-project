@@ -9,7 +9,7 @@ from jobhunter.applications.dedupe import find_existing_job
 from jobhunter.db.base import utcnow
 from jobhunter.db.models import Company, ErrorRecord, Job, JobMatch
 from jobhunter.domain.enums import JobState
-from jobhunter.domain.schemas import ClassificationResult, MatchResult, NormalizedJob
+from jobhunter.domain.schemas import ClassificationResult, MatchResult, NormalizedJob, RawJob
 from jobhunter.logging_setup import get_logger
 from jobhunter.normalize.normalizer import normalize_company
 
@@ -175,3 +175,27 @@ def record_error(
     session.add(row)
     session.flush()
     return row
+
+
+def raw_job_from_model(job: Job) -> RawJob:
+    """Rebuild a RawJob from a stored row.
+
+    Lets anything that works on normalized jobs — the evaluator, the benchmark,
+    a re-evaluation pass — run against the database without re-scraping.
+    """
+    return RawJob(
+        source=job.source,
+        source_job_id=job.source_job_id,
+        source_url=job.source_url,
+        title=job.title,
+        company_name=job.company_name_raw or (job.company.name if job.company else None),
+        location_raw=job.location_raw,
+        description=job.description,
+        posted_at_raw=job.posted_at_raw,
+        salary_raw=job.salary_raw,
+        employment_raw=job.employment_type.value if job.employment_type else None,
+        languages_raw=list(job.languages or []) if hasattr(job, "languages") else [],
+        tech_tags=list(job.tech_keywords or []),
+        application_method=job.application_method,
+        application_url=job.application_url,
+    )

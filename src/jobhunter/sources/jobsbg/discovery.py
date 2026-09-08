@@ -15,6 +15,7 @@ from jobhunter.browser.manager import BrowserManager
 from jobhunter.config import Settings
 from jobhunter.domain.schemas import RawJob
 from jobhunter.logging_setup import get_logger
+from jobhunter.sources.jobsbg import selectors as S
 from jobhunter.sources.jobsbg.parser import (
     parse_detail_page,
     parse_listing_page,
@@ -128,6 +129,33 @@ class JobsBgDiscovery:
         )
         return result
 
+    def read_description_frame(self, page: Any) -> str | None:
+        """Read the posting body out of the sandboxed description iframe.
+
+        Jobs.bg renders the description in an iframe rather than the page DOM, so
+        this is the only place the requirements text actually exists.
+        """
+        marker = S.DetailSelectors.DESCRIPTION_IFRAME_URL_MARKER
+        try:
+            # The iframe is attached after the shell renders, so wait for it
+            # rather than racing the page load.
+            page.wait_for_selector(S.DetailSelectors.DESCRIPTION_IFRAME, timeout=8000)
+        except Exception:
+            log.warning("description_frame_absent")
+            return None
+
+        for _ in range(3):
+            try:
+                for frame in page.frames:
+                    if marker in (frame.url or ""):
+                        text = frame.locator("body").inner_text(timeout=5000)
+                        if text.strip():
+                            return text.strip()
+            except Exception as exc:
+                log.warning("description_frame_read_failed", error=str(exc))
+            page.wait_for_timeout(700)
+        return None
+
     def fetch_detail(self, url: str, *, page: Any | None = None) -> RawJob | None:
         """Load one job page and parse it fully."""
         try:
@@ -138,8 +166,14 @@ class JobsBgDiscovery:
             log.warning("detail_fetch_failed", url=url, error=str(exc))
             return None
 
+        description_text = self.read_description_frame(page)
+        if not description_text:
+            log.warning("description_frame_missing", url=url)
+
         try:
-            job = parse_detail_page(page.content(), source_url=url)
+            job = parse_detail_page(
+                page.content(), source_url=url, description_text=description_text
+            )
         except Exception as exc:
             log.warning("detail_parse_failed", url=url, error=str(exc))
             return None
