@@ -272,3 +272,73 @@ def test_every_shipped_label_carries_a_reason():
     labels = json.loads(Path("evaluation/labels.json").read_text(encoding="utf-8"))["labels"]
     missing = [job_id for job_id, data in labels.items() if not data.get("notes")]
     assert missing == []
+
+
+# ------------------------------------------------- the prompt must fit
+
+
+def test_the_longest_real_prompt_fits_the_configured_context():
+    """A prompt that overflows is truncated silently and the reply still looks fine.
+
+    This caught a real regression: at num_ctx 4096 the longest listings pushed
+    the prompt plus the reply past the window, so the model lost either its
+    instructions or the requirements section without any error.
+    """
+    import sqlite3
+    from pathlib import Path as _Path
+
+    from jobhunter.ai.local_model import LocalModelConfig
+    from jobhunter.classify.classifier import classify_job
+    from jobhunter.domain.schemas import CandidateSnapshot
+    from jobhunter.matching.job_context import render_job
+    from jobhunter.profile.context import render_candidate
+    from jobhunter.prompts import job_evaluation_prompt
+
+    config = LocalModelConfig()
+    prompt = job_evaluation_prompt()
+    dataset = load_dataset()
+
+    # A realistic candidate: the CV is the bulk of the candidate half of the
+    # prompt, so a synthetic empty profile would not exercise the real size.
+    db = _Path("data/jobhunter.db")
+    cv_text = None
+    if db.exists():
+        row = sqlite3.connect(db).execute(
+            "SELECT extracted_text FROM cv_files WHERE extracted_text IS NOT NULL LIMIT 1"
+        ).fetchone()
+        cv_text = row[0] if row else None
+
+    candidate = CandidateSnapshot(
+        location="Varna",
+        preferred_locations=["Varna"],
+        years_experience=0.5,
+        skills=["php", "javascript", "c", "c++"],
+        frameworks=["laravel", "livewire", "tailwind", "alpine.js"],
+        databases=["mysql"],
+        tools=["git", "github", "css", "html"],
+        summary="Computer Science student with hands-on experience. " * 6,
+    )
+
+    worst = 0
+    for benchmark_case in dataset.cases:
+        job = benchmark_case.to_normalized_job()
+        classification = classify_job(job, target_locations=["Varna"], remote_ok=True)
+        rendered = prompt.system + prompt.render_user(
+            candidate=render_candidate(candidate, cv_text=cv_text),
+            job=render_job(
+                job,
+                max_description_chars=config.max_description_chars,
+                classification=classification,
+            ),
+        )
+        worst = max(worst, len(rendered))
+
+    # 3.5 characters per token is conservative for this mix of Bulgarian and
+    # English; measured prompts came in nearer 4.5.
+    estimated_tokens = worst / 3.5
+    budget = config.num_ctx - config.num_predict
+
+    assert estimated_tokens <= budget, (
+        f"the longest prompt is ~{estimated_tokens:.0f} tokens but only {budget} are left "
+        f"after num_predict={config.num_predict} in a {config.num_ctx} context"
+    )
