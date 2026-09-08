@@ -267,3 +267,84 @@ class TestJobToNormalized:
             normalized = job_to_normalized(session.get(Job, job_id))
         assert normalized.title == "Junior PHP Developer"
         assert normalized.city == "Varna"
+
+
+class TestUnattendedApplicationIsGated:
+    """AUTO_APPLY on is not a licence to act on a weak or unverified evaluation."""
+
+    def _approved_job(self, context, **evaluation_fields):
+        from jobhunter.db.models import Job
+        from jobhunter.db.models import JobEvaluation as EvaluationRow
+        from jobhunter.domain.enums import ApplicationMethod, JobState
+
+        with context.session() as session:
+            job = Job(
+                fingerprint="fp-auto",
+                source="jobs.bg",
+                source_url="https://www.jobs.bg/job/9001",
+                normalized_url="https://www.jobs.bg/job/9001",
+                title="Junior PHP Developer",
+                title_normalized="junior php developer",
+                description="Requirements: PHP and Laravel. " * 30,
+                state=JobState.APPROVED,
+                application_method=ApplicationMethod.JOBSBG_INTERNAL,
+            )
+            session.add(job)
+            session.flush()
+            fields = {
+                "decision": "apply",
+                "confidence": 0.9,
+                "location_fit": "exact_city",
+                "is_it_role": True,
+                "is_current": True,
+                **evaluation_fields,
+            }
+            session.add(EvaluationRow(job_id=job.id, **fields))
+            session.flush()
+            return job.id
+
+    def test_a_job_with_no_evaluation_is_never_applied_to_unattended(self, context):
+        from jobhunter.applications.orchestrator import ApplicationOrchestrator
+        from jobhunter.db.models import Job
+        from jobhunter.domain.enums import ApplicationMethod, JobState
+
+        with context.session() as session:
+            job = Job(
+                fingerprint="fp-none",
+                source="jobs.bg",
+                source_url="https://www.jobs.bg/job/9002",
+                normalized_url="https://www.jobs.bg/job/9002",
+                title="Junior PHP Developer",
+                title_normalized="junior php developer",
+                description="Requirements: PHP. " * 30,
+                state=JobState.APPROVED,
+                application_method=ApplicationMethod.JOBSBG_INTERNAL,
+            )
+            session.add(job)
+            session.flush()
+            job_id = job.id
+
+        orchestrator = ApplicationOrchestrator(context)
+        with context.session() as session:
+            blockers = orchestrator._auto_apply_blockers(session, session.get(Job, job_id))
+        assert "job has no current evaluation" in blockers
+
+    def test_a_degraded_evaluation_blocks_an_unattended_application(self, context):
+        from jobhunter.applications.orchestrator import ApplicationOrchestrator
+        from jobhunter.db.models import Job
+
+        job_id = self._approved_job(context, degraded=True, degraded_reason="model timed out")
+        orchestrator = ApplicationOrchestrator(context)
+        with context.session() as session:
+            blockers = orchestrator._auto_apply_blockers(session, session.get(Job, job_id))
+        assert "evaluation was degraded" in blockers
+
+    def test_a_review_recommendation_blocks_an_unattended_application(self, context):
+        from jobhunter.applications.orchestrator import ApplicationOrchestrator
+        from jobhunter.db.models import Job
+
+        job_id = self._approved_job(context, decision="review")
+        orchestrator = ApplicationOrchestrator(context)
+        with context.session() as session:
+            blockers = orchestrator._auto_apply_blockers(session, session.get(Job, job_id))
+        assert any("not apply" in b for b in blockers)

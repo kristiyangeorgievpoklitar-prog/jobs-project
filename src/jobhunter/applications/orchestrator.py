@@ -286,6 +286,31 @@ class ApplicationOrchestrator:
 
     # ------------------------------------------------------------ batch ---
 
+    def _auto_apply_blockers(self, session, job: Job) -> list[str]:
+        """Everything standing between this job and an unattended application."""
+        from jobhunter.db.models import JobEvaluation as EvaluationRow
+        from jobhunter.matching.policy import may_auto_apply
+        from jobhunter.pipeline.evaluation_store import to_domain
+
+        row = session.scalar(
+            select(EvaluationRow).where(
+                EvaluationRow.job_id == job.id, EvaluationRow.is_current.is_(True)
+            )
+        )
+        if row is None:
+            return ["job has no current evaluation"]
+
+        cv_record = select_cv_for_job(session, job_language=job.language)
+        check = may_auto_apply(
+            to_domain(row),
+            job_to_normalized(job),
+            has_valid_cv=cv_record is not None and cv_record.is_available,
+            application_route_known=job.application_method.is_automatable,
+            already_applied=has_applied(session, job).is_duplicate,
+            policy=self.context.decision_policy,
+        )
+        return check.blockers
+
     def apply_to_approved(self, *, limit: int | None = None) -> list[ApplicationOutcome]:
         """Submit applications for APPROVED jobs. Only runs when AUTO_APPLY is on."""
         if not self.settings.auto_apply:
@@ -294,15 +319,28 @@ class ApplicationOrchestrator:
 
         cap = limit if limit is not None else self.settings.max_auto_applications_per_run
         with self.context.session() as session:
-            job_ids = [
-                job.id
-                for job in session.scalars(
-                    select(Job)
-                    .where(Job.state == JobState.APPROVED)
-                    .order_by(desc(Job.id))
-                    .limit(cap)
-                ).all()
-            ]
+            candidates = session.scalars(
+                select(Job).where(Job.state == JobState.APPROVED).order_by(desc(Job.id))
+            ).all()
+
+            # Being APPROVED is not sufficient to act unattended. Every condition
+            # is re-checked here against the current evaluation, because the
+            # state was set at scan time and the world may have moved since.
+            job_ids: list[int] = []
+            for job in candidates:
+                if len(job_ids) >= cap:
+                    break
+                blockers = self._auto_apply_blockers(session, job)
+                if blockers:
+                    log.info("auto_apply_blocked", job_id=job.id, blockers=blockers)
+                    record_event(
+                        session,
+                        event="auto_apply_blocked",
+                        job=job,
+                        detail={"blockers": blockers},
+                    )
+                    continue
+                job_ids.append(job.id)
 
         if not job_ids:
             return []
