@@ -55,7 +55,7 @@ Configure which model is used in `.env`:
 AI_PROVIDER=local
 LOCAL_MODEL=qwen2.5:3b
 LOCAL_MODEL_HOST=http://127.0.0.1:11434
-LOCAL_MODEL_NUM_CTX=4096
+LOCAL_MODEL_NUM_CTX=6144
 ```
 
 See [MODEL.md](MODEL.md) for how the model was chosen, what it costs per job on
