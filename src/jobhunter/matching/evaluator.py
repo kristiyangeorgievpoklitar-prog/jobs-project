@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from jobhunter.ai.local_model import LocalModelProvider
+from jobhunter.ai.local_model import SCHEMA_VERSION, LocalModelProvider
 from jobhunter.domain.evaluation import Decision, JobEvaluation, LocationFit
 from jobhunter.domain.schemas import CandidateSnapshot, NormalizedJob
 from jobhunter.logging_setup import get_logger
@@ -108,7 +108,7 @@ class JobEvaluator:
                 candidate_fingerprint=fingerprint,
                 model=self.provider.config.model,
                 prompt_version=self.provider.prompt.identity,
-                schema_version=1,
+                schema_version=SCHEMA_VERSION,
             )
             if cached is not None:
                 stats.cached += 1
@@ -124,6 +124,19 @@ class JobEvaluator:
                 return evaluation
 
         # --- stage 3: the model
+        #
+        # Commit first, and deliberately. Inference takes minutes, and SQLite
+        # allows exactly one writer at a time: holding the caller's write
+        # transaction open across the call makes every other write fail with
+        # "database is locked" after the busy timeout. Measured, a dashboard
+        # click during a scan failed in 5.0s. WAL lets a reader coexist with a
+        # writer, so releasing the write lock here is enough.
+        #
+        # It also means a listing already recorded stays recorded if the model
+        # call dies: the job is durable, only its evaluation is missing, and
+        # `jobhunter evaluate` picks that up later.
+        session.commit()
+
         evaluation = self.provider.evaluate(job, candidate, cv_text=cv_text)
         stats.evaluated += 1
         if evaluation.degraded:

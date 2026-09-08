@@ -91,9 +91,15 @@ def apply_policy(
     elif evaluation.location_fit is LocationFit.REMOTE and not policy.accept_remote:
         downgrade(Decision.SKIP, "remote roles are excluded by your settings")
 
-    # Explicitly not a software role.
+    # Explicitly not a software role — but only as a demotion to REVIEW, not a
+    # veto. Anything reaching the policy has already passed the Stage 1 gate,
+    # which makes that same call from the deterministic classifier and measured
+    # 79% accurate on it. The model's single boolean is worth less than that:
+    # asked for it, qwen2.5:3b called "Junior C++ Developer" and "Junior
+    # Software Engineer" non-software. Disagreement means uncertainty, so the
+    # candidate gets to look rather than never seeing the job.
     if evaluation.is_it_role is False:
-        downgrade(Decision.SKIP, "not a software role")
+        downgrade(Decision.REVIEW, "the model does not think this is a software role")
 
     if decision is evaluation.decision:
         return PolicyOutcome(evaluation, [])

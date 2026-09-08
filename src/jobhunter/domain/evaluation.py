@@ -130,7 +130,7 @@ class JobEvaluation(BaseModel):
     source: str = "unknown"
     model: str | None = None
     prompt_version: str | None = None
-    schema_version: int = 1
+    schema_version: int = 2
     job_content_hash: str | None = None
     profile_version: int = 1
     latency_ms: int | None = None

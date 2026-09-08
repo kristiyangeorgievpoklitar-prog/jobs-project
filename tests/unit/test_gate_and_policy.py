@@ -172,11 +172,18 @@ def test_policy_skips_a_job_in_another_city(candidate):
     assert outcome.evaluation.decision is Decision.SKIP
 
 
-def test_policy_skips_a_role_the_model_says_is_not_software(candidate):
+def test_the_model_calling_a_role_non_software_demotes_but_does_not_veto(candidate):
+    """The gate already made that call with a classifier measured 79% accurate.
+
+    Asked for this boolean, qwen2.5:3b called "Junior C++ Developer" and "Junior
+    Software Engineer" non-software. Letting one unreasoned field veto a job the
+    gate accepted skipped all 41 benchmark listings.
+    """
     outcome = apply_policy(
         strong_evaluation(is_it_role=False), job("Junior PHP Developer"), candidate
     )
-    assert outcome.evaluation.decision is Decision.SKIP
+    assert outcome.evaluation.decision is Decision.REVIEW
+    assert any("software role" in reason for reason in outcome.adjustments)
 
 
 def test_policy_only_ever_moves_towards_caution(candidate):

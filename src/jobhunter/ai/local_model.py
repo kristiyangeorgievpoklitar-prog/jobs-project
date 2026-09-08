@@ -44,6 +44,10 @@ log = get_logger(__name__)
 
 DEFAULT_HOST = "http://127.0.0.1:11434"
 
+# Bumped when the response schema changes shape or field order, both of which
+# change what the model answers. Part of the evaluation cache key.
+SCHEMA_VERSION = 2
+
 
 class LocalModelUnavailableError(RuntimeError):
     """The Ollama server is not reachable or the model is not installed."""
@@ -146,7 +150,6 @@ def _response_schema() -> dict[str, Any]:
         # listing the evidence first makes the model settle the facts before it
         # commits to a decision, rather than justifying a decision after the fact.
         "required": [
-            "is_it_role",
             "seniority",
             "seniority_reasoning",
             "location_fit",
@@ -156,6 +159,7 @@ def _response_schema() -> dict[str, Any]:
             "nice_to_have_requirements",
             "major_strengths",
             "major_risks",
+            "is_it_role",
             "reasoning",
             "decision",
             "confidence",

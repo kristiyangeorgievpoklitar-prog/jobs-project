@@ -75,6 +75,10 @@ def _enable_sqlite_pragmas(dbapi_connection: Any, _record: Any) -> None:
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute("PRAGMA synchronous=NORMAL")
+    # The default 5s is short for this workload: a scan writes between model
+    # calls, so a dashboard click can land exactly when the scan is committing.
+    # Waiting 30s costs nothing and turns a hard failure into a pause.
+    cursor.execute("PRAGMA busy_timeout=30000")
     cursor.close()
 
 
