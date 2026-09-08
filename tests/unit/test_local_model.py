@@ -269,3 +269,40 @@ class TestLegacyInterface:
         assert result.score == 85, "the number is the model's confidence"
         assert result.recommendation.value == "apply"
         assert result.missing_skills == ["Docker"]
+
+
+class TestContextOverflowIsDetected:
+    """A prompt that does not fit is truncated silently; it must be logged."""
+
+    @staticmethod
+    def _respond(prompt_tokens: int):
+        class Response:
+            status_code = 200
+
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return {
+                    "message": {"content": json.dumps(VALID_RESPONSE)},
+                    "prompt_eval_count": prompt_tokens,
+                }
+
+        return Response()
+
+    def test_a_prompt_that_does_not_fit_is_reported(self, capsys, monkeypatch):
+        provider = StubProvider("{}", num_ctx=4096, num_predict=900)
+        monkeypatch.setattr(httpx.Client, "post", lambda *a, **k: self._respond(3500))
+
+        content, _ = LocalModelProvider._chat(provider, "system", "user")
+
+        assert "local_model_context_overflow" in capsys.readouterr().out
+        assert content, "the reply is still returned; the warning is the point"
+
+    def test_a_prompt_that_fits_is_not_reported(self, capsys, monkeypatch):
+        provider = StubProvider("{}", num_ctx=6144, num_predict=900)
+        monkeypatch.setattr(httpx.Client, "post", lambda *a, **k: self._respond(3300))
+
+        LocalModelProvider._chat(provider, "system", "user")
+
+        assert "local_model_context_overflow" not in capsys.readouterr().out

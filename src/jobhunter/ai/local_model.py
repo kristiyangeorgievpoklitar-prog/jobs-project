@@ -59,7 +59,11 @@ class LocalModelConfig:
     # Deterministic decisions matter more than variety: the same job on two runs
     # must not flip between APPLY and SKIP.
     temperature: float = 0.0
-    num_ctx: int = 4096
+    # Large enough that the longest real prompt plus the reply fits. Measured
+    # over the labelled set the prompt reaches ~14.7k characters (~3.3k tokens);
+    # at 4096 that plus num_predict overflowed and the context was silently
+    # truncated, which costs the model the system prompt or the requirements.
+    num_ctx: int = 6144
     num_predict: int = 900
     max_description_chars: int = 5000
     keep_alive: str = "10m"
@@ -310,6 +314,19 @@ class LocalModelProvider(AIProvider):
         latency_ms = int((time.monotonic() - started) * 1000)
         message = body.get("message", {})
         content = message.get("content", "")
+
+        # Truncation is silent, so it has to be detected rather than hoped about:
+        # a prompt that does not fit loses either the instructions or the
+        # requirements, and the reply looks superficially fine either way.
+        prompt_tokens = body.get("prompt_eval_count")
+        if prompt_tokens and prompt_tokens + self.config.num_predict > self.config.num_ctx:
+            log.warning(
+                "local_model_context_overflow",
+                model=self.config.model,
+                prompt_tokens=prompt_tokens,
+                num_predict=self.config.num_predict,
+                num_ctx=self.config.num_ctx,
+            )
 
         # A reasoning model that ignored the switch still leaves its answer
         # somewhere; prefer content, but do not silently treat thinking as none.
