@@ -164,12 +164,19 @@ def detect_work_mode(*parts: str | None) -> WorkMode:
 
 
 def detect_employment_type(*parts: str | None) -> EmploymentType:
+    """Classify the contract type from the site field and the posting text.
+
+    Matched on word boundaries rather than substrings: "intern" occurs inside
+    "international", which was labelling roles at multinationals as internships
+    and then telling the matcher so.
+    """
     text = " ".join(p.lower() for p in parts if p)
     if not text:
         return EmploymentType.UNKNOWN
     for employment, markers in EMPLOYMENT_MARKERS:
-        if any(m in text for m in markers):
-            return employment
+        for marker in markers:
+            if re.search(rf"(?<!\w){re.escape(marker)}(?!\w)", text):
+                return employment
     return EmploymentType.UNKNOWN
 
 

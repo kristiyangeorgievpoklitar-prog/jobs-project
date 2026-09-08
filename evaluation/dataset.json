@@ -8,18 +8,20 @@
       "company": "Vertex Applied Solutions VCC",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8582586",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 4",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "Python",
         "Rust",
         "JavaScript",
         "React"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "english",
         "generic-title-genuinely-junior",
@@ -40,8 +42,8 @@
       "company": "Блу Елевън ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8596842",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 2",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -49,7 +51,9 @@
         "SAP",
         "ABAP"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "mixed-language",
         "generic-title-genuinely-junior",
@@ -70,8 +74,8 @@
       "company": "Флат Рок Технолъджи ЕООД",
       "location_raw": "Варна; бул. Генерал Колев 113, ет.5, офис 5.3, гр. Варна ( виж карта )",
       "source_url": "https://www.jobs.bg/job/8604202",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 1 до 2",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -80,7 +84,9 @@
         "JavaScript",
         "HTML/CSS"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "english",
         "missing-mandatory-skill",
@@ -101,8 +107,8 @@
       "company": "МЕНПАУЪР БЪЛГАРИЯ ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8590043",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 4",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -110,7 +116,9 @@
         "C/C++",
         "Python"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "junior-title",
         "nice-to-have-missing",
@@ -132,8 +140,8 @@
       "company": "МЕНПАУЪР БЪЛГАРИЯ ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8576155",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 5",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -141,7 +149,9 @@
         "Python",
         "C/C++"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "junior-title",
         "nice-to-have-missing",
@@ -163,8 +173,8 @@
       "company": "Broadcom Bulgaria LLC",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8592887",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -194,8 +204,8 @@
       "company": "СиСофт АД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8574655",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 3",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -226,8 +236,8 @@
       "company": "КАЗУАЛИНО ЕАД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8601788",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 1 до 2",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -256,8 +266,8 @@
       "company": "ИНТЕРНЕТ РЕКЛАМА - ВАРНА ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8602044",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 3",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -286,18 +296,20 @@
       "company": "CluneTech / ТАКСБЕК ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8603820",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 1 до 3",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "JavaScript",
         "TypeScript",
         "Jira",
         "SQL"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "junior-title-senior-reality",
         "english",
@@ -346,8 +358,8 @@
       "company": "СиСофт АД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8586222",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 2 до 8",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -372,11 +384,11 @@
       "company": "Nordic Recruitment &amp; Consulting EOOD",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8601649",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 4 до 10+",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [],
       "languages_raw": [],
       "tags": [
@@ -399,13 +411,15 @@
       "company": "ЕЙ ЕФ ЕФ МЕДИА ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8571178",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 5",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "english",
         "strong-stack-overlap-but-senior"
@@ -425,11 +439,11 @@
       "company": "ЮНИКОРН СИСТЕМС ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8588611",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 2 до 7",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "JUnit",
         "Java",
@@ -460,8 +474,8 @@
       "company": "Binc Partners Ltd",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8582341",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 7",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -498,8 +512,8 @@
       "company": "СиСофт АД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8574715",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 2 до 8",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -524,11 +538,11 @@
       "company": "GESTION SOFIA LTD",
       "location_raw": "Варна; ул. „Младежка“ 48 ( виж карта )",
       "source_url": "https://www.jobs.bg/job/8585359",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 5",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "Firewall/WAF",
         "SSRS",
@@ -569,13 +583,15 @@
       "company": "МДЦ Дентапрайм ЕАД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8580321",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Senior-level, Management",
+      "experience_raw": "Години опит от 2 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "english",
         "explicit-senior"
@@ -595,11 +611,11 @@
       "company": "DXC Technology / DXC Bulgaria EOOD",
       "location_raw": "София",
       "source_url": "https://www.jobs.bg/job/8588935",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 1",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "MS SQL",
         "SQL"
@@ -625,11 +641,11 @@
       "company": "ПЛДА ЕООД",
       "location_raw": "София",
       "source_url": "https://www.jobs.bg/job/8598792",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 4 до 9",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "Shell Scripts",
         "Verilog",
@@ -658,11 +674,11 @@
       "company": "DXC Technology / DXC Bulgaria EOOD",
       "location_raw": "София; Бизнес парк София, сграда 8 ( виж карта )",
       "source_url": "https://www.jobs.bg/job/8596475",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 6",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "ETL",
         "Data Warehouse",
@@ -671,7 +687,9 @@
         "Azure",
         "AWS"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "sofia-in-varna-search",
         "english"
@@ -691,11 +709,11 @@
       "company": "DXC Technology / DXC Bulgaria EOOD",
       "location_raw": "София",
       "source_url": "https://www.jobs.bg/job/8592079",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Senior-level",
+      "experience_raw": "Години опит от 5 до 6",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "ITIL",
         "ITSM"
@@ -721,8 +739,8 @@
       "company": "DXC Technology / DXC Bulgaria EOOD",
       "location_raw": "София",
       "source_url": "https://www.jobs.bg/job/8592910",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 5",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -752,8 +770,8 @@
       "company": "АТЛАНТИС ЛАБС ООД",
       "location_raw": "public Дистанционна работа",
       "source_url": "https://www.jobs.bg/job/8570173",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level",
+      "experience_raw": "Години опит от 3 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -768,7 +786,9 @@
         "Figma",
         "React"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "remote",
         "missing-mandatory-experience",
@@ -789,15 +809,17 @@
       "company": "РЕГИОКОМ ЕВРОПЕЙСКО ДРУЖЕСТВО - КЛОН БЪЛГАРИЯ КЧТ Централен офис Варна",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8592843",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 1 до 10+",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "SAP"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Немски"
+      ],
       "tags": [
         "german-required",
         "bulgarian",
@@ -818,15 +840,18 @@
       "company": "Импакт Хайър ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8587859",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 10+",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "CAD"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски",
+        "Немски"
+      ],
       "tags": [
         "german-required",
         "mixed-language",
@@ -847,13 +872,16 @@
       "company": "Импакт Хайър ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8572271",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски",
+        "Немски"
+      ],
       "tags": [
         "german-required",
         "different-discipline"
@@ -873,13 +901,16 @@
       "company": "ИМОС СЪРВИС ООД",
       "location_raw": "Варна; Бизнес парк, сграда B8 ( виж карта )",
       "source_url": "https://www.jobs.bg/job/8575532",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 1 до 5",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски",
+        "Немски"
+      ],
       "tags": [
         "german-required",
         "different-discipline"
@@ -899,17 +930,19 @@
       "company": "ЛИРЕКС БС АД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8598525",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 2",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "Shell Scripts",
         "Windows",
         "VMware"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "bulgarian",
         "different-discipline",
@@ -930,13 +963,16 @@
       "company": "Варна ЛАН ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8581689",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски",
+        "Руски"
+      ],
       "tags": [
         "bulgarian",
         "different-discipline"
@@ -956,8 +992,8 @@
       "company": "ТРАНСПОРТ И АВТОМАТИЗИРАНА СИСТЕМА ЗА РЕГУЛИРАНЕ НА УЛИЧНОТО ДВИЖЕНИЕ ОП",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8581215",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 0",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1011,8 +1047,8 @@
       "company": "ЕНЕРГО-ПРО ВАРНА ЕАД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8594284",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 2 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1039,8 +1075,8 @@
       "company": "БЕЛЛ КАРИЕР ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8591441",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 1 до 3",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1065,8 +1101,8 @@
       "company": "ЮНИСОФТ СОЛЮШЪНС ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8569910",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level",
+      "experience_raw": "Години опит от 1 до 10+",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1092,8 +1128,8 @@
       "company": "ЦИКОНИЯ ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8581944",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 0 до 5",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1118,8 +1154,8 @@
       "company": "АКС БГ ЕООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8577759",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 1",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1145,8 +1181,8 @@
       "company": "ДАВИТОЗ ООД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8593195",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior, Mid-level",
+      "experience_raw": "Години опит от 1 до 3",
       "salary_raw": null,
       "employment_raw": null,
       "work_mode_raw": null,
@@ -1174,13 +1210,15 @@
       "company": "ХАЙДЕЛБЕРГ МАТИРИЪЛС ДИГИТАЛЕН ХЪБ ВАРНА ЕАД",
       "location_raw": "Варна",
       "source_url": "https://www.jobs.bg/job/8580287",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Mid-level, Senior-level",
+      "experience_raw": "Години опит от 3 до 7",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "english",
         "attractive-title-weak-match"
@@ -1200,15 +1238,17 @@
       "company": "Мъркъл ЕООД",
       "location_raw": "София",
       "source_url": "https://www.jobs.bg/job/8587809",
-      "level_raw": null,
-      "experience_raw": null,
+      "level_raw": "Ниво Entry-level / Junior",
+      "experience_raw": "Години опит от 0 до 2",
       "salary_raw": null,
       "employment_raw": null,
-      "work_mode_raw": null,
+      "work_mode_raw": "Възможност за работа от вкъщи",
       "tech_tags": [
         "SEO"
       ],
-      "languages_raw": [],
+      "languages_raw": [
+        "Английски"
+      ],
       "tags": [
         "sofia-in-varna-search",
         "non-it-with-tech-words",

@@ -189,3 +189,22 @@ class TestNormalizeJob:
         assert job.tech_keywords == ["PHP", "Laravel"]  # de-duplicated, order kept
         assert job.posted_at is not None
         assert job.normalized_url == "https://jobs.bg/job/777"
+
+
+class TestEmploymentTypeWordBoundaries:
+    """Substring matching mislabelled multinationals as internships."""
+
+    def test_international_is_not_an_internship(self) -> None:
+        assert (
+            detect_employment_type(None, "Work with international clients from Silicon Valley")
+            is EmploymentType.UNKNOWN
+        )
+
+    def test_a_real_internship_is_still_detected(self) -> None:
+        assert detect_employment_type(None, "Paid internship programme") is EmploymentType.INTERNSHIP
+        assert detect_employment_type(None, "Стаж за студенти") is EmploymentType.INTERNSHIP
+
+    def test_other_contract_types_survive_the_change(self) -> None:
+        assert detect_employment_type(None, "part-time role") is EmploymentType.PART_TIME
+        assert detect_employment_type(None, "граждански договор") is EmploymentType.CONTRACT
+        assert detect_employment_type(None, "Пълно работно време") is EmploymentType.FULL_TIME
