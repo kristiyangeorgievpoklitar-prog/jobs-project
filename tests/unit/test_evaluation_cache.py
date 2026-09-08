@@ -288,3 +288,15 @@ def test_a_round_trip_through_the_database_preserves_the_evaluation(session, can
     assert [r.requirement for r in restored.mandatory_requirements] == [
         r.requirement for r in original.mandatory_requirements
     ]
+
+
+def test_re_scanning_an_unchanged_job_does_not_grow_the_table(session, candidate, stored_job):
+    """A cache hit on the job's own current row has nothing to write."""
+    row, normalized = stored_job
+    evaluator = build(CountingProvider(model="m:1b"))
+
+    evaluator.evaluate(session, row.id, normalized, candidate)
+    for _ in range(5):
+        evaluator.evaluate(session, row.id, normalized, candidate)
+
+    assert session.query(EvaluationRow).filter(EvaluationRow.job_id == row.id).count() == 1

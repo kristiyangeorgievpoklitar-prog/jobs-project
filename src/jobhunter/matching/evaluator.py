@@ -113,10 +113,14 @@ class JobEvaluator:
             if cached is not None:
                 stats.cached += 1
                 evaluation = evaluation_store.to_domain(cached)
-                # Re-point `is_current` at this job without paying for inference.
-                evaluation_store.store(
-                    session, job_id, evaluation, candidate_fingerprint=fingerprint
-                )
+                # If the cached row already *is* this job's current evaluation,
+                # there is nothing to write. Storing anyway would append a
+                # duplicate row on every re-scan of an unchanged listing, which
+                # over a months-long job hunt is most of what the table holds.
+                if not (cached.job_id == job_id and cached.is_current):
+                    evaluation_store.store(
+                        session, job_id, evaluation, candidate_fingerprint=fingerprint
+                    )
                 return evaluation
 
         # --- stage 3: the model
