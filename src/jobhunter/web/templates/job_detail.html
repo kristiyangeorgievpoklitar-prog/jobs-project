@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} - JobHunter{% endblock %}
+{% block content %}
+<p class="muted"><a href="/jobs">&larr; Back to jobs</a></p>
+<h1>{{ job.title }}</h1>
+<p class="subtitle">
+  {{ job.company_display }} &middot; {{ job.city or job.location_raw or 'location unknown' }}
+  &middot; <span class="badge {{ job.state|state_class }}">{{ job.state }}</span>
+</p>
+
+<div class="btn-row" style="margin-bottom:20px">
+  <a class="btn" href="{{ job.source_url }}" target="_blank" rel="noopener">Open on Jobs.bg</a>
+  {% if job.state not in ['applied'] %}
+    <form method="post" action="/actions/jobs/{{ job.id }}/approve"><button class="btn good" type="submit">Approve</button></form>
+    <form method="post" action="/actions/jobs/{{ job.id }}/skip"><button class="btn danger" type="submit">Skip</button></form>
+    <form method="post" action="/actions/jobs/{{ job.id }}/rescore"><button class="btn" type="submit">Re-score</button></form>
+    <form method="post" action="/actions/jobs/{{ job.id }}/prepare"
+          onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Preparing…';">
+      <button class="btn primary" type="submit">Prepare application</button>
+    </form>
+    {% if auto_apply %}
+    <form method="post" action="/actions/jobs/{{ job.id }}/submit"
+          onsubmit="return confirm('Submit a real application to {{ job.company_display }}?')">
+      <button class="btn primary" type="submit">Submit application</button>
+    </form>
+    {% endif %}
+  {% else %}
+    <span class="badge state-applied">Already applied &mdash; will never be re-applied</span>
+  {% endif %}
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="panel">
+      <div class="panel-header">Job description</div>
+      <div class="panel-body">
+        {% if job.description %}<div class="description">{{ job.description }}</div>
+        {% else %}<p class="muted">No description was captured. Open the listing on Jobs.bg.</p>{% endif %}
+      </div>
+    </div>
+
+    {% if job.requirements_required or job.requirements_preferred %}
+    <div class="panel">
+      <div class="panel-header">Extracted requirements</div>
+      <div class="panel-body grid-2">
+        <div>
+          <h2 style="margin-top:0">Required</h2>
+          {% if job.requirements_required %}<ul>{% for r in job.requirements_required %}<li>{{ r }}</li>{% endfor %}</ul>
+          {% else %}<p class="muted">None detected.</p>{% endif %}
+        </div>
+        <div>
+          <h2 style="margin-top:0">Preferred</h2>
+          {% if job.requirements_preferred %}<ul>{% for r in job.requirements_preferred %}<li>{{ r }}</li>{% endfor %}</ul>
+          {% else %}<p class="muted">None detected.</p>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if application %}
+    <div class="panel">
+      <div class="panel-header">Application</div>
+      <div class="panel-body">
+        <dl class="kv">
+          <dt>State</dt><dd><span class="badge {{ application.state|state_class }}">{{ application.state }}</span></dd>
+          <dt>Method</dt><dd>{{ application.method }}</dd>
+          <dt>Attempts</dt><dd>{{ application.attempt_count }}</dd>
+          <dt>CV used</dt><dd>{{ application.cv_file.filename if application.cv_file else '-' }}</dd>
+          <dt>Submitted</dt><dd>{{ application.submitted_at|dt }}</dd>
+          <dt>Result</dt><dd>
+            {% if application.success %}<span class="badge state-applied">confirmed</span>
+            {% elif application.success is none %}<span class="muted">not attempted</span>
+            {% else %}<span class="badge state-failed">not submitted</span>{% endif %}
+          </dd>
+        </dl>
+        {% if application.failure_reason %}
+          <div class="notice warning" style="margin-top:14px">{{ application.failure_reason }}</div>
+        {% endif %}
+        {% if application.confirmation_evidence %}
+          <p class="muted mono">Evidence: {{ application.confirmation_evidence }}</p>
+        {% endif %}
+        {% if application.cover_letter %}
+          <h2>Cover letter ({{ application.cover_letter_language }})</h2>
+          <div class="letter">{{ application.cover_letter }}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="panel-header">Match analysis</div>
+      <div class="panel-body">
+        {% if match %}
+          <div class="score-big {{ match.score|score_class }}">{{ match.score }}<span style="font-size:18px;color:var(--muted)">/100</span></div>
+          <div class="meter"><div style="width: {{ match.score }}%"></div></div>
+          <p class="muted">
+            Recommendation: <strong>{{ match.recommendation|upper }}</strong><br>
+            Confidence: {{ (match.confidence * 100)|round|int }}% &middot; {{ match.provider }}{% if match.model %} ({{ match.model }}){% endif %}
+          </p>
+
+          {% if match.disqualifiers %}
+            <h2>Disqualifiers</h2>
+            {% for d in match.disqualifiers %}<div class="pill miss">{{ d }}</div>{% endfor %}
+          {% endif %}
+
+          {% if match.strengths %}
+            <h2>Strengths</h2>
+            {% for s in match.strengths %}<span class="pill ok">{{ s }}</span>{% endfor %}
+          {% endif %}
+
+          {% if match.missing_skills %}
+            <h2>Missing</h2>
+            {% for s in match.missing_skills %}<span class="pill miss">{{ s }}</span>{% endfor %}
+          {% endif %}
+
+          {% if match.component_scores %}
+            <h2>Component scores</h2>
+            <dl class="kv">
+              {% for k, v in match.component_scores.items() %}
+                <dt>{{ k }}</dt><dd>{{ (v * 100)|round|int }}%</dd>
+              {% endfor %}
+            </dl>
+          {% endif %}
+
+          {% if match.reasoning %}<h2>Reasoning</h2><p class="muted">{{ match.reasoning }}</p>{% endif %}
+        {% else %}
+          <p class="muted">Not scored yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Details</div>
+      <div class="panel-body">
+        <dl class="kv">
+          <dt>Seniority</dt><dd>{{ job.seniority }} ({{ (job.seniority_confidence * 100)|round|int }}%)</dd>
+          <dt>IT role</dt><dd>{{ 'yes' if job.is_it else ('no' if job.is_it is false else 'unclear') }}</dd>
+          <dt>Location fit</dt><dd>{{ 'yes' if job.location_relevant else ('no' if job.location_relevant is false else 'unclear') }}</dd>
+          <dt>Work mode</dt><dd>{{ job.work_mode }}</dd>
+          <dt>Employment</dt><dd>{{ job.employment_type }}</dd>
+          <dt>Experience</dt><dd>{{ job.years_experience_required if job.years_experience_required is not none else '-' }} years</dd>
+          <dt>Salary</dt><dd>{{ job.salary_raw or '-' }}</dd>
+          <dt>Language</dt><dd>{{ job.language }}</dd>
+          <dt>Apply via</dt><dd>{{ job.application_method }}</dd>
+          {% if job.application_url %}<dt>Apply link</dt><dd><a href="{{ job.application_url }}" target="_blank" rel="noopener">open</a></dd>{% endif %}
+          <dt>Posted</dt><dd>{{ job.posted_at|dt('%Y-%m-%d') }}</dd>
+          <dt>First seen</dt><dd>{{ job.first_seen_at|dt }}</dd>
+          <dt>Last seen</dt><dd>{{ job.last_seen_at|dt }} ({{ job.seen_count }}x)</dd>
+          <dt>Source ID</dt><dd class="mono">{{ job.source_job_id or '-' }}</dd>
+        </dl>
+        {% if job.tech_keywords %}
+          <h2>Technologies</h2>
+          {% for t in job.tech_keywords %}<span class="pill plain">{{ t }}</span>{% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if events %}
+    <div class="panel">
+      <div class="panel-header">History</div>
+      <div class="panel-body">
+        <table>
+          <tbody>
+          {% for e in events %}
+            <tr>
+              <td class="nowrap muted mono">{{ e.created_at|dt('%m-%d %H:%M') }}</td>
+              <td>{{ e.event }}{% if e.from_state != e.to_state %} <span class="muted">{{ e.from_state }} &rarr; {{ e.to_state }}</span>{% endif %}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Settings - JobHunter{% endblock %}
+{% block content %}
+<h1>Settings</h1>
+<p class="subtitle">Scoring provider: {{ provider }} &middot; profile version {{ profile.version }}</p>
+
+<div class="detail-grid">
+  <div>
+    <form method="post" action="/settings/profile">
+      <div class="panel">
+        <div class="panel-header">Candidate profile</div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field"><label>Full name</label><input type="text" name="full_name" value="{{ profile.full_name or '' }}" style="width:100%"></div>
+            <div class="field"><label>Location</label><input type="text" name="location" value="{{ profile.location or '' }}" style="width:100%"></div>
+            <div class="field"><label>Email</label><input type="email" name="email" value="{{ profile.email or '' }}" style="width:100%"><div class="hint">Used to fill application forms.</div></div>
+            <div class="field"><label>Phone</label><input type="text" name="phone" value="{{ profile.phone or '' }}" style="width:100%"></div>
+            <div class="field"><label>Years of experience</label><input type="number" step="0.5" min="0" name="years_experience" value="{{ profile.years_experience }}" style="width:100%"></div>
+            <div class="field">
+              <label>Target seniority</label>
+              <select name="desired_seniority" style="width:100%">
+                {% for s in seniorities %}<option value="{{ s }}" {{ 'selected' if profile.desired_seniority == s }}>{{ s }}</option>{% endfor %}
+              </select>
+              <div class="hint">Jobs whose entry bar is above this score lower.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Preferred locations</label>
+            <input type="text" name="preferred_locations" value="{{ profile.preferred_locations }}" style="width:100%">
+            <div class="hint">Comma separated. A job outside these is disqualified unless remote.</div>
+          </div>
+          <div class="field">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:400">
+              <input type="checkbox" name="remote_ok" {{ 'checked' if profile.remote_ok }}> Accept remote roles outside these locations
+            </label>
+          </div>
+
+          <div class="field"><label>Summary</label><textarea name="summary" style="min-height:90px">{{ profile.summary or '' }}</textarea><div class="hint">Used in generated cover letters.</div></div>
+
+          <div class="grid-2">
+            <div class="field"><label>Skills / languages</label><input type="text" name="skills" value="{{ profile.skills }}" style="width:100%"><div class="hint">e.g. php, javascript, sql</div></div>
+            <div class="field"><label>Frameworks</label><input type="text" name="frameworks" value="{{ profile.frameworks }}" style="width:100%"><div class="hint">e.g. laravel, livewire, tailwind</div></div>
+            <div class="field"><label>Databases</label><input type="text" name="databases" value="{{ profile.databases }}" style="width:100%"></div>
+            <div class="field"><label>Tools</label><input type="text" name="tools" value="{{ profile.tools }}" style="width:100%"></div>
+            <div class="field"><label>Soft skills</label><input type="text" name="soft_skills" value="{{ profile.soft_skills }}" style="width:100%"></div>
+            <div class="field"><label>Spoken languages (JSON)</label><input type="text" name="languages" value="{{ profile.languages }}" style="width:100%"><div class="hint">[{"name": "English", "level": "professional"}]</div></div>
+            <div class="field"><label>GitHub</label><input type="url" name="github_url" value="{{ profile.github_url or '' }}" style="width:100%"></div>
+            <div class="field"><label>LinkedIn</label><input type="url" name="linkedin_url" value="{{ profile.linkedin_url or '' }}" style="width:100%"></div>
+            <div class="field"><label>Portfolio</label><input type="url" name="portfolio_url" value="{{ profile.portfolio_url or '' }}" style="width:100%"></div>
+          </div>
+          <button class="btn primary" type="submit">Save profile</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="panel">
+      <div class="panel-header">CV files</div>
+      <div class="panel-body">
+        {% if cvs %}
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Language</th><th>Text</th><th>Available</th><th>Default</th><th></th></tr></thead>
+          <tbody>
+          {% for cv in cvs %}
+            <tr>
+              <td class="title-cell">{{ cv.filename }}<div class="muted mono" style="font-size:11px">{{ cv.path }}</div></td>
+              <td>{{ cv.language }}</td>
+              <td class="muted">{{ (cv.extracted_text or '')|length }} chars</td>
+              <td>{{ 'yes' if cv.is_available else 'MISSING' }}</td>
+              <td>{% if cv.is_default %}<span class="badge state-approved">default</span>{% endif %}</td>
+              <td>{% if not cv.is_default %}<form method="post" action="/settings/cv/{{ cv.id }}/default"><button class="btn" type="submit">Make default</button></form>{% endif %}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+        {% else %}<p class="muted">No CVs registered.</p>{% endif %}
+
+        <form method="post" action="/settings/cv" style="margin-top:16px">
+          <div class="field">
+            <label>Add a CV by path</label>
+            <input type="text" name="cv_path" placeholder="/home/you/Documents/CV.pdf" style="width:100%" required>
+            <div class="hint">PDF, DOCX or TXT. The file stays on your machine; it is attached directly to the Jobs.bg form.</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:10px">
+            <input type="checkbox" name="make_default"> Make this the default CV
+          </label>
+          <button class="btn" type="submit">Add CV</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <form method="post" action="/settings/runtime">
+      <div class="panel">
+        <div class="panel-header">Matching &amp; automation</div>
+        <div class="panel-body">
+          <div class="field">
+            <label>Search location</label>
+            <input type="text" name="search_location" value="{{ overrides.get('search_location', settings.search_location) }}" style="width:100%">
+          </div>
+          <div class="field">
+            <label>Auto-apply threshold</label>
+            <input type="number" min="0" max="100" name="auto_apply_threshold" value="{{ overrides.get('auto_apply_threshold', settings.auto_apply_threshold) }}" style="width:100%">
+            <div class="hint">Score at or above this is recommended APPLY.</div>
+          </div>
+          <div class="field">
+            <label>Review threshold</label>
+            <input type="number" min="0" max="100" name="review_threshold" value="{{ overrides.get('review_threshold', settings.review_threshold) }}" style="width:100%">
+            <div class="hint">Below this a job is skipped.</div>
+          </div>
+          <div class="field">
+            <label>Maximum seniority</label>
+            <select name="max_seniority" style="width:100%">
+              {% for s in seniorities %}<option value="{{ s }}" {{ 'selected' if overrides.get('max_seniority', settings.max_seniority) == s }}>{{ s }}</option>{% endfor %}
+            </select>
+          </div>
+
+          <div class="notice {{ 'warning' if settings.auto_apply else 'info' }}">
+            <label style="display:flex;align-items:center;gap:8px;font-weight:600;margin:0">
+              <input type="checkbox" name="auto_apply" {{ 'checked' if settings.auto_apply }}>
+              Enable auto-apply
+            </label>
+            <div class="hint" style="margin-top:6px">
+              While off, nothing is ever submitted: strong matches wait in Review for you.
+              Turn this on only once you trust the scores. Jobs.bg still requires a human for
+              CAPTCHA and employer questionnaires.
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Max auto applications per run</label>
+            <input type="number" min="0" max="50" name="max_auto_applications_per_run" value="{{ overrides.get('max_auto_applications_per_run', settings.max_auto_applications_per_run) }}" style="width:100%">
+          </div>
+          <button class="btn primary" type="submit">Save settings</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">Scanning</div>
+        <div class="panel-body">
+          <div class="field"><label>Pages per scan</label><input type="number" min="1" max="50" name="max_pages_per_scan" value="{{ overrides.get('max_pages_per_scan', settings.max_pages_per_scan) }}" style="width:100%"><div class="hint">20 results per page.</div></div>
+          <div class="field"><label>Max jobs per scan</label><input type="number" min="1" max="1000" name="max_jobs_per_scan" value="{{ overrides.get('max_jobs_per_scan', settings.max_jobs_per_scan) }}" style="width:100%"></div>
+          <div class="field"><label>Delay between requests (s)</label><input type="number" step="0.5" min="0.5" name="request_delay_seconds" value="{{ overrides.get('request_delay_seconds', settings.request_delay_seconds) }}" style="width:100%"><div class="hint">Keep this at 3s or more to stay polite.</div></div>
+          <div class="field"><label>Scan interval (hours)</label><input type="number" step="0.5" min="0.5" name="scan_interval_hours" value="{{ overrides.get('scan_interval_hours', settings.scan_interval_hours) }}" style="width:100%"></div>
+          <div class="field"><label>Daily scan hour</label><input type="number" min="0" max="23" name="scan_at_hour" value="{{ overrides.get('scan_at_hour', settings.scan_at_hour) }}" style="width:100%"></div>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:8px"><input type="checkbox" name="scheduler_enabled" {{ 'checked' if settings.scheduler_enabled }}> Scheduler enabled</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px"><input type="checkbox" name="browser_headless" {{ 'checked' if settings.browser_headless }}> Headless browser <span class="muted">(not recommended)</span></label>
+          <button class="btn primary" type="submit">Save settings</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">Cover letters &amp; notifications</div>
+        <div class="panel-body">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:8px"><input type="checkbox" name="cover_letter_enabled" {{ 'checked' if settings.cover_letter_enabled }}> Generate cover letters</label>
+          <div class="field"><label>Max words</label><input type="number" min="50" max="600" name="cover_letter_max_words" value="{{ overrides.get('cover_letter_max_words', settings.cover_letter_max_words) }}" style="width:100%"></div>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:8px"><input type="checkbox" name="notify_console" {{ 'checked' if settings.notify_console }}> Console notifications</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px"><input type="checkbox" name="notify_dashboard" {{ 'checked' if settings.notify_dashboard }}> Dashboard notifications</label>
+          <div class="field">
+            <label>AI provider</label>
+            <select name="ai_provider" style="width:100%">
+              {% for p in ['auto','rule_based','anthropic','openai'] %}<option value="{{ p }}" {{ 'selected' if overrides.get('ai_provider', settings.ai_provider) == p }}>{{ p }}</option>{% endfor %}
+            </select>
+            <div class="hint">API keys are set in <span class="mono">.env</span>, never here. Without a key the local rule engine is used.</div>
+          </div>
+          <button class="btn primary" type="submit">Save settings</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

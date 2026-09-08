@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Notifications - JobHunter{% endblock %}
+{% block content %}
+<h1>Notifications</h1>
+<div class="btn-row" style="margin-bottom:16px">
+  <form method="post" action="/actions/notifications/read-all"><button class="btn" type="submit">Mark all read</button></form>
+</div>
+<div class="panel"><div class="panel-body">
+{% if items %}
+  {% for n in items %}
+    <div class="notice {{ 'success' if n.level=='success' else ('warning' if n.level=='warning' else ('error' if n.level=='error' else 'info')) }}">
+      <strong>{{ n.title }}</strong>
+      <span class="muted mono" style="float:right">{{ n.created_at|dt }}</span>
+      {% if n.body %}<div style="white-space:pre-wrap;margin-top:6px">{{ n.body }}</div>{% endif %}
+      {% if n.job_id %}<div style="margin-top:6px"><a href="/jobs/{{ n.job_id }}">Review in dashboard</a></div>{% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="empty">No notifications.</div>
+{% endif %}
+</div></div>
+{% endblock %}

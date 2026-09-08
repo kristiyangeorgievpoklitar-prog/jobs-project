@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local configuration and secrets
+.env
+
+# Runtime data - contains personal information
+data/
+logs/
+screenshots/
+*.db
+*.db-wal
+*.db-shm
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

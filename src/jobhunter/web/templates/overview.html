@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Overview - JobHunter{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+<p class="subtitle">
+  {{ provider }} scoring &middot;
+  {% if auto_apply %}<strong>auto-apply ON</strong>{% else %}review mode (auto-apply off){% endif %}
+  &middot; apply &ge; {{ auto_threshold }}, review &ge; {{ review_threshold }}
+</p>
+
+<div class="cards">
+  <div class="card"><div class="label">Discovered today</div><div class="value">{{ stats.jobs_today }}</div></div>
+  <div class="card"><div class="label">Total jobs</div><div class="value">{{ stats.jobs_total }}</div></div>
+  <div class="card accent"><div class="label">Relevant (IT)</div><div class="value">{{ stats.jobs_relevant }}</div></div>
+  <div class="card good"><div class="label">High match</div><div class="value">{{ stats.high_match }}</div></div>
+  <div class="card warn"><div class="label">Pending review</div><div class="value">{{ stats.pending_review }}</div></div>
+  <div class="card good"><div class="label">Applications sent</div><div class="value">{{ stats.applications_sent }}</div></div>
+  <div class="card warn"><div class="label">Awaiting you</div><div class="value">{{ stats.applications_awaiting_you }}</div></div>
+  <div class="card bad"><div class="label">Failed</div><div class="value">{{ stats.applications_failed }}</div></div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">Top matches<a href="/jobs?min_score=75">View all</a></div>
+  <div class="table-wrap">
+  {% if top_jobs %}
+  <table>
+    <thead><tr><th class="right">Score</th><th>Title</th><th>Company</th><th>Location</th><th>Seniority</th><th>State</th><th></th></tr></thead>
+    <tbody>
+      {% for row in top_jobs %}
+      <tr>
+        <td class="right"><span class="score {{ row.score|score_class }}">{{ row.score }}</span></td>
+        <td class="title-cell"><a href="/jobs/{{ row.job.id }}">{{ row.job.title }}</a></td>
+        <td>{{ row.job.company_display }}</td>
+        <td>{{ row.job.city or '-' }}</td>
+        <td class="muted">{{ row.job.seniority }}</td>
+        <td><span class="badge {{ row.job.state|state_class }}">{{ row.job.state }}</span></td>
+        <td class="nowrap"><a href="/jobs/{{ row.job.id }}">Details</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="empty">No jobs yet. Press <strong>Run scan</strong> to discover listings.</div>
+  {% endif %}
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="panel">
+    <div class="panel-header">Recent runs</div>
+    <div class="table-wrap">
+    {% if runs %}
+    <table>
+      <thead><tr><th>#</th><th>Trigger</th><th>Status</th><th class="right">Seen</th><th class="right">New</th><th class="right">Matched</th><th class="right">Errors</th><th>Started</th></tr></thead>
+      <tbody>
+      {% for run in runs %}
+        <tr>
+          <td>{{ run.id }}</td><td class="muted">{{ run.trigger }}</td>
+          <td><span class="badge {{ run.status|state_class }}">{{ run.status }}</span></td>
+          <td class="right">{{ run.jobs_seen }}</td><td class="right">{{ run.jobs_new }}</td>
+          <td class="right">{{ run.jobs_matched }}</td><td class="right">{{ run.errors_count }}</td>
+          <td class="nowrap muted">{{ run.started_at|dt }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<div class="empty">No runs yet.</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">Candidate</div>
+    <div class="panel-body">
+      {% if profile and profile.full_name %}
+        <dl class="kv">
+          <dt>Name</dt><dd>{{ profile.full_name }}</dd>
+          <dt>Location</dt><dd>{{ profile.location or '-' }}</dd>
+          <dt>Experience</dt><dd>{{ profile.years_experience }} years</dd>
+          <dt>Target level</dt><dd>{{ profile.desired_seniority }}</dd>
+          <dt>Skills</dt><dd>{% for s in (profile.skills or [])[:8] %}<span class="pill plain">{{ s }}</span>{% endfor %}</dd>
+          <dt>CVs</dt><dd>{{ cv_count }} registered</dd>
+        </dl>
+        <div style="margin-top:12px"><a class="btn" href="/settings">Edit profile</a></div>
+      {% else %}
+        <div class="empty">No profile yet.<br><a class="btn primary" href="/settings" style="margin-top:12px">Set up profile</a></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

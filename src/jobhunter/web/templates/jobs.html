@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Jobs - JobHunter{% endblock %}
+{% block content %}
+<h1>Jobs</h1>
+<p class="subtitle">{{ rows|length }} shown{% if state %} &middot; state: {{ state }}{% endif %}</p>
+
+<form class="filters" method="get" action="/jobs">
+  <input type="text" name="search" placeholder="Search title…" value="{{ search or '' }}">
+  <select name="state">
+    <option value="">All states</option>
+    {% for s in states %}<option value="{{ s }}" {{ 'selected' if state==s }}>{{ s }}</option>{% endfor %}
+  </select>
+  <select name="min_score">
+    {% for v in [0, 50, 75, 90] %}<option value="{{ v }}" {{ 'selected' if min_score==v }}>score &ge; {{ v }}</option>{% endfor %}
+  </select>
+  <label style="display:flex;align-items:center;gap:6px;margin:0;font-weight:400">
+    <input type="checkbox" name="only_it" value="1" {{ 'checked' if only_it }}> IT only
+  </label>
+  <select name="order">
+    <option value="score" {{ 'selected' if order=='score' }}>Sort: score</option>
+    <option value="date" {{ 'selected' if order=='date' }}>Sort: newest</option>
+  </select>
+  <button class="btn" type="submit">Filter</button>
+  <a class="btn" href="/jobs">Reset</a>
+</form>
+
+<div class="panel">
+<div class="table-wrap">
+{% if rows %}
+<table>
+  <thead><tr>
+    <th class="right">Score</th><th>Title</th><th>Company</th><th>Location</th>
+    <th>Seniority</th><th>Method</th><th>State</th><th>Discovered</th><th></th>
+  </tr></thead>
+  <tbody>
+  {% for row in rows %}
+    <tr>
+      <td class="right"><span class="score {{ row.score|score_class }}">{{ row.score if row.match else '-' }}</span></td>
+      <td class="title-cell"><a href="/jobs/{{ row.job.id }}">{{ row.job.title }}</a></td>
+      <td>{{ row.job.company_display }}</td>
+      <td>{{ row.job.city or row.job.location_raw or '-' }}</td>
+      <td class="muted">{{ row.job.seniority }}</td>
+      <td class="muted nowrap">{{ 'Jobs.bg' if row.job.application_method == 'jobsbg_internal' else ('External' if row.job.application_method == 'external_url' else '-') }}</td>
+      <td><span class="badge {{ row.job.state|state_class }}">{{ row.job.state }}</span></td>
+      <td class="nowrap muted">{{ row.job.first_seen_at|dt('%Y-%m-%d') }}</td>
+      <td class="nowrap"><a href="/jobs/{{ row.job.id }}">Open</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div class="empty">No jobs match these filters.</div>
+{% endif %}
+</div>
+</div>
+{% endblock %}

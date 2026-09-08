@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}JobHunter{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127919;</text></svg>">
+</head>
+<body>
+<nav class="topbar">
+  <div class="brand">Job<span>Hunter</span></div>
+  <div class="nav">
+    <a href="/" class="{{ 'active' if active=='overview' }}">Overview</a>
+    <a href="/jobs" class="{{ 'active' if active=='jobs' }}">Jobs</a>
+    <a href="/applications" class="{{ 'active' if active=='applications' }}">Applications</a>
+    <a href="/notifications" class="{{ 'active' if active=='notifications' }}">
+      Notifications{% if unread %} ({{ unread }}){% endif %}
+    </a>
+    <a href="/settings" class="{{ 'active' if active=='settings' }}">Settings</a>
+  </div>
+  <form method="post" action="/actions/scan" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Scanning…';">
+    <button class="btn primary" type="submit">Run scan</button>
+  </form>
+</nav>
+<main class="container">
+  {% if request.query_params.get('msg') %}
+    <div class="notice {{ request.query_params.get('level','info') }}">{{ request.query_params.get('msg') }}</div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

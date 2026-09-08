@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Applications - JobHunter{% endblock %}
+{% block content %}
+<h1>Applications</h1>
+<p class="subtitle">{{ rows|length }} record(s)</p>
+<div class="panel">
+<div class="table-wrap">
+{% if rows %}
+<table>
+  <thead><tr><th>Company</th><th>Title</th><th>Date</th><th>CV used</th><th>Method</th><th>State</th><th>Result</th><th></th></tr></thead>
+  <tbody>
+  {% for row in rows %}
+    <tr>
+      <td>{{ row.job.company_display if row.job else '-' }}</td>
+      <td class="title-cell">{% if row.job %}<a href="/jobs/{{ row.job.id }}">{{ row.job.title }}</a>{% else %}-{% endif %}</td>
+      <td class="nowrap muted">{{ (row.application.submitted_at or row.application.created_at)|dt }}</td>
+      <td class="muted">{{ row.application.cv_file.filename if row.application.cv_file else '-' }}</td>
+      <td class="muted">{{ row.application.method }}</td>
+      <td><span class="badge {{ row.application.state|state_class }}">{{ row.application.state }}</span></td>
+      <td>
+        {% if row.application.success %}<span class="badge state-applied">confirmed</span>
+        {% elif row.application.success is none %}<span class="muted">pending</span>
+        {% else %}<span class="badge state-failed">not sent</span>{% endif %}
+      </td>
+      <td>{% if row.job %}<a href="/jobs/{{ row.job.id }}">Open</a>{% endif %}</td>
+    </tr>
+    {% if row.application.failure_reason %}
+    <tr><td colspan="8" class="muted" style="padding-top:0;font-size:12px">{{ row.application.failure_reason }}</td></tr>
+    {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div class="empty">No applications yet.</div>
+{% endif %}
+</div>
+</div>
+{% endblock %}
