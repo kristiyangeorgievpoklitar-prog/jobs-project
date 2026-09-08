@@ -289,6 +289,7 @@ def normalize_job(raw: RawJob) -> NormalizedJob:
         tech_keywords=tech,
         languages=list(raw.languages_raw),
         level_raw=level,
+        work_mode_raw=raw.work_mode_raw,
         experience_raw=experience,
         years_experience_required=years,
         application_method=raw.application_method,

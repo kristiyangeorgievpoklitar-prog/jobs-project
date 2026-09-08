@@ -85,6 +85,7 @@ class NormalizedJob(BaseModel):
     languages: list[str] = Field(default_factory=list)
     level_raw: str | None = None
     experience_raw: str | None = None
+    work_mode_raw: str | None = None
     years_experience_required: float | None = None
     application_method: ApplicationMethod = ApplicationMethod.UNKNOWN
     application_url: str | None = None

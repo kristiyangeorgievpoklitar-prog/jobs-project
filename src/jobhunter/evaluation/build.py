@@ -46,6 +46,13 @@ def build_dataset(session, labels_path: Path | None = None) -> Dataset:
                 description=job.description,
                 source_url=job.source_url,
                 salary_raw=job.salary_raw,
+                # The site's own tags. The live pipeline has these, so denying
+                # them to the benchmark would measure a harder problem than the
+                # one the system actually solves.
+                level_raw=job.level_raw,
+                experience_raw=job.experience_raw,
+                work_mode_raw=job.work_mode_raw,
+                languages_raw=list(job.languages_raw or []),
                 tech_tags=list(job.tech_keywords or []),
                 tags=list(label_data.get("tags", [])),
                 label=CaseLabel.from_dict(label_data),

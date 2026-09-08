@@ -29,8 +29,17 @@ def render_job(
 
     stated_location = job.location_raw or job.city or "not stated"
     lines.append(f"Location stated by the site: {stated_location}")
-    if job.work_mode is not WorkMode.UNKNOWN:
+
+    # The site's own home-office field, verbatim. "Възможност за работа от вкъщи"
+    # (home office *possible*) and "Дистанционна работа" (remote) are different
+    # claims, and collapsing them into one enum loses the distinction the model
+    # needs to tell a hybrid office job from a genuinely remote one.
+    if job.work_mode_raw:
+        lines.append(f"Home-office field on the site: {job.work_mode_raw}")
+    elif job.work_mode is not WorkMode.UNKNOWN:
         lines.append(f"Work mode tag: {job.work_mode.value}")
+    else:
+        lines.append("Home-office field on the site: not set (assume onsite)")
 
     if job.level_raw:
         lines.append(f"Level tag on the site: {job.level_raw}")

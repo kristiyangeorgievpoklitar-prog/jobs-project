@@ -69,6 +69,11 @@ def upsert_job(session: Session, normalized: NormalizedJob) -> tuple[Job, bool]:
             existing.location_raw = normalized.location_raw
         if normalized.tech_keywords and not existing.tech_keywords:
             existing.tech_keywords = normalized.tech_keywords
+        for field in ("level_raw", "experience_raw", "work_mode_raw"):
+            if getattr(normalized, field, None) and not getattr(existing, field, None):
+                setattr(existing, field, getattr(normalized, field))
+        if normalized.languages and not existing.languages_raw:
+            existing.languages_raw = list(normalized.languages)
         if normalized.application_method.value != "unknown":
             existing.application_method = normalized.application_method
             existing.application_url = normalized.application_url
@@ -99,6 +104,10 @@ def upsert_job(session: Session, normalized: NormalizedJob) -> tuple[Job, bool]:
         salary_raw=normalized.salary.raw,
         employment_type=normalized.employment_type,
         language=normalized.language,
+        level_raw=normalized.level_raw,
+        experience_raw=normalized.experience_raw,
+        work_mode_raw=normalized.work_mode_raw,
+        languages_raw=list(normalized.languages or []),
         tech_keywords=normalized.tech_keywords,
         years_experience_required=normalized.years_experience_required,
         application_method=normalized.application_method,
@@ -193,8 +202,11 @@ def raw_job_from_model(job: Job) -> RawJob:
         description=job.description,
         posted_at_raw=job.posted_at_raw,
         salary_raw=job.salary_raw,
+        level_raw=job.level_raw,
+        experience_raw=job.experience_raw,
+        work_mode_raw=job.work_mode_raw,
         employment_raw=job.employment_type.value if job.employment_type else None,
-        languages_raw=list(job.languages or []) if hasattr(job, "languages") else [],
+        languages_raw=list(job.languages_raw or []),
         tech_tags=list(job.tech_keywords or []),
         application_method=job.application_method,
         application_url=job.application_url,

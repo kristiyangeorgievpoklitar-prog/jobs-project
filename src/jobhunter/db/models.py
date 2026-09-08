@@ -106,6 +106,17 @@ class Job(Base, TimestampMixin):
     location_relevant: Mapped[bool | None] = mapped_column(Boolean, index=True)
     language: Mapped[Language] = mapped_column(StrEnumType(Language, 10), default=Language.UNKNOWN)
 
+    # --- what the site itself asserts, kept verbatim
+    #
+    # These are the site's own tags ("Ниво Entry-level / Junior, Mid-level",
+    # "от 0 до 4" years, the home-office field). They are frequently wrong, which
+    # is why nothing derives a decision from them directly — but they are real
+    # evidence and the matcher should see them rather than have to guess.
+    level_raw: Mapped[str | None] = mapped_column(String(200))
+    experience_raw: Mapped[str | None] = mapped_column(String(200))
+    work_mode_raw: Mapped[str | None] = mapped_column(String(200))
+    languages_raw: Mapped[list[str]] = mapped_column(JSON, default=list)
+
     # --- extracted structure
     tech_keywords: Mapped[list[str]] = mapped_column(JSON, default=list)
     requirements_required: Mapped[list[str]] = mapped_column(JSON, default=list)
