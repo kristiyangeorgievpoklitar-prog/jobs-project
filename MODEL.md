@@ -27,9 +27,11 @@ accurate enough to be worth two minutes of waiting.
 
 Two settings follow directly from that limit:
 
-* `LOCAL_MODEL_NUM_CTX=4096` — at 8192 the KV cache alone pushed the resident
-  size from 1.9 GiB to 2.4 GiB and cut GPU offload from 33% to 25%. The prompt
-  is ~1.8k tokens and the reply ~900, so 4096 is sufficient.
+* `LOCAL_MODEL_NUM_CTX=6144` — the KV cache competes with the weights for the
+  same 1.6 GiB, so context is not free: 8192 pushed the resident size to 2.4 GiB
+  and cut GPU offload to 25%, while 4096 raised it to 33%. But 4096 does not fit
+  the longest real prompt, and the resulting truncation is silent, so 6144 is the
+  smallest setting that is actually correct here.
 * `LOCAL_MODEL_NUM_PREDICT=900` — enough for the full schema. At 700 the JSON
   was being truncated mid-string.
 
@@ -55,6 +57,14 @@ of justifying an answer after the fact.
 
 **Arrays need `maxItems`.** They are what make the response long, and an
 unbounded list runs past `num_predict` and truncates the JSON.
+
+**A prompt that does not fit is truncated silently.** This is the failure that
+cost the most and was hardest to see: the model returns confident, well-formed
+JSON whether or not it still has the instructions or the requirements section.
+Measured over the labelled set the prompt reaches ~4,063 tokens, which does not
+fit a 4096 context alongside a 900-token reply. The context is now 6144, every
+response's `prompt_eval_count` is checked against it, and a test renders the
+real prompt for all 41 cases and asserts it still fits.
 
 **Validation must be lenient about numbers and strict about meaning.** A
 measured qwen3 response returned `"confidence": 3`. Rejecting the whole
