@@ -238,9 +238,7 @@ def format_report(report: BenchmarkReport) -> str:
         f"  location             {s['location_accuracy']:.0%}",
         f"  degraded             {s['degraded_rate']:.0%}",
     ]
-    if s["latency_p50_ms"] is not None:
-        lines.append(
-            f"  latency p50/p90      {s['latency_p50_ms'] / 1000:.1f}s / "
-            f"{s['latency_p90_ms'] / 1000:.1f}s"
-        )
+    p50, p90 = report.latency_p50_ms, report.latency_p90_ms
+    if p50 is not None and p90 is not None:
+        lines.append(f"  latency p50/p90      {p50 / 1000:.1f}s / {p90 / 1000:.1f}s")
     return "\n".join(lines)

@@ -64,21 +64,35 @@ class NotificationManager:
         score: int,
         recommendation: str,
         job_id: int,
+        reason: str | None = None,
+        risk: str | None = None,
     ) -> None:
+        """Announce a listing worth the candidate's attention.
+
+        Led by the decision rather than a percentage: "APPLY, because the stack
+        matches" is actionable in a phone notification, "87%" is not. ``score``
+        is retained as the model's confidence, for the record.
+        """
+        headline = "WORTH APPLYING" if recommendation == "apply" else "WORTH A LOOK"
+        lines = [title, f"Company: {company}", f"Location: {location}"]
+        if reason:
+            lines.append(f"\nWhy: {reason}")
+        if risk:
+            lines.append(f"Risk: {risk}")
+
         self.notify(
             Notification(
                 kind=NotificationKind.HIGH_MATCH_JOB,
                 level=NotificationLevel.SUCCESS,
-                title=f"NEW HIGH MATCH JOB — {score}%",
-                body=(
-                    f"{title}\n"
-                    f"Company: {company}\n"
-                    f"Location: {location}\n"
-                    f"Match: {score}%\n\n"
-                    f"Recommendation: {recommendation.upper()}"
-                ),
+                title=f"{headline} — {title[:60]}",
+                body="\n".join(lines),
                 job_id=job_id,
-                detail={"score": score, "recommendation": recommendation},
+                detail={
+                    "recommendation": recommendation,
+                    "confidence": score,
+                    "reason": reason,
+                    "risk": risk,
+                },
             )
         )
 

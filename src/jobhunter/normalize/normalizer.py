@@ -141,8 +141,8 @@ def extract_city(location_raw: str | None) -> str | None:
         return None
     head = re.split(r"[;,(]", location_raw)[0]
     normalized = normalize_text(head)
-    if canonical := CITY_ALIASES.get(normalized):
-        return canonical
+    if exact := CITY_ALIASES.get(normalized):
+        return exact
     full = normalize_text(location_raw)
     for alias, canonical in CITY_ALIASES.items():
         if re.search(rf"\b{re.escape(alias)}\b", full):

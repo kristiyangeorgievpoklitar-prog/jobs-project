@@ -381,6 +381,10 @@ class ScanPipeline:
                 int(evaluation.confidence * 100),
                 evaluation.decision.value,
             )
+            notify_reason = (
+                ", ".join(evaluation.major_strengths[:2]) or evaluation.recommendation or None
+            )
+            notify_risk = evaluation.major_risks[0] if evaluation.major_risks else None
 
         if should_notify:
             self.context.notifier.high_match_job(
@@ -390,4 +394,6 @@ class ScanPipeline:
                 score=score,
                 recommendation=rec,
                 job_id=job_id,
+                reason=notify_reason,
+                risk=notify_risk,
             )
