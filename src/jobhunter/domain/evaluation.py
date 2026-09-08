@@ -87,6 +87,13 @@ class RequirementAssessment(BaseModel):
     def _clean(cls, value: object) -> str:
         return str(value or "").strip()[:300]
 
+    @field_validator("evidence", mode="before")
+    @classmethod
+    def _clean_evidence(cls, value: object) -> str | None:
+        if value is None:
+            return None
+        return str(value).strip()[:400] or None
+
 
 class JobEvaluation(BaseModel):
     """A complete, explainable assessment of one job for one candidate.
@@ -133,6 +140,28 @@ class JobEvaluation(BaseModel):
 
     # --- optional internal ordering signal. Never the headline.
     rank_score: float | None = Field(default=None, ge=0.0, le=1.0)
+
+    @field_validator(
+        "recommendation",
+        "reasoning",
+        "seniority_reasoning",
+        "location_reasoning",
+        mode="before",
+    )
+    @classmethod
+    def _truncate(cls, value: object, info) -> str:
+        """Trim an over-long string instead of failing the whole evaluation.
+
+        Every schema rejection observed in the benchmark was ``string_too_long``
+        — a model writing three sentences where the cap allowed two. Discarding
+        a sound assessment over that, and reporting the job as "could not be
+        evaluated", was the single largest source of degraded results:
+        llama3.2:3b lost 29% of its answers this way.
+        """
+        limit = 2000
+        for meta in cls.model_fields[info.field_name].metadata:
+            limit = getattr(meta, "max_length", None) or limit
+        return str(value or "").strip()[:limit]
 
     @field_validator("confidence", mode="before")
     @classmethod

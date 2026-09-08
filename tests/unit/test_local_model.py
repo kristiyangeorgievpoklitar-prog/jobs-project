@@ -306,3 +306,38 @@ class TestContextOverflowIsDetected:
         LocalModelProvider._chat(provider, "system", "user")
 
         assert "local_model_context_overflow" not in capsys.readouterr().out
+
+
+class TestVerbosityDoesNotDiscardAnEvaluation:
+    """Every schema rejection measured in the benchmark was `string_too_long`."""
+
+    def test_an_over_long_recommendation_is_trimmed_not_rejected(self):
+        payload = {**VALID_RESPONSE, "recommendation": "Worth applying. " * 60}
+        evaluation = LocalModelProvider.parse(json.dumps(payload))
+
+        assert evaluation is not None, "a verbose model must not lose its whole assessment"
+        assert len(evaluation.recommendation) == 300
+        assert evaluation.decision is Decision.APPLY
+
+    def test_an_over_long_reasoning_is_trimmed(self):
+        payload = {**VALID_RESPONSE, "reasoning": "Because. " * 500}
+        evaluation = LocalModelProvider.parse(json.dumps(payload))
+        assert evaluation is not None
+        assert len(evaluation.reasoning) == 2000
+
+    def test_over_long_requirement_evidence_is_trimmed(self):
+        payload = {
+            **VALID_RESPONSE,
+            "mandatory_requirements": [
+                {"requirement": "PHP " * 200, "candidate_fit": "strong", "evidence": "x " * 500}
+            ],
+        }
+        evaluation = LocalModelProvider.parse(json.dumps(payload))
+        assert evaluation is not None
+        assert len(evaluation.mandatory_requirements[0].requirement) <= 300
+        assert len(evaluation.mandatory_requirements[0].evidence) <= 400
+
+    def test_a_genuinely_broken_field_is_still_rejected(self):
+        """Leniency is about verbosity, not about meaning."""
+        payload = {**VALID_RESPONSE, "seniority": "extremely_senior"}
+        assert LocalModelProvider.parse(json.dumps(payload)) is None
