@@ -1,0 +1,11 @@
+Write the cover letter in {language}. Maximum {max_words} words.
+
+## CANDIDATE (the only facts you may use)
+
+{candidate}
+
+## JOB
+
+{job}
+
+Write the letter body only.

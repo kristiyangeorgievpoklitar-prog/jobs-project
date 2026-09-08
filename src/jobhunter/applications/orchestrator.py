@@ -129,6 +129,12 @@ class ApplicationOrchestrator:
                     normalized,
                     candidate,
                     max_words=self.settings.cover_letter_max_words,
+                    # Safe to include: the letter is written by the local model.
+                    cv_text=(
+                        cv_record.extracted_text
+                        if cv_record and self.settings.send_cv_text_to_local_model
+                        else None
+                    ),
                 )
 
             application = session.scalar(select(Application).where(Application.job_id == job.id))

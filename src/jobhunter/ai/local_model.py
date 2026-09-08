@@ -17,6 +17,7 @@ the caller can recognise, never a silent default.
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -24,12 +25,19 @@ from typing import Any
 import httpx
 from pydantic import ValidationError
 
+from jobhunter.ai.base import AIProvider
+from jobhunter.domain.enums import Language, Recommendation
 from jobhunter.domain.evaluation import Decision, JobEvaluation
-from jobhunter.domain.schemas import CandidateSnapshot, NormalizedJob
+from jobhunter.domain.schemas import (
+    CandidateSnapshot,
+    ClassificationResult,
+    MatchResult,
+    NormalizedJob,
+)
 from jobhunter.logging_setup import get_logger
 from jobhunter.matching.job_context import job_content_hash, render_job
 from jobhunter.profile.context import render_candidate
-from jobhunter.prompts import PromptTemplate, job_evaluation_prompt
+from jobhunter.prompts import PromptTemplate, cover_letter_prompt, job_evaluation_prompt
 
 log = get_logger(__name__)
 
@@ -151,6 +159,24 @@ def _response_schema() -> dict[str, Any]:
     }
 
 
+# Openers a model adds despite being told not to.
+_LETTER_PREAMBLE = re.compile(
+    r"^\s*(here(?:'s| is)[^\n]*|sure[^\n]*|certainly[^\n]*|cover letter:?)\s*\n+",
+    re.IGNORECASE,
+)
+
+
+def _strip_letter_furniture(text: str) -> str:
+    """Remove the scaffolding a model wraps a letter in."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        parts = cleaned.split("```")
+        cleaned = parts[1] if len(parts) > 1 else cleaned.strip("`")
+        cleaned = cleaned.removeprefix("text").removeprefix("markdown").strip()
+    cleaned = _LETTER_PREAMBLE.sub("", cleaned)
+    return cleaned.strip()
+
+
 def _loads_or_repair(body: str) -> dict[str, Any] | None:
     """Parse the object, repairing a response that was cut off mid-generation.
 
@@ -209,13 +235,14 @@ def _close_open_structures(body: str) -> str:
     return repaired
 
 
-class LocalModelProvider:
+class LocalModelProvider(AIProvider):
     """Evaluates one job against one candidate with a local instruct model."""
 
     name = "local"
 
     def __init__(self, config: LocalModelConfig | None = None) -> None:
         self.config = config or LocalModelConfig()
+        self.model = self.config.model
         self.prompt: PromptTemplate = job_evaluation_prompt()
 
     # ------------------------------------------------------------- health
@@ -377,6 +404,91 @@ class LocalModelProvider:
                 ],
             )
             return None
+
+    def score_job(
+        self,
+        job: NormalizedJob,
+        classification: ClassificationResult,
+        candidate: CandidateSnapshot,
+    ) -> MatchResult:
+        """The old score-shaped view of an evaluation, for the legacy interface.
+
+        Nothing in the decision path calls this — matching goes through
+        :class:`~jobhunter.matching.evaluator.JobEvaluator`, which returns the
+        full structured evaluation. It exists so this provider satisfies
+        :class:`AIProvider` for the code that still speaks that language, and the
+        number it reports is confidence, not a match percentage.
+        """
+        evaluation = self.evaluate(job, candidate)
+        return MatchResult(
+            score=round(evaluation.confidence * 100),
+            confidence=evaluation.confidence,
+            recommendation={
+                Decision.APPLY: Recommendation.APPLY,
+                Decision.REVIEW: Recommendation.REVIEW,
+                Decision.SKIP: Recommendation.SKIP,
+            }[evaluation.decision],
+            strengths=list(evaluation.major_strengths),
+            missing_skills=[r.requirement for r in evaluation.blocking_gaps],
+            disqualifiers=list(evaluation.major_risks) if evaluation.degraded else [],
+            reasoning=evaluation.reasoning,
+            provider=self.name,
+            model=self.config.model,
+        )
+
+    # ------------------------------------------------------- cover letters
+
+    def generate_cover_letter(
+        self,
+        job: NormalizedJob,
+        candidate: CandidateSnapshot,
+        *,
+        language: Language = Language.EN,
+        max_words: int = 180,
+        cv_text: str | None = None,
+    ) -> str:
+        """Write a letter grounded in the profile, or nothing at all.
+
+        Returns an empty string on any failure rather than a generic letter. A
+        template letter that says nothing specific is worse than none: the
+        caller falls back to the deterministic writer, which at least only ever
+        states facts from the profile.
+        """
+        prompt = cover_letter_prompt()
+        user = prompt.render_user(
+            language={Language.BG: "Bulgarian", Language.EN: "English"}.get(language, "English"),
+            max_words=str(max_words),
+            candidate=render_candidate(candidate, cv_text=cv_text),
+            job=render_job(job, max_description_chars=2500),
+        )
+
+        try:
+            with httpx.Client(timeout=self.config.timeout_seconds) as client:
+                response = client.post(
+                    f"{self.config.host}/api/chat",
+                    json={
+                        "model": self.config.model,
+                        "messages": [
+                            {"role": "system", "content": prompt.system},
+                            {"role": "user", "content": user},
+                        ],
+                        "stream": False,
+                        "think": False,
+                        "keep_alive": self.config.keep_alive,
+                        "options": {
+                            "temperature": 0.3,
+                            "num_ctx": self.config.num_ctx,
+                            "num_predict": max(300, max_words * 3),
+                        },
+                    },
+                )
+                response.raise_for_status()
+                text = response.json().get("message", {}).get("content", "")
+        except Exception as exc:
+            log.warning("cover_letter_failed", error=str(exc), job=job.fingerprint)
+            return ""
+
+        return _strip_letter_furniture(text)
 
     # ---------------------------------------------------------- degrading
 

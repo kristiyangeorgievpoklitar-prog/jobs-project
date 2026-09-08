@@ -74,6 +74,14 @@ class AppContext:
 
     @cached_property
     def provider(self) -> AIProvider:
+        """The provider used for prose (cover letters).
+
+        Matching does not come through here — that is :attr:`evaluator`. When the
+        system is configured local, the local model writes the letters too, so
+        the CV never has to leave the machine for either job.
+        """
+        if self.settings.ai_provider == "local":
+            return self.local_model  # type: ignore[return-value]
         return build_provider(self.settings, self.scoring_config)
 
     @cached_property

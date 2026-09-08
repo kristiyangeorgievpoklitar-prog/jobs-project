@@ -227,3 +227,45 @@ def test_requirement_fit_distinguishes_missing_from_unknown():
 
 def test_mandatory_coverage_is_none_when_no_requirements_were_found():
     assert JobEvaluation().mandatory_coverage is None
+
+
+class TestCoverLetters:
+    """A letter that claims what the candidate cannot back up is worse than none."""
+
+    def test_a_letter_comes_back_stripped_of_model_scaffolding(self):
+        provider = StubProvider("")
+        provider._chat = lambda s, u: ("", 0)  # unused; the letter path has its own client
+
+        from jobhunter.ai.local_model import _strip_letter_furniture
+
+        assert _strip_letter_furniture("```\nDear team,\nI write...\n```") == (
+            "Dear team,\nI write..."
+        )
+        assert _strip_letter_furniture("Sure! Here is the letter:\n\nDear team,") == "Dear team,"
+
+    def test_a_failed_letter_returns_empty_so_the_caller_can_fall_back(self, monkeypatch):
+        provider = StubProvider("unused")
+
+        def explode(*args, **kwargs):
+            raise httpx.ConnectError("no server")
+
+        monkeypatch.setattr(httpx.Client, "post", explode)
+        assert provider.generate_cover_letter(make_job(), make_candidate()) == ""
+
+
+class TestLegacyInterface:
+    def test_the_provider_satisfies_the_ai_provider_contract(self):
+        from jobhunter.ai.base import AIProvider
+
+        assert isinstance(StubProvider("{}"), AIProvider)
+
+    def test_score_job_reports_confidence_not_a_match_percentage(self):
+        from jobhunter.classify.classifier import classify_job
+
+        provider = StubProvider(json.dumps(VALID_RESPONSE))
+        job = make_job()
+        result = provider.score_job(job, classify_job(job), make_candidate())
+
+        assert result.score == 85, "the number is the model's confidence"
+        assert result.recommendation.value == "apply"
+        assert result.missing_skills == ["Docker"]
