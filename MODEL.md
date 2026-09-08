@@ -62,6 +62,23 @@ evaluation over one bad number threw away a sound assessment, so an
 uninterpretable confidence now falls back to 0.5 — never upward to 1.0, which
 would assert certainty the model never expressed.
 
+## How the models were compared
+
+Four models in the 1-4B class were run over a stratified 14-case subset
+(3 APPLY / 3 REVIEW / 8 SKIP) drawn from the labelled set, all on prompt v3 and
+identical settings, before the best was run over all 41 cases.
+
+| model | size on disk | resident | GPU offload |
+|---|---|---|---|
+| qwen3:1.7b | 1.4 GB | 1.9 GB | 33% |
+| qwen2.5:3b | 1.9 GB | 2.4 GB | 25% |
+| llama3.2:3b | 2.0 GB | — | — |
+| gemma3:4b | 3.3 GB | — | — |
+
+Multilingual capability was the reason for the shortlist: roughly half of the
+listings are in Bulgarian and many mix Bulgarian prose with English technology
+names, which rules out models that only handle English well.
+
 ## Results
 
 <!--BENCHMARK-->
