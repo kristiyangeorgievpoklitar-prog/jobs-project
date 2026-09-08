@@ -29,13 +29,17 @@
 {% if rows %}
 <table>
   <thead><tr>
-    <th class="right">Score</th><th>Title</th><th>Company</th><th>Location</th>
+    <th>Decision</th><th>Title</th><th>Company</th><th>Location</th>
     <th>Seniority</th><th>Method</th><th>State</th><th>Discovered</th><th></th>
   </tr></thead>
   <tbody>
   {% for row in rows %}
     <tr>
-      <td class="right"><span class="score {{ row.score|score_class }}">{{ row.score if row.match else '-' }}</span></td>
+      <td>
+        {% if row.decision %}
+          <span class="decision-badge {{ row.decision }}">{{ row.decision|upper }}</span>
+        {% else %}<span class="muted">-</span>{% endif %}
+      </td>
       <td class="title-cell"><a href="/jobs/{{ row.job.id }}">{{ row.job.title }}</a></td>
       <td>{{ row.job.company_display }}</td>
       <td>{{ row.job.city or row.job.location_raw or '-' }}</td>

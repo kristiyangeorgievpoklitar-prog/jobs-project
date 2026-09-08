@@ -85,9 +85,33 @@ def job_rows(
 
     stmt = stmt.limit(limit).offset(offset)
 
+    rows = session.execute(stmt).all()
+
+    # The current evaluation is what the table actually shows; the old match row
+    # is kept only for the legacy score column in the statistics view.
+    from jobhunter.db.models import JobEvaluation as EvaluationRow
+
+    job_ids = [job.id for job, _ in rows]
+    evaluations = {}
+    if job_ids:
+        evaluations = {
+            row.job_id: row
+            for row in session.scalars(
+                select(EvaluationRow).where(
+                    EvaluationRow.job_id.in_(job_ids), EvaluationRow.is_current.is_(True)
+                )
+            ).all()
+        }
+
     return [
-        {"job": job, "match": match, "score": match.score if match else 0}
-        for job, match in session.execute(stmt).all()
+        {
+            "job": job,
+            "match": match,
+            "score": match.score if match else 0,
+            "evaluation": evaluations.get(job.id),
+            "decision": evaluations[job.id].decision if job.id in evaluations else None,
+        }
+        for job, match in rows
     ]
 
 

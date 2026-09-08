@@ -236,8 +236,17 @@ def scan(
     enrich: int = typer.Option(None, help="Maximum detail pages to fetch"),
     entry_level: bool = typer.Option(False, help="Use the site's entry-level filter"),
 ) -> None:
-    """Run one discovery + scoring pass."""
+    """Discover listings, filter them, and evaluate what survives."""
     context = AppContext()
+
+    if context.settings.ai_provider == "local" and not context.local_model.is_available():
+        console.print(
+            f"[red]Local model {context.settings.local_model!r} is not reachable[/red] at "
+            f"{context.settings.local_model_host}.\n"
+            "Start it with `ollama serve`, or set AI_PROVIDER=rule_based to scan without it."
+        )
+        raise typer.Exit(code=1)
+
     pipeline = ScanPipeline(context)
     stats = pipeline.run(
         ScanOptions(
@@ -257,6 +266,7 @@ def scan(
     console.print(table)
     for note in stats.notes:
         console.print(f"[yellow]{note}[/yellow]")
+    console.print("\nRun [bold]jobhunter today[/bold] to see what is worth applying to.")
     context.close()
 
 

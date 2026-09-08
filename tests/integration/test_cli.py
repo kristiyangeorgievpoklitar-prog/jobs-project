@@ -151,7 +151,8 @@ class TestCVCommands:
 
 
 class TestScanCommand:
-    def test_scan_reports_stats(self, cli_env, monkeypatch) -> None:
+    @staticmethod
+    def _install(monkeypatch, *, model_available: bool = True) -> None:
         class FakePipeline:
             def __init__(self, context: Any) -> None:
                 pass
@@ -160,9 +161,26 @@ class TestScanCommand:
                 return ScanStats(jobs_seen=7, jobs_new=3, jobs_matched=7)
 
         monkeypatch.setattr(cli_module, "ScanPipeline", FakePipeline)
+        monkeypatch.setattr(
+            "jobhunter.ai.local_model.LocalModelProvider.is_available",
+            lambda self: model_available,
+        )
+
+    def test_scan_reports_stats(self, cli_env, monkeypatch) -> None:
+        self._install(monkeypatch)
         result = runner.invoke(cli_module.app, ["scan", "--limit", "10"])
         assert result.exit_code == 0
         assert "Jobs Seen" in result.output
+
+    def test_scan_refuses_to_run_without_the_model_it_is_configured_to_use(
+        self, cli_env, monkeypatch
+    ) -> None:
+        """Scanning without the matcher would fill the database with non-decisions."""
+        self._install(monkeypatch, model_available=False)
+        result = runner.invoke(cli_module.app, ["scan"])
+        assert result.exit_code == 1
+        assert "not reachable" in result.output
+        assert "ollama serve" in result.output
 
 
 class TestApplyCommand:

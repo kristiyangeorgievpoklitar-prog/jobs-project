@@ -8,16 +8,36 @@ Day-to-day running, tuning and recovery.
 uv run jobhunter serve       # dashboard on http://127.0.0.1:8000
 ```
 
-Work the **Pending review** queue: open a job, read the match analysis, then
-**Approve**, **Skip**, or **Prepare application**.
+The dashboard opens on **what should I apply to today?** — the APPLY list, then
+the REVIEW list, each with the reason and the biggest risk. Open a job to see
+the mandatory and nice-to-have requirements and how each one was judged.
+
+Then tell it what you did. That is not bookkeeping: feedback is the only ground
+truth the system ever gets, and it drives what you are shown next.
 
 Terminal equivalents:
 
 ```bash
-uv run jobhunter jobs --state review --min-score 75
+uv run jobhunter today                                # the morning summary
+uv run jobhunter evaluate                             # judge anything new
+uv run jobhunter feedback 42 apply                    # you applied
+uv run jobhunter feedback 42 skip --reason too_senior # and why not
+uv run jobhunter preferences                          # what it has learned
 uv run jobhunter runs
-uv run jobhunter applications
 ```
+
+### How long a pass takes
+
+The local model reads one listing at a time and, on a laptop-class GPU, takes
+roughly **two minutes per listing**. Two things keep that bounded:
+
+* the Stage 1 gate settles about **40% of listings** without a model call;
+* evaluations are cached against the job text, your profile, the model and the
+  prompt, so a re-scan only pays for listings that are genuinely new or changed.
+
+A first scan of ~90 listings therefore takes upwards of an hour; the next
+morning's scan usually takes minutes. Run it on a schedule overnight rather than
+waiting on it.
 
 ## Scheduling
 
@@ -54,25 +74,48 @@ journalctl --user -u jobhunter -f
 `DISPLAY` matters: the browser runs headed, so the service needs a desktop
 session. Do not run this on a headless server without a virtual display.
 
-## Tuning the match rate
+## When the recommendations look wrong
+
+Open the job. The assessment names the requirements it found, marks each one
+strong / acceptable / weak / missing / unknown, and says what in your profile it
+based that on. That is usually enough to see which of three things went wrong.
+
+**It missed something in your profile.** The model only knows what
+`jobhunter profile show` and your CV say. If the CV text is thin, the matching
+will be too — this is the single highest-leverage thing to fix.
+
+**It invented something.** Small models sometimes name a technology you do not
+have. Give feedback with `--reason technology`; if it recurs on a specific
+model, try a different one (`LOCAL_MODEL`) and re-run `jobhunter benchmark` to
+confirm the change actually helped.
+
+**It read the posting wrongly.** Re-run that one job with
+`jobhunter evaluate --job-id 42 --force`. Decisions are not deterministic across
+model versions, but temperature is 0, so the same model and prompt on unchanged
+text will repeat itself.
 
 **Too few jobs surfacing**
 
-* Lower `REVIEW_THRESHOLD` (75 → 65) in Settings.
-* Raise `MAX_SENIORITY` from `mid` to `mid_senior`.
 * Widen `preferred_locations`, or enable remote in your profile.
 * Raise `MAX_PAGES_PER_SCAN`.
 * Check your skill lists are populated — `jobhunter profile show`.
 
-**Too much noise**
+**Too much noise** — give feedback on the noise. Skips with a reason are what
+teach it, and `jobhunter preferences` shows what it has concluded so far.
 
-* Raise `REVIEW_THRESHOLD`.
-* Lower `MAX_SENIORITY` to `junior_mid`.
-* Turn off remote if you only want local roles.
+## Checking it is actually working
 
-**Scores look wrong on a specific job** — open it in the dashboard. The
-component scores show exactly which dimension drove the result, and the
-reasoning line explains each one.
+```bash
+uv run jobhunter benchmark
+```
+
+This runs the old scorer, an `always_skip_baseline`, and your configured model
+over `evaluation/dataset.json` — 41 real listings labelled by hand. The number
+to watch is **worth-surfacing recall**: of the jobs a human said were worth a
+look, how many the matcher showed. Plain accuracy is misleading here, because
+most listings really are skips and a matcher that refuses everything scores 78%.
+
+If you change `LOCAL_MODEL`, a prompt, or your profile substantially, re-run it.
 
 ## Enabling automatic applications
 
