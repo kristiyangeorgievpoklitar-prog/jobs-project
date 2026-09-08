@@ -160,12 +160,30 @@
           <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:8px"><input type="checkbox" name="notify_console" {{ 'checked' if settings.notify_console }}> Console notifications</label>
           <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px"><input type="checkbox" name="notify_dashboard" {{ 'checked' if settings.notify_dashboard }}> Dashboard notifications</label>
           <div class="field">
-            <label>AI provider</label>
+            <label>Matcher</label>
             <select name="ai_provider" style="width:100%">
-              {% for p in ['auto','rule_based','anthropic','openai'] %}<option value="{{ p }}" {{ 'selected' if overrides.get('ai_provider', settings.ai_provider) == p }}>{{ p }}</option>{% endfor %}
+              {% for p in ['local','rule_based','auto','anthropic','openai'] %}<option value="{{ p }}" {{ 'selected' if overrides.get('ai_provider', settings.ai_provider) == p }}>{{ p }}</option>{% endfor %}
             </select>
-            <div class="hint">API keys are set in <span class="mono">.env</span>, never here. Without a key the local rule engine is used.</div>
+            <div class="hint">
+              <strong>local</strong> runs a small model on this machine and is the only option that
+              reads your CV without sending it anywhere. <strong>rule_based</strong> needs nothing
+              but is markedly worse. API keys are set in <span class="mono">.env</span>, never here.
+            </div>
           </div>
+          <div class="field">
+            <label>Local model</label>
+            <input type="text" name="local_model" value="{{ overrides.get('local_model', settings.local_model) }}" style="width:100%">
+            <div class="hint">Must already be pulled: <span class="mono">ollama pull &lt;model&gt;</span>. See MODEL.md for what was measured.</div>
+          </div>
+          <div class="field">
+            <label>Context window</label>
+            <input type="number" min="1024" max="32768" step="1024" name="local_model_num_ctx" value="{{ overrides.get('local_model_num_ctx', settings.local_model_num_ctx) }}" style="width:100%">
+            <div class="hint">Larger costs VRAM before it buys anything; 4096 fits the prompt and the reply.</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px">
+            <input type="checkbox" name="send_cv_text_to_local_model" {{ 'checked' if settings.send_cv_text_to_local_model }}>
+            Let the local model read your CV
+          </label>
           <button class="btn primary" type="submit">Save settings</button>
         </div>
       </div>

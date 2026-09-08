@@ -38,6 +38,12 @@ EDITABLE_KEYS: dict[str, type] = {
     "notify_console": bool,
     "notify_dashboard": bool,
     "ai_provider": str,
+    # The model and its context budget are the two settings a user actually
+    # needs to change: which model they pulled, and how much of it fits on
+    # their GPU. The rest of the local-model config is left to .env.
+    "local_model": str,
+    "local_model_num_ctx": int,
+    "send_cv_text_to_local_model": bool,
 }
 
 
