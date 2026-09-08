@@ -21,15 +21,15 @@
 </div>
 
 <div class="panel">
-  <div class="panel-header">Top matches<a href="/jobs?min_score=75">View all</a></div>
+  <div class="panel-header">Recently evaluated<a href="/jobs">View all</a></div>
   <div class="table-wrap">
   {% if top_jobs %}
   <table>
-    <thead><tr><th class="right">Score</th><th>Title</th><th>Company</th><th>Location</th><th>Seniority</th><th>State</th><th></th></tr></thead>
+    <thead><tr><th>Decision</th><th>Title</th><th>Company</th><th>Location</th><th>Seniority</th><th>State</th><th></th></tr></thead>
     <tbody>
       {% for row in top_jobs %}
       <tr>
-        <td class="right"><span class="score {{ row.score|score_class }}">{{ row.score }}</span></td>
+        <td>{% if row.decision %}<span class="decision-badge {{ row.decision }}">{{ row.decision|upper }}</span>{% else %}<span class="muted">-</span>{% endif %}</td>
         <td class="title-cell"><a href="/jobs/{{ row.job.id }}">{{ row.job.title }}</a></td>
         <td>{{ row.job.company_display }}</td>
         <td>{{ row.job.city or '-' }}</td>

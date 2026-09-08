@@ -78,10 +78,9 @@ def job_rows(
     if min_score > 0:
         stmt = stmt.where(func.coalesce(JobMatch.score, 0) >= min_score)
 
-    if order == "date":
-        stmt = stmt.order_by(desc(Job.first_seen_at))
-    else:
-        stmt = stmt.order_by(desc(func.coalesce(JobMatch.score, 0)), desc(Job.first_seen_at))
+    # Ordering by the legacy score would rank by a number nothing updates any
+    # more. Recency is honest; the "Today" page does the real ranking.
+    stmt = stmt.order_by(desc(Job.first_seen_at))
 
     stmt = stmt.limit(limit).offset(offset)
 

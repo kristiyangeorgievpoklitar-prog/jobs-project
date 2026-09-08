@@ -63,10 +63,12 @@ class TestPages:
         assert "What should I apply to today?" in body
         assert "worth reviewing" in body
 
-    def test_statistics_view_still_shows_the_numbers(self, client: TestClient) -> None:
+    def test_statistics_view_lists_jobs_without_a_stale_score(self, client: TestClient) -> None:
+        """The scan stopped writing match rows, so showing their score would lie."""
         body = client.get("/overview").text
         assert "Junior PHP Developer" in body
-        assert "92" in body
+        assert "Recently evaluated" in body
+        assert "92" not in body
 
     def test_job_detail_shows_analysis(self, client: TestClient) -> None:
         body = client.get("/jobs/1").text
