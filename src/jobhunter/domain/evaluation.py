@@ -174,9 +174,3 @@ class JobEvaluation(BaseModel):
             return None
         covered = sum(1 for r in self.mandatory_requirements if r.candidate_fit.is_covered)
         return covered / len(self.mandatory_requirements)
-
-    def summary_line(self) -> str:
-        """One line a human can read without opening the job."""
-        if self.recommendation:
-            return self.recommendation
-        return self.reasoning.split(".")[0][:160] if self.reasoning else self.decision.value

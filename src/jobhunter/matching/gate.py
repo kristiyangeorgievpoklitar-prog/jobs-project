@@ -140,8 +140,3 @@ class Stage1Gate:
                 return GateResult(GateVerdict.REJECT, "not_it", detail)
 
         return GateResult(GateVerdict.PASS)
-
-
-def rejection_fingerprints(feedback_rows: list[tuple[str, str]]) -> set[str]:
-    """Fingerprints the candidate has explicitly skipped, for the gate to reuse."""
-    return {fingerprint for fingerprint, action in feedback_rows if action == "skip"}

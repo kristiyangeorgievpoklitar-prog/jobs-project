@@ -141,20 +141,3 @@ def store(
     session.add(row)
     session.flush()
     return row
-
-
-def invalidate_for_profile(session, candidate_fingerprint: str) -> int:
-    """Mark evaluations made against a different profile as no longer current.
-
-    Called after the candidate edits their profile or swaps CV: those verdicts
-    were about a different person and must not keep driving the dashboard.
-    """
-    result = session.execute(
-        update(JobEvaluationRow)
-        .where(
-            JobEvaluationRow.is_current.is_(True),
-            JobEvaluationRow.candidate_fingerprint != candidate_fingerprint,
-        )
-        .values(is_current=False)
-    )
-    return int(result.rowcount or 0)

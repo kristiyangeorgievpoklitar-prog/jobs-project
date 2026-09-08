@@ -713,6 +713,7 @@ def feedback(
 def preferences() -> None:
     """Show what the system has learned from your decisions."""
     from jobhunter.db.models import CandidatePreference
+    from jobhunter.pipeline.feedback_store import agreement_stats
 
     context = AppContext(configure_logs=False)
     with context.session() as session:
@@ -721,6 +722,7 @@ def preferences() -> None:
             .order_by(desc(CandidatePreference.evidence_count))
             .all()
         )
+        agreement = agreement_stats(session)
         if not rows:
             console.print("Nothing learned yet - give feedback on a few jobs first.")
             context.close()
@@ -738,6 +740,12 @@ def preferences() -> None:
                 str(row.evidence_count),
             )
         console.print(table)
+        if agreement["total"]:
+            console.print(
+                f"\nAgreement with your decisions: {agreement['agreed']}/{agreement['total']}"
+                f" ({agreement['agreed'] / agreement['total']:.0%})."
+                " This is the only measure of live quality the system gets."
+            )
     context.close()
 
 
@@ -746,6 +754,9 @@ def benchmark(
     models: str = typer.Option("", help="Comma-separated models; defaults to the configured one"),
     include_legacy: bool = typer.Option(True, help="Also run the old rule-based scorer"),
     limit: int | None = typer.Option(None, help="Only the first N cases"),
+    prompt_version: str | None = typer.Option(
+        None, help="Prompt version to test, e.g. v5. Defaults to the current one."
+    ),
 ) -> None:
     """Measure matchers against the labelled dataset."""
     from jobhunter.ai.local_model import LocalModelConfig
@@ -782,19 +793,29 @@ def benchmark(
     for model in [m.strip() for m in models.split(",") if m.strip()] or [
         context.settings.local_model
     ]:
-        matchers.append(
-            LocalModelMatcher(
-                candidate,
-                LocalModelConfig(
-                    model=model,
-                    host=context.settings.local_model_host,
-                    timeout_seconds=context.settings.local_model_timeout_seconds,
-                    num_ctx=context.settings.local_model_num_ctx,
-                    num_predict=context.settings.local_model_num_predict,
-                ),
-                cv_text=cv_text,
-            )
+        matcher = LocalModelMatcher(
+            candidate,
+            LocalModelConfig(
+                model=model,
+                host=context.settings.local_model_host,
+                timeout_seconds=context.settings.local_model_timeout_seconds,
+                num_ctx=context.settings.local_model_num_ctx,
+                num_predict=context.settings.local_model_num_predict,
+            ),
+            cv_text=cv_text,
+            label=f"local:{model}" + (f" [{prompt_version}]" if prompt_version else ""),
         )
+        if prompt_version:
+            from jobhunter.prompts import available_versions, job_evaluation_prompt
+
+            if prompt_version not in available_versions("job_evaluation"):
+                console.print(
+                    f"[red]No prompt version {prompt_version!r}[/red]. "
+                    f"Available: {', '.join(available_versions('job_evaluation'))}"
+                )
+                raise typer.Exit(code=1)
+            matcher.provider.prompt = job_evaluation_prompt(prompt_version)
+        matchers.append(matcher)
 
     for matcher in matchers:
         report = run_benchmark(matcher, dataset)
