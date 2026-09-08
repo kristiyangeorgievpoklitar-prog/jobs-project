@@ -315,9 +315,9 @@ These are boundaries of the site or deliberate safety choices, not bugs.
    not recommend applying to a job it has not read.
 5. **The site's own location filter is loose.** A search for Varna also returns
    Sofia-based roles; the location is re-derived from the posting text.
-6. **A scan is slow the first time.** The local model takes roughly two minutes
-   per listing on a laptop GPU, so a first pass over ~90 listings runs for over
-   an hour. The Stage 1 filter removes about 40% before the model sees them and
+6. **A scan is slow the first time.** The local model takes about 100 seconds
+   per listing on a laptop GPU, so a first pass over ~90 listings runs for well
+   over an hour. The Stage 1 filter removes about 40% before the model sees them and
    evaluations are cached, so later scans are minutes. Run it overnight.
 7. **A small model is a small model.** Measured on the labelled set, it hedges:
    it surfaces more jobs than it should rather than fewer, and its seniority and

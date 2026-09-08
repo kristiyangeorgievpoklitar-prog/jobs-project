@@ -29,7 +29,8 @@ uv run jobhunter runs
 ### How long a pass takes
 
 The local model reads one listing at a time and, on a laptop-class GPU, takes
-roughly **two minutes per listing**. Two things keep that bounded:
+about **100 seconds per listing** (measured: 99 s for qwen2.5:3b). Two things
+keep that bounded:
 
 * the Stage 1 gate settles about **40% of listings** without a model call;
 * evaluations are cached against the job text, your profile, the model and the

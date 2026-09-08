@@ -106,7 +106,7 @@ src/jobhunter/
  JobEvaluator.evaluate()
         ├─ 1. Stage1Gate      certain rejects, no model call            ~43% of jobs
         ├─ 2. cache lookup    same job + profile + model + prompt       free
-        ├─ 3. local model     reads the posting and the CV              ~145s/job
+        ├─ 3. local model     reads the posting and the CV               ~99s/job
         └─ 4. apply_policy    downgrade what the evidence cannot carry
         ▼
  transition_job()            CLASSIFIED -> MATCHED -> REVIEW/APPROVED/SKIPPED
@@ -119,7 +119,7 @@ Each job is processed in its own transaction. One failure is recorded as an
 
 ### Why two stages
 
-A local model costs roughly two minutes per listing on the target hardware, so
+A local model costs about 100 seconds per listing on the target hardware, so
 most listings have to be settled without it. The split follows one rule: **a
 gate rejection is final and invisible**, so the gate may only reject on grounds
 that are certain from the listing alone — an unambiguously senior title, a role
