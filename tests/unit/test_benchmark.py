@@ -342,3 +342,32 @@ def test_the_longest_real_prompt_fits_the_configured_context():
         f"the longest prompt is ~{estimated_tokens:.0f} tokens but only {budget} are left "
         f"after num_predict={config.num_predict} in a {config.num_ctx} context"
     )
+
+
+def test_the_policy_variant_measures_what_the_candidate_actually_sees():
+    """The pipeline downgrades; measuring only raw output understates the product."""
+    from jobhunter.domain.schemas import CandidateSnapshot
+    from jobhunter.evaluation.runner import PolicyMatcher
+
+    class OverEagerMatcher:
+        name = "over_eager"
+
+        def evaluate_case(self, benchmark_case):
+            # Confident APPLY on a job in the wrong city - exactly what the
+            # policy exists to catch.
+            return JobEvaluation(
+                decision=Decision.APPLY,
+                confidence=0.95,
+                is_it_role=True,
+                location_fit=LocationFit.OTHER_CITY,
+            )
+
+    candidate = CandidateSnapshot(location="Varna", preferred_locations=["Varna"])
+    sofia_case = case("sofia", Decision.SKIP, location_fit=LocationFit.OTHER_CITY)
+
+    raw = run_benchmark(OverEagerMatcher(), Dataset([sofia_case]))
+    guarded = run_benchmark(PolicyMatcher(OverEagerMatcher(), candidate), Dataset([sofia_case]))
+
+    assert raw.wasted_attention == 1, "the model alone recommends a job in the wrong city"
+    assert guarded.wasted_attention == 0, "the policy catches it"
+    assert guarded.decision_accuracy == 1.0

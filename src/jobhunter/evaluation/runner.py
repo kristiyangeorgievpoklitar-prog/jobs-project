@@ -20,6 +20,7 @@ from jobhunter.domain.schemas import CandidateSnapshot
 from jobhunter.evaluation.dataset import BenchmarkCase, Dataset
 from jobhunter.evaluation.metrics import BenchmarkReport, build_outcome
 from jobhunter.logging_setup import get_logger
+from jobhunter.matching.policy import apply_policy
 from jobhunter.matching.rules import ScoringConfig, score_job
 
 log = get_logger(__name__)
@@ -127,6 +128,29 @@ class LocalModelMatcher:
         return self.provider.evaluate(
             case.to_normalized_job(), self.candidate, cv_text=self.cv_text
         )
+
+
+class PolicyMatcher:
+    """Another matcher, plus the safety rules the pipeline actually applies.
+
+    The model's raw output is the right thing to measure when *choosing* a
+    model, but it is not what the candidate sees: in the pipeline every
+    evaluation passes through :func:`apply_policy`, which downgrades what the
+    evidence cannot carry. Reporting only the raw numbers would understate the
+    product; reporting only the policy-applied numbers would hide which part
+    earned the result. So both are measured.
+    """
+
+    def __init__(self, inner: Matcher, candidate: CandidateSnapshot, policy=None) -> None:
+        self.inner = inner
+        self.candidate = candidate
+        self.policy = policy
+        self.name = f"{inner.name} + policy"
+
+    def evaluate_case(self, case: BenchmarkCase) -> JobEvaluation:
+        evaluation = self.inner.evaluate_case(case)
+        outcome = apply_policy(evaluation, case.to_normalized_job(), self.candidate, self.policy)
+        return outcome.evaluation
 
 
 def run_benchmark(
