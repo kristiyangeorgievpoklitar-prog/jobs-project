@@ -310,14 +310,23 @@ These are boundaries of the site or deliberate safety choices, not bugs.
    hand off to a company ATS (Workday, UKG, …). These are recorded with their
    link and marked as needing a manual step.
 4. **Only listings that were actually read can reach APPLY.** Detail pages cost
-   a request each, so a bounded number are fetched per scan, highest-scoring
-   first. Anything scored on its listing card alone is capped below the
-   auto-apply threshold — the system will not recommend applying to a job it
-   has not read.
+   a request each, so a bounded number are fetched per scan. Anything judged on
+   its listing card alone is downgraded to REVIEW by policy — the system will
+   not recommend applying to a job it has not read.
 5. **The site's own location filter is loose.** A search for Varna also returns
-   Sofia-based remote roles; the local classifier re-checks every location.
-6. **Bulgarian text is handled by keyword rules**, not a language model, unless
-   you configure a cloud provider.
+   Sofia-based roles; the location is re-derived from the posting text.
+6. **A scan is slow the first time.** The local model takes roughly two minutes
+   per listing on a laptop GPU, so a first pass over ~90 listings runs for over
+   an hour. The Stage 1 filter removes about 40% before the model sees them and
+   evaluations are cached, so later scans are minutes. Run it overnight.
+7. **A small model is a small model.** Measured on the labelled set, it hedges:
+   it surfaces more jobs than it should rather than fewer, and its seniority and
+   location calls are its weakest. It also occasionally names a technology you
+   do not have. [MODEL.md](MODEL.md) has the numbers, and every recommendation
+   shows the requirements it rests on so you can check it in seconds.
+8. **Personalisation needs data.** Preferences need at least three observations
+   of a value before they affect ranking, so the first week or two of use
+   changes nothing. That is deliberate — three skips is not a pattern.
 
 ---
 
@@ -333,9 +342,13 @@ challenge stops the affected workflow and records `BLOCKED`.
 
 ## Documentation
 
-* [ARCHITECTURE.md](ARCHITECTURE.md) — design, module map, and how the Jobs.bg
-  contract was derived
+* [ARCHITECTURE.md](ARCHITECTURE.md) — design, module map, how the Jobs.bg
+  contract was derived, and why the match score was removed
 * [OPERATIONS.md](OPERATIONS.md) — day-to-day running, tuning and recovery
+* [MODEL.md](MODEL.md) — the machine, the models measured on it, and why the
+  default is what it is
+* `evaluation/labels.json` — the hand-written labels the benchmark rests on,
+  each with the reason it was labelled that way
 
 ## Licence
 
