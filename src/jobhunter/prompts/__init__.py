@@ -35,10 +35,17 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 #   v5  added a rule-based seniority and location pre-assessment. REGRESSED:
 #       the seniority half anchored the model onto the level tag and turned a
 #       correct SKIP on a Mid-Senior role into an APPLY.
-#   v6  current. Keeps the location check, drops the seniority pre-assessment,
-#       and says outright that the level tag is the least reliable field on the
-#       page because it is chosen to widen the applicant pool.
-JOB_EVALUATION_VERSION = "v6"
+#   v6  keeps the location check, drops the seniority pre-assessment, and says
+#       outright that the level tag is the least reliable field on the page
+#       because it is chosen to widen the applicant pool.
+#   v7  current. Stopped telling the model to hedge. Up to v6 the prompt said
+#       "when genuinely torn, choose review", and every model obliged: on the
+#       14-case screen llama3.2 and gemma3 returned ZERO skips and qwen2.5 two,
+#       against 8 labelled skips. That made them statistically indistinguishable
+#       from a stub that reviews everything. v7 states the base rate — most
+#       listings are skips — lists concrete skip triggers, and defines "review"
+#       as "I could not decide" rather than "I would rather not say".
+JOB_EVALUATION_VERSION = "v7"
 COVER_LETTER_VERSION = "v1"
 
 

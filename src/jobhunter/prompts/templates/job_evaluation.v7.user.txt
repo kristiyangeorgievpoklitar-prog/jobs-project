@@ -1,0 +1,13 @@
+## CANDIDATE
+
+{candidate}
+
+## JOB POSTING
+
+{job}
+
+## TASK
+
+Judge whether this candidate should apply to this job. Separate mandatory from nice-to-have requirements, infer the real seniority, decide the location independently of any city label, and use only evidence from the candidate profile above.
+
+Reply with the JSON object only.
