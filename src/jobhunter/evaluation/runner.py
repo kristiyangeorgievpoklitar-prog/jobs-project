@@ -130,6 +130,25 @@ class LocalModelMatcher:
         )
 
 
+class MemoisingMatcher:
+    """Runs the wrapped matcher once per case and remembers the answer.
+
+    Without this, reporting both the raw and the policy-applied numbers would
+    mean two full inference passes over the dataset — an extra hour for a
+    result that is a pure function of the first pass.
+    """
+
+    def __init__(self, inner: Matcher) -> None:
+        self.inner = inner
+        self.name = inner.name
+        self._answers: dict[str, JobEvaluation] = {}
+
+    def evaluate_case(self, case: BenchmarkCase) -> JobEvaluation:
+        if case.id not in self._answers:
+            self._answers[case.id] = self.inner.evaluate_case(case)
+        return self._answers[case.id]
+
+
 class PolicyMatcher:
     """Another matcher, plus the safety rules the pipeline actually applies.
 

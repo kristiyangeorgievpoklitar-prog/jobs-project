@@ -371,3 +371,26 @@ def test_the_policy_variant_measures_what_the_candidate_actually_sees():
     assert raw.wasted_attention == 1, "the model alone recommends a job in the wrong city"
     assert guarded.wasted_attention == 0, "the policy catches it"
     assert guarded.decision_accuracy == 1.0
+
+
+def test_the_policy_variant_costs_no_extra_inference():
+    """Both reports come from one pass; a second would cost an hour."""
+    from jobhunter.domain.schemas import CandidateSnapshot
+    from jobhunter.evaluation.runner import MemoisingMatcher, PolicyMatcher
+
+    calls = {"n": 0}
+
+    class CountingMatcher:
+        name = "counting"
+
+        def evaluate_case(self, benchmark_case):
+            calls["n"] += 1
+            return JobEvaluation(decision=Decision.APPLY, confidence=0.9, is_it_role=True)
+
+    dataset = Dataset([case("a", Decision.APPLY), case("b", Decision.SKIP)])
+    memoised = MemoisingMatcher(CountingMatcher())
+
+    run_benchmark(memoised, dataset)
+    run_benchmark(PolicyMatcher(memoised, CandidateSnapshot(location="Varna")), dataset)
+
+    assert calls["n"] == len(dataset), "the second report must reuse the first pass"

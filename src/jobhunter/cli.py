@@ -767,6 +767,7 @@ def benchmark(
         AlwaysSkipMatcher,
         LegacyMatcher,
         LocalModelMatcher,
+        MemoisingMatcher,
         PolicyMatcher,
         run_benchmark,
     )
@@ -816,10 +817,12 @@ def benchmark(
                 )
                 raise typer.Exit(code=1)
             matcher.provider.prompt = job_evaluation_prompt(prompt_version)
-        matchers.append(matcher)
+        # Memoised so the policy variant costs no extra inference.
+        memoised = MemoisingMatcher(matcher)
+        matchers.append(memoised)
         # What the candidate actually sees: the same evaluation after the
         # pipeline's safety rules have had their say.
-        matchers.append(PolicyMatcher(matcher, candidate, context.decision_policy))
+        matchers.append(PolicyMatcher(memoised, candidate, context.decision_policy))
 
     for matcher in matchers:
         report = run_benchmark(matcher, dataset)
