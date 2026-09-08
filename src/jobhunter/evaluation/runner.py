@@ -130,6 +130,28 @@ class LocalModelMatcher:
         )
 
 
+class AlwaysReviewMatcher:
+    """The other degenerate baseline: show the candidate everything.
+
+    It scores 100% worth-surfacing recall and zero harmful errors, because it
+    never declines anything — which is exactly why it is here. A matcher that
+    hedges every listing produces those same two headline numbers while doing
+    none of the work, and llama3.2:3b was measured answering REVIEW to 13 of 14
+    cases. Without this row that result reads as excellent.
+    """
+
+    name = "always_review_baseline"
+
+    def evaluate_case(self, case: BenchmarkCase) -> JobEvaluation:
+        return JobEvaluation(
+            decision=Decision.REVIEW,
+            confidence=0.5,
+            reasoning="Baseline that reviews every listing.",
+            source=self.name,
+            latency_ms=0,
+        )
+
+
 class MemoisingMatcher:
     """Runs the wrapped matcher once per case and remembers the answer.
 

@@ -394,3 +394,24 @@ def test_the_policy_variant_costs_no_extra_inference():
     run_benchmark(PolicyMatcher(memoised, CandidateSnapshot(location="Varna")), dataset)
 
     assert calls["n"] == len(dataset), "the second report must reuse the first pass"
+
+
+def test_hedging_everything_scores_perfectly_on_recall_and_harm():
+    """The trap the always-review baseline exists to expose.
+
+    A matcher that answers REVIEW to everything gets 100% worth-surfacing recall
+    and zero harmful errors while doing no work at all. llama3.2:3b was measured
+    doing almost exactly this, and without the baseline beside it the result
+    reads as a strong one.
+    """
+    from jobhunter.evaluation.runner import AlwaysReviewMatcher
+
+    cases = [case("a", Decision.APPLY), case("b", Decision.REVIEW)] + [
+        case(f"s{i}", Decision.SKIP) for i in range(8)
+    ]
+    report = run_benchmark(AlwaysReviewMatcher(), Dataset(cases))
+
+    assert report.worth_surfacing_recall == 1.0
+    assert report.harmful_errors == 0
+    assert report.decision_accuracy == pytest.approx(0.1), "and it is still nearly always wrong"
+    assert report.surfaced_precision == pytest.approx(0.2), "it buries the good jobs in noise"

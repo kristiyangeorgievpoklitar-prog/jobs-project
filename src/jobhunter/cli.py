@@ -764,6 +764,7 @@ def benchmark(
     from jobhunter.evaluation.dataset import Dataset, load_dataset
     from jobhunter.evaluation.metrics import format_report
     from jobhunter.evaluation.runner import (
+        AlwaysReviewMatcher,
         AlwaysSkipMatcher,
         LegacyMatcher,
         LocalModelMatcher,
@@ -789,7 +790,7 @@ def benchmark(
 
     console.print(f"Dataset: {len(dataset)} cases {dataset.decision_counts}\n")
 
-    matchers: list = [AlwaysSkipMatcher()]
+    matchers: list = [AlwaysSkipMatcher(), AlwaysReviewMatcher()]
     if include_legacy:
         matchers.append(LegacyMatcher(candidate, context.scoring_config))
     for model in [m.strip() for m in models.split(",") if m.strip()] or [
