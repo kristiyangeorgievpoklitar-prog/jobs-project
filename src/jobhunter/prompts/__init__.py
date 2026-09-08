@@ -38,14 +38,19 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 #   v6  keeps the location check, drops the seniority pre-assessment, and says
 #       outright that the level tag is the least reliable field on the page
 #       because it is chosen to widen the applicant pool.
-#   v7  current. Stopped telling the model to hedge. Up to v6 the prompt said
+#   v7  stopped telling the model to hedge. Up to v6 the prompt said
 #       "when genuinely torn, choose review", and every model obliged: on the
 #       14-case screen llama3.2 and gemma3 returned ZERO skips and qwen2.5 two,
 #       against 8 labelled skips. That made them statistically indistinguishable
 #       from a stub that reviews everything. v7 states the base rate — most
 #       listings are skips — lists concrete skip triggers, and defines "review"
 #       as "I could not decide" rather than "I would rather not say".
-JOB_EVALUATION_VERSION = "v7"
+#   v8  current. Describes every field the schema demands. Six of the fourteen
+#       required fields were never named in the prompt — the grammar forces the
+#       model to emit them regardless, so it filled them blind. is_it_role came
+#       back false for EVERY listing, including "Junior C++ Developer", and the
+#       policy skipped all 41 benchmark cases as non-software work.
+JOB_EVALUATION_VERSION = "v8"
 COVER_LETTER_VERSION = "v1"
 
 

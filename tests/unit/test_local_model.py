@@ -341,3 +341,34 @@ class TestVerbosityDoesNotDiscardAnEvaluation:
         """Leniency is about verbosity, not about meaning."""
         payload = {**VALID_RESPONSE, "seniority": "extremely_senior"}
         assert LocalModelProvider.parse(json.dumps(payload)) is None
+
+
+class TestThePromptExplainsWhatTheSchemaDemands:
+    """The grammar forces every required field; the prompt must ask for them.
+
+    A field present in the schema but absent from the prompt is still emitted —
+    the model has no choice — but it is filled blind. Measured, `is_it_role` was
+    never mentioned in prompts v2 to v7 and came back false for every single
+    listing, including "Junior C++ Developer" and "Junior Software Engineer",
+    which made the policy skip all 41 benchmark cases as non-software work.
+    """
+
+    def test_every_required_field_is_named_in_the_prompt(self):
+        from jobhunter.prompts import job_evaluation_prompt
+
+        prompt = job_evaluation_prompt()
+        unexplained = [
+            field for field in _response_schema()["required"] if field not in prompt.system
+        ]
+        assert unexplained == [], (
+            f"the schema demands {unexplained} but the prompt never mentions them, "
+            "so the model fills them blind"
+        )
+
+    def test_the_enum_values_are_offered_to_the_model(self):
+        """A constrained field the model cannot see the options for is a guess."""
+        from jobhunter.prompts import job_evaluation_prompt
+
+        system = job_evaluation_prompt().system
+        for value in ("junior_mid", "mid_senior", "hybrid_city", "other_city", "insufficient"):
+            assert value in system, f"{value!r} is a legal answer the prompt never offers"
