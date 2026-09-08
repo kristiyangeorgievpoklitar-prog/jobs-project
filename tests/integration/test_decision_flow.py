@@ -209,3 +209,34 @@ def test_agreement_between_the_system_and_the_candidate_is_recorded(session, can
     feedback = record_feedback(session, row.id, action="apply")
     assert feedback.predicted_decision == "apply"
     assert feedback.evaluation_id is not None
+
+
+def test_evaluations_made_against_an_older_profile_are_flagged_not_hidden(session, candidate):
+    """An outdated verdict beats an empty dashboard - but it must say so."""
+    from jobhunter.profile.context import candidate_fingerprint
+
+    evaluator = JobEvaluator(ScriptedModel({"Junior PHP Developer": "apply"}))
+    row, normalized = add_job(session, "Junior PHP Developer")
+    evaluator.evaluate(session, row.id, normalized, candidate)
+
+    upskilled = candidate.model_copy(update={"skills": ["php", "go", "kubernetes"]})
+    briefing = build_briefing(
+        session, candidate_fingerprint=candidate_fingerprint(upskilled, None)
+    )
+
+    assert briefing.stale_count == 1
+    assert len(briefing.apply) == 1, "the job is still shown"
+    assert "older version of your profile" in render_briefing(briefing)
+
+
+def test_nothing_is_flagged_stale_when_the_profile_is_unchanged(session, candidate):
+    from jobhunter.profile.context import candidate_fingerprint
+
+    evaluator = JobEvaluator(ScriptedModel({"Junior PHP Developer": "apply"}))
+    row, normalized = add_job(session, "Junior PHP Developer")
+    evaluator.evaluate(session, row.id, normalized, candidate)
+
+    briefing = build_briefing(
+        session, candidate_fingerprint=candidate_fingerprint(candidate, None)
+    )
+    assert briefing.stale_count == 0

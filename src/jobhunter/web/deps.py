@@ -245,3 +245,23 @@ def job_detail(session: Session, job_id: int) -> dict[str, Any] | None:
         "evaluation_history": [row for row in evaluation_rows if not row.is_current][:5],
         "feedback": feedback,
     }
+
+
+def current_candidate_fingerprint(session: Session) -> str | None:
+    """Hash of the candidate as they are right now, for staleness checks."""
+    from jobhunter.db.models import CVFile
+    from jobhunter.profile.context import candidate_fingerprint
+    from jobhunter.profile.profile_store import get_active_profile, to_snapshot
+
+    try:
+        candidate = to_snapshot(get_active_profile(session))
+    except Exception:
+        return None
+
+    cv = (
+        session.query(CVFile)
+        .filter(CVFile.is_available.is_(True), CVFile.extracted_text.isnot(None))
+        .order_by(CVFile.is_default.desc(), CVFile.id)
+        .first()
+    )
+    return candidate_fingerprint(candidate, cv.extracted_text if cv else None)

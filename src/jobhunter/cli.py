@@ -575,10 +575,16 @@ def today(
 ) -> None:
     """What is worth applying to right now."""
     from jobhunter.briefing import build_briefing, render_briefing
+    from jobhunter.web.deps import current_candidate_fingerprint
 
     context = AppContext(configure_logs=False)
     with context.session() as session:
-        briefing = build_briefing(session, limit=limit, since_hours=hours)
+        briefing = build_briefing(
+            session,
+            limit=limit,
+            since_hours=hours,
+            candidate_fingerprint=current_candidate_fingerprint(session),
+        )
         console.print(render_briefing(briefing))
 
         for heading, bucket, style in (

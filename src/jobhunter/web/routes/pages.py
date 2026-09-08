@@ -22,7 +22,9 @@ async def today(request: Request) -> HTMLResponse:
 
     context = deps.get_context()
     with context.session() as session:
-        briefing = build_briefing(session, limit=12)
+        briefing = build_briefing(
+            session, limit=12, candidate_fingerprint=deps.current_candidate_fingerprint(session)
+        )
         runs = deps.recent_runs(session)
 
         # Templates cannot call the explain helper, so precompute the phrase.

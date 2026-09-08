@@ -6,6 +6,7 @@
 <p class="subtitle">
   {{ model_label }}
   {% if degraded_count %} &middot; <span class="warn-text">{{ degraded_count }} could not be evaluated</span>{% endif %}
+  {% if briefing.stale_count %} &middot; <span class="warn-text">{{ briefing.stale_count }} judged against an older profile</span>{% endif %}
 </p>
 
 <div class="decision-summary">

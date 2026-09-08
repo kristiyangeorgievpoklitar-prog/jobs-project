@@ -30,6 +30,10 @@ class Briefing:
     skipped_count: int = 0
     new_since: datetime | None = None
     degraded_count: int = 0
+    # Evaluations made against an older version of the profile or CV. They are
+    # still shown — an outdated verdict beats an empty dashboard — but the fact
+    # that they are outdated has to be visible, not silent.
+    stale_count: int = 0
 
     @property
     def total_worth_attention(self) -> int:
@@ -40,8 +44,19 @@ class Briefing:
         return self.apply[0] if self.apply else (self.review[0] if self.review else None)
 
 
-def build_briefing(session, *, limit: int = 12, since_hours: int | None = None) -> Briefing:
-    """Collect the current decisions, ranked by the candidate's own history."""
+def build_briefing(
+    session,
+    *,
+    limit: int = 12,
+    since_hours: int | None = None,
+    candidate_fingerprint: str | None = None,
+) -> Briefing:
+    """Collect the current decisions, ranked by the candidate's own history.
+
+    ``candidate_fingerprint`` is the hash of the profile as it stands now; any
+    evaluation carrying a different one was made about an older version of the
+    candidate and is counted as stale.
+    """
     stmt = (
         select(Job, JobEvaluationRow)
         .join(JobEvaluationRow, JobEvaluationRow.job_id == Job.id)
@@ -53,6 +68,16 @@ def build_briefing(session, *, limit: int = 12, since_hours: int | None = None) 
     rows = session.execute(stmt).all()
     preferences = load_preferences(session)
 
+    stale = (
+        sum(
+            1
+            for _, row in rows
+            if row.candidate_fingerprint and row.candidate_fingerprint != candidate_fingerprint
+        )
+        if candidate_fingerprint
+        else 0
+    )
+
     pairs = [(job, to_domain(row)) for job, row in rows]
     ranked = rank_jobs(pairs, preferences)
 
@@ -60,6 +85,7 @@ def build_briefing(session, *, limit: int = 12, since_hours: int | None = None) 
         skipped_count=sum(1 for r in ranked if r.evaluation.decision is Decision.SKIP),
         degraded_count=sum(1 for r in ranked if r.evaluation.degraded),
         new_since=utcnow() - timedelta(hours=since_hours) if since_hours else None,
+        stale_count=stale,
     )
     briefing.apply = [r for r in ranked if r.evaluation.decision is Decision.APPLY][:limit]
     briefing.review = [r for r in ranked if r.evaluation.decision is Decision.REVIEW][:limit]
@@ -108,5 +134,12 @@ def render_briefing(briefing: Briefing) -> str:
     if briefing.degraded_count:
         lines.append("")
         lines.append(f"{briefing.degraded_count} listing(s) could not be evaluated automatically.")
+
+    if briefing.stale_count:
+        lines.append("")
+        lines.append(
+            f"{briefing.stale_count} listing(s) were judged against an older version of your "
+            "profile or CV. Re-run `jobhunter evaluate --force` to refresh them."
+        )
 
     return "\n".join(lines)
