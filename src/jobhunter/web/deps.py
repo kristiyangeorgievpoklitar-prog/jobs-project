@@ -17,7 +17,7 @@ from jobhunter.db.models import (
     JobMatch,
     Notification,
 )
-from jobhunter.domain.enums import JobState, Recommendation
+from jobhunter.domain.enums import JobState
 
 _context: AppContext | None = None
 
@@ -122,19 +122,28 @@ def overview_stats(session: Session) -> dict[str, Any]:
     def count(stmt) -> int:
         return session.scalar(stmt) or 0
 
-    latest = latest_match_subquery()
-    high_match = count(
-        select(func.count())
-        .select_from(JobMatch)
-        .where(JobMatch.id.in_(select(latest.c.match_id)), JobMatch.score >= 75)
-    )
-    apply_ready = count(
-        select(func.count())
-        .select_from(JobMatch)
-        .where(
-            JobMatch.id.in_(select(latest.c.match_id)),
-            JobMatch.recommendation == Recommendation.APPLY,
+    # Counted from the current evaluations, not the legacy match rows: the scan
+    # no longer writes those, so counting them would report stale numbers.
+    from jobhunter.db.models import JobEvaluation as EvaluationRow
+
+    def decisions(value: str) -> int:
+        return count(
+            select(func.count())
+            .select_from(EvaluationRow)
+            .where(EvaluationRow.is_current.is_(True), EvaluationRow.decision == value)
         )
+
+    apply_ready = decisions("apply")
+    high_match = apply_ready + decisions("review")
+    evaluated = count(
+        select(func.count())
+        .select_from(EvaluationRow)
+        .where(EvaluationRow.is_current.is_(True))
+    )
+    degraded = count(
+        select(func.count())
+        .select_from(EvaluationRow)
+        .where(EvaluationRow.is_current.is_(True), EvaluationRow.degraded.is_(True))
     )
 
     return {
@@ -145,6 +154,8 @@ def overview_stats(session: Session) -> dict[str, Any]:
         "jobs_relevant": count(select(func.count()).select_from(Job).where(Job.is_it.is_(True))),
         "high_match": high_match,
         "apply_ready": apply_ready,
+        "evaluated": evaluated,
+        "degraded": degraded,
         "pending_review": count(
             select(func.count()).select_from(Job).where(Job.state == JobState.REVIEW)
         ),
