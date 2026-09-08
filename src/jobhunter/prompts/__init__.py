@@ -20,6 +20,24 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 
 # Bumped whenever the meaning of a prompt changes. Cached evaluations produced
 # under an older version are recomputed rather than trusted.
+#
+# The lineage, kept because each step was a response to something measured and
+# the reasons are worth more than the diffs:
+#
+#   v1  first draft. Put responsibilities in mandatory_requirements, ignored
+#       "considered an advantage, not a requirement", and overran its own caps.
+#   v2  separated responsibilities from requirements; reordered the schema so
+#       the evidence fields are generated before the decision.
+#   v3  hardened against inventing skills, after qwen3:1.7b credited the
+#       candidate with Rust, Python and React, none of which they have.
+#   v4  taught it the site's own fields, in particular that "Възможност за
+#       работа от вкъщи" is a hybrid office job and not a remote one.
+#   v5  added a rule-based seniority and location pre-assessment. REGRESSED:
+#       the seniority half anchored the model onto the level tag and turned a
+#       correct SKIP on a Mid-Senior role into an APPLY.
+#   v6  current. Keeps the location check, drops the seniority pre-assessment,
+#       and says outright that the level tag is the least reliable field on the
+#       page because it is chosen to widen the applicant pool.
 JOB_EVALUATION_VERSION = "v6"
 COVER_LETTER_VERSION = "v1"
 
