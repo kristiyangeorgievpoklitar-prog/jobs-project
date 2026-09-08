@@ -32,9 +32,7 @@ def response(decision: str, *, strengths=None, seniority="junior") -> str:
             "location_reasoning": "Varna office.",
             "experience_fit": "acceptable",
             "mandatory_requirements": [{"requirement": "PHP", "candidate_fit": "strong"}],
-            "nice_to_have_requirements": [
-                {"requirement": "Docker", "candidate_fit": "missing"}
-            ],
+            "nice_to_have_requirements": [{"requirement": "Docker", "candidate_fit": "missing"}],
             "major_strengths": strengths or ["PHP", "Laravel"],
             "major_risks": ["No Docker experience"],
             "reasoning": "Strong PHP overlap and a junior-level bar.",

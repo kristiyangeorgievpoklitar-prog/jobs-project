@@ -270,9 +270,7 @@ def test_a_gated_job_never_reaches_the_model(session, candidate):
     assert stats.gated == 1
 
 
-def test_a_round_trip_through_the_database_preserves_the_evaluation(
-    session, candidate, stored_job
-):
+def test_a_round_trip_through_the_database_preserves_the_evaluation(session, candidate, stored_job):
     row, normalized = stored_job
     evaluator = build(CountingProvider(model="m:1b"))
     original = evaluator.evaluate(session, row.id, normalized, candidate)

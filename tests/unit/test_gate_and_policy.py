@@ -82,7 +82,7 @@ def test_gate_passes_anything_a_junior_could_want(title, candidate):
 
 
 def test_gate_does_not_treat_junior_senior_wording_as_senior(candidate):
-    """"Junior Developer (reporting to a Senior)" is still a junior listing."""
+    """ "Junior Developer (reporting to a Senior)" is still a junior listing."""
     result = Stage1Gate().check(job("Junior Developer - Senior Team"), candidate)
     assert result.passed
 
@@ -95,9 +95,7 @@ def test_gate_never_judges_skill_overlap(candidate):
 
 def test_gate_rejects_a_listing_the_candidate_already_skipped(candidate):
     listing = job("Junior Developer")
-    result = Stage1Gate().check(
-        listing, candidate, rejected_fingerprints={listing.fingerprint}
-    )
+    result = Stage1Gate().check(listing, candidate, rejected_fingerprints={listing.fingerprint})
     assert not result.passed
     assert result.reason == "already_rejected"
 

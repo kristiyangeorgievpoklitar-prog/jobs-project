@@ -136,9 +136,7 @@ def overview_stats(session: Session) -> dict[str, Any]:
     apply_ready = decisions("apply")
     high_match = apply_ready + decisions("review")
     evaluated = count(
-        select(func.count())
-        .select_from(EvaluationRow)
-        .where(EvaluationRow.is_current.is_(True))
+        select(func.count()).select_from(EvaluationRow).where(EvaluationRow.is_current.is_(True))
     )
     degraded = count(
         select(func.count())

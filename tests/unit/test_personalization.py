@@ -186,7 +186,9 @@ def test_a_job_with_many_tags_is_not_favoured_merely_for_having_them(session):
     """The shift averages its matches, so tag count does not become a score."""
     many = make_job(session, title="Many", tech=["php"] * 1 + ["laravel", "mysql", "css"])
     few = make_job(session, title="Few", tech=["php"])
-    preferences = {t: 0.5 for t in [("technology", x) for x in ("php", "laravel", "mysql", "css")]}
+    preferences = dict.fromkeys(
+        [("technology", x) for x in ("php", "laravel", "mysql", "css")], 0.5
+    )
 
     shift_many, _ = preference_shift(many, preferences)
     shift_few, _ = preference_shift(few, preferences)

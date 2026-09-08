@@ -197,7 +197,9 @@ class TestTemplateCvIsNeverSelected:
         return cv
 
     def test_an_unfilled_template_is_skipped_even_when_the_language_matches(self, session):
-        real = self._add(session, "CV_EN.pdf", Language.EN, "Kristiyan Poklitar\nPHP developer.", True)
+        real = self._add(
+            session, "CV_EN.pdf", Language.EN, "Kristiyan Poklitar\nPHP developer.", True
+        )
         self._add(
             session,
             "CV_IT_Junior_BG.pdf",
