@@ -72,6 +72,7 @@ src/jobhunter/
 ├── personalization/           learner.py (preferences), ranker.py (ordering)
 ├── evaluation/                dataset.py, metrics.py, runner.py, build.py
 ├── briefing.py                The daily "what should I apply to today"
+├── today.py                   Today's Jobs: the date-bounded daily pass
 ├── profile/                   cv.py, profile_store.py, context.py (candidate text)
 ├── applications/              state_machine.py, dedupe.py, orchestrator.py, cover_letter.py
 ├── notifications/             console, dashboard, telegram, manager
@@ -117,6 +118,49 @@ src/jobhunter/
 Each job is processed in its own transaction. One failure is recorded as an
 `ErrorRecord` and the run continues.
 
+### The today-scan
+
+`today.py` runs the same pipeline with one bound: `ScanOptions.posted_on`. It
+changes two things and nothing else.
+
+**The site does the date filtering.** `ScanOptions.posted_on` is mapped to the
+`last` parameter behind the site's own "Публикувани" chip — the control the
+candidate clicks by hand — so a search for today returns today's listings and
+nothing else. The card date is still re-checked locally, because the wider
+windows are cumulative rather than a single day.
+
+**One digest replaces the per-job notifications.** `suppress_notifications`
+turns off the per-listing alert and the "scan completed" message; the caller
+sends a single summary instead, and only when the run found listings the
+database had never recorded. Challenge and failure notifications are never
+suppressed.
+
+Three questions are answered here and they are deliberately not the same:
+
+| | means | decides |
+|---|---|---|
+| published today | the card printed today's date | whether it is part of today's set |
+| new to this run | `upsert_job` inserted the row | whether it is **announced** |
+| discovered today | `first_seen_at` falls in today | how the **page badges** it |
+
+The last two differ on purpose. The digest must not repeat itself, so it asks
+the narrow question — did *this* run find it — and a listing a full scan stored
+an hour ago is not announced again. The page outlives any one run, so it asks
+the wider one; badging everything "already seen" after the day's second scan
+would erase the distinction the page exists to show.
+
+A listing published today and seen by an earlier scan today is shown, marked
+*already seen* by the command, and never announced twice. That is what makes running the
+command a second time cost nothing: the gate settles what it settled before,
+the evaluation cache answers for every unchanged listing, and no notification
+is sent.
+
+The two dates are also read differently, which is easy to get wrong. A card
+date has no time, so `parse_posted_date` stores it as midnight **UTC** and the
+"published today" filter follows that convention. `first_seen_at` is a real
+timestamp, so "discovered today" is the **local** day converted to UTC — in
+Bulgaria, midnight UTC falls in the middle of the previous evening.
+
 ### Why two stages
 
 A local model costs about 100 seconds per listing on the target hardware, so
@@ -157,6 +201,37 @@ of it is documented publicly.
 | `location_sid=N` | City. Verified: Sofia 1, Plovdiv 2, **Varna 3**, Burgas 4, … |
 | `is_entry_level=1` | The site's own entry-level filter. |
 | `page=N` | **Pagination, 1-indexed, 20 results per page.** |
+| `last=N` | **The "Публикувани" date filter; 2 is today.** See below. |
+
+### The publication filter
+
+The site's own "Публикувани днес" is a URL parameter, `last`, and finding it
+mattered more than anything else in this feature. It is not in the query string
+after clicking — the chip posts the form — but the filter sheet is in the
+rendered HTML, and each option is a checkbox named `last`:
+
+| `last` | Option | Covers |
+|---|---|---|
+| 2 | Днес | today only |
+| 3 | Вчера | yesterday only |
+| 4 | Последните 3 дни | today back 2 days |
+| 5 | Последните 7 дни | today back 6 days |
+| 6 | Последните 14 дни | today back 13 days |
+
+2 and 3 are single days; 4-6 are cumulative windows ending today, so a day
+picked out of one still has to be sieved by its card date. Nothing older than a
+fortnight can be expressed, and `published_window` returns `None` there — the
+crawl then reads unfiltered pages and filters locally.
+
+**Results are not ordered by date, and assuming they were was a real bug.** The
+first version of this feature paged until it hit a page with nothing from the
+target date, on the theory that pages run newest first. Measured live on
+2026-09-09, IT/Varna: page 1 opened with 02.09, ran down to 18.08, then began a
+second block whose first card — `вчера` — was the newest on the page. The
+`last=2` search reported exactly **one** listing that day, and it was not on
+page 1 at all, so the early stop reported a quiet day and hid it. Exhaustion is
+now judged by a page repeating listing ids already seen, never by the date
+sieve.
 
 Pagination was the one genuinely non-obvious part. The page looks like an
 infinite scroll, but scrolling loads nothing — it reaches the exact bottom and
@@ -166,7 +241,13 @@ confirmed by checking that consecutive pages share zero listing ids.
 
 **Listing card** — `div.mdc-layout-grid__inner` containing `a[href*="/job/"]`
 
-* `.card-date` — `DD.MM.YY`
+* `.card-date` — `DD.MM.YY`, **or `днес` / `вчера`** for the last two days
+  (`онзи ден` also appears). This is not a cosmetic detail: measured live, an
+  IT search over Sofia returned twenty cards on page 1 reading *only* those
+  words and not one numeric date, so a parser that understands `DD.MM.YY` alone
+  cannot see a single listing published today. `parse_posted_date` resolves the
+  words against the real current date — the site wrote them when the page was
+  fetched, so asking for an earlier day must still read `вчера` as yesterday.
 * `.scroll-area[data-id]` — the listing id
 * `.card-info` — `Месторабота: X; Ниво …; Години опит от N до M; Отпуск …`.
   Listings in the searched city omit the `Месторабота:` label and lead with the

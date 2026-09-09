@@ -183,6 +183,119 @@ class TestScanCommand:
         assert "ollama serve" in result.output
 
 
+class TestTodayScanCommand:
+    """The command reports; it never applies, and its exit code says what happened."""
+
+    @staticmethod
+    def _outcome(job_id: int, title: str, decision: str, *, is_new: bool):
+        from jobhunter.domain.evaluation import Decision, JobEvaluation, RequirementAssessment
+        from jobhunter.pipeline.runner import JobOutcome
+
+        return JobOutcome(
+            job_id=job_id,
+            title=title,
+            company="Example EOOD",
+            location="Варна",
+            source_url=f"https://www.jobs.bg/job/{job_id}",
+            evaluation=JobEvaluation(
+                decision=Decision(decision),
+                confidence=0.8,
+                major_strengths=["PHP matches"],
+                major_risks=["Small team"],
+                mandatory_requirements=[
+                    RequirementAssessment(requirement="PHP", candidate_fit="strong")
+                ],
+                source="local",
+            ),
+            is_new=is_new,
+        )
+
+    def _install(self, monkeypatch, outcomes, *, status: str = "succeeded"):
+        from datetime import date
+
+        from jobhunter.domain.enums import RunStatus
+        from jobhunter.domain.schemas import ScanStats
+        from jobhunter.today import TodayScanResult
+
+        result = TodayScanResult(
+            day=date(2026, 9, 9),
+            location="Varna",
+            stats=ScanStats(jobs_seen=len(outcomes)),
+            status=RunStatus(status),
+            outcomes=list(outcomes),
+            notified=any(o.is_new for o in outcomes),
+        )
+        monkeypatch.setattr("jobhunter.today.run_today_scan", lambda *a, **k: result)
+        monkeypatch.setattr(
+            "jobhunter.ai.local_model.LocalModelProvider.is_available", lambda self: True
+        )
+        return result
+
+    def test_lists_todays_findings_with_their_decisions(self, cli_env, monkeypatch) -> None:
+        seed(cli_env)
+        self._install(
+            monkeypatch,
+            [
+                self._outcome(1, "Junior PHP Developer", "apply", is_new=True),
+                self._outcome(2, "Junior QA Engineer", "review", is_new=False),
+                self._outcome(3, "Senior Java Architect", "skip", is_new=False),
+            ],
+        )
+        result = runner.invoke(cli_module.app, ["today-scan"])
+
+        assert result.exit_code == 0
+        assert "Junior PHP Developer" in result.output
+        assert "APPLY" in result.output and "REVIEW" in result.output and "SKIP" in result.output
+        assert "already seen" in result.output
+        assert "must have: PHP" in result.output
+        assert "Nothing was submitted" in result.output
+
+    def test_nothing_new_exits_one(self, cli_env, monkeypatch) -> None:
+        seed(cli_env)
+        self._install(
+            monkeypatch, [self._outcome(1, "Junior PHP Developer", "review", is_new=False)]
+        )
+        assert runner.invoke(cli_module.app, ["today-scan"]).exit_code == 1
+
+    def test_an_empty_day_exits_one(self, cli_env, monkeypatch) -> None:
+        seed(cli_env)
+        self._install(monkeypatch, [])
+        result = runner.invoke(cli_module.app, ["today-scan"])
+        assert result.exit_code == 1
+        assert "Nothing has been published today yet." in result.output
+
+    def test_a_blocked_scan_exits_two(self, cli_env, monkeypatch) -> None:
+        seed(cli_env)
+        self._install(monkeypatch, [], status="blocked")
+        result = runner.invoke(cli_module.app, ["today-scan"])
+        assert result.exit_code == 2
+        assert "blocked" in result.output
+
+    def test_refuses_to_run_without_the_model_it_is_configured_to_use(
+        self, cli_env, monkeypatch
+    ) -> None:
+        monkeypatch.setattr(
+            "jobhunter.ai.local_model.LocalModelProvider.is_available", lambda self: False
+        )
+        result = runner.invoke(cli_module.app, ["today-scan"])
+        assert result.exit_code == 2
+        assert "not reachable" in result.output
+
+    def test_a_malformed_date_is_refused(self, cli_env, monkeypatch) -> None:
+        monkeypatch.setattr(
+            "jobhunter.ai.local_model.LocalModelProvider.is_available", lambda self: True
+        )
+        result = runner.invoke(cli_module.app, ["today-scan", "--date", "yesterday"])
+        assert result.exit_code == 2
+        assert "not a date" in result.output
+
+    def test_today_still_works_and_points_at_the_scan(self, cli_env) -> None:
+        seed(cli_env)
+        result = runner.invoke(cli_module.app, ["today"])
+        assert result.exit_code == 0
+        assert "today-scan" in result.output
+
+
 class TestApplyCommand:
     def test_reports_a_manual_step(self, cli_env, monkeypatch) -> None:
         job_id = seed(cli_env)

@@ -15,10 +15,15 @@ the mandatory and nice-to-have requirements and how each one was judged.
 Then tell it what you did. That is not bookkeeping: feedback is the only ground
 truth the system ever gets, and it drives what you are shown next.
 
+The **Today** tab is the narrower question: only listings Jobs.bg published
+today, each marked *new* or *already seen*, with its mandatory requirements,
+warnings and a direct link to the listing.
+
 Terminal equivalents:
 
 ```bash
-uv run jobhunter today                                # the morning summary
+uv run jobhunter today-scan                           # go and look for today's listings
+uv run jobhunter today                                # the morning summary, from storage
 uv run jobhunter evaluate                             # judge anything new
 uv run jobhunter feedback 42 apply                    # you applied
 uv run jobhunter feedback 42 skip --reason too_senior # and why not
@@ -40,14 +45,25 @@ A first scan of ~90 listings therefore takes upwards of an hour; the next
 morning's scan usually takes minutes. Run it on a schedule overnight rather than
 waiting on it.
 
+`today-scan` is the short version of the same thing. It asks the site for the
+day using its own "Публикувани днес" filter rather than reading history, so it
+costs roughly *(new listings today) x 100 s* — minutes, not an evening. Running
+it again the same day costs almost nothing: every listing it re-sees is answered
+from the evaluation cache, and no second notification is sent.
+
 ## Scheduling
 
 ```bash
-uv run jobhunter schedule
+uv run jobhunter schedule            # the full scan, on SCAN_INTERVAL_HOURS
+uv run jobhunter schedule --daily    # today-scan, once a day at SCAN_AT_HOUR
 ```
 
 Runs daily at `SCAN_AT_HOUR`. Overlapping runs are coalesced and only one may be
-in flight, so a slow scan can never pile up.
+in flight, so a slow scan can never pile up. `--daily` is the same scheduler
+with a different task; it never applies to anything, whatever `AUTO_APPLY` says.
+
+For the daily habit, `--daily` is the one to run: it wakes up, reads what was
+published that morning, sends one summary if there is anything new, and stops.
 
 As a systemd user service (`~/.config/systemd/user/jobhunter.service`):
 
@@ -59,7 +75,7 @@ After=graphical-session.target
 [Service]
 Type=simple
 WorkingDirectory=%h/Desktop/jobs project
-ExecStart=%h/.local/bin/uv run jobhunter schedule
+ExecStart=%h/.local/bin/uv run jobhunter schedule --daily
 Restart=on-failure
 Environment=DISPLAY=:0
 

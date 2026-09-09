@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from jobhunter.context import AppContext
 from jobhunter.db.models import Application, Job, Notification
-from jobhunter.domain.enums import JobState, Recommendation
+from jobhunter.domain.enums import JobState, Recommendation, Seniority
 from jobhunter.domain.schemas import MatchResult
 from jobhunter.pipeline.repository import record_match, upsert_job
 from jobhunter.profile.profile_store import update_profile
@@ -48,10 +48,103 @@ def client(settings) -> TestClient:
     return TestClient(create_app(context))
 
 
+def seed_today(context: AppContext, *, decision: str = "apply") -> int:
+    """A listing published today, with a current evaluation, as a scan leaves it."""
+    from jobhunter.domain.evaluation import (
+        Decision,
+        JobEvaluation,
+        LocationFit,
+        RequirementAssessment,
+    )
+    from jobhunter.pipeline.evaluation_store import store
+    from jobhunter.today import local_today
+
+    printed = local_today().strftime("%d.%m.%y")
+    with context.session() as session:
+        job, _ = upsert_job(
+            session,
+            make_job(source_job_id="77", title="Junior Laravel Developer", posted_at_raw=printed),
+        )
+        store(
+            session,
+            job.id,
+            JobEvaluation(
+                decision=Decision(decision),
+                confidence=0.82,
+                recommendation="Worth applying.",
+                seniority=Seniority.JUNIOR,
+                location_fit=LocationFit.EXACT_CITY,
+                mandatory_requirements=[
+                    RequirementAssessment(requirement="PHP 8", candidate_fit="strong")
+                ],
+                major_strengths=["Laravel matches your stack"],
+                major_risks=["The team is small"],
+                source="local",
+            ),
+            candidate_fingerprint="fp",
+        )
+        return job.id
+
+
+class TestTodayJobsPage:
+    """The page answers "what appeared today", not "what is in the database"."""
+
+    def test_lists_a_listing_published_today(self, client: TestClient) -> None:
+        seed_today(client.app.state.context)
+        body = client.get("/today").text
+        assert "Today's Jobs" in body
+        assert "Junior Laravel Developer" in body
+        assert "PHP 8" in body  # a mandatory requirement
+        assert "The team is small" in body  # a warning
+        assert "https://www.jobs.bg/job/77" in body  # the direct link
+
+    def test_marks_a_listing_first_seen_today_as_new(self, client: TestClient) -> None:
+        seed_today(client.app.state.context)
+        assert ">new<" in client.get("/today").text
+
+    def test_marks_an_older_discovery_as_already_seen(self, client: TestClient) -> None:
+        from datetime import timedelta
+
+        context = client.app.state.context
+        job_id = seed_today(context)
+        with context.session() as session:
+            job = session.get(Job, job_id)
+            job.first_seen_at = job.first_seen_at - timedelta(days=2)
+        assert "already seen" in client.get("/today").text
+
+    def test_counts_the_decisions(self, client: TestClient) -> None:
+        seed_today(client.app.state.context, decision="review")
+        body = client.get("/today").text
+        assert "new today" in body
+        assert "review" in body
+
+    def test_a_quiet_day_says_so(self, client: TestClient) -> None:
+        body = client.get("/today").text
+        assert "Nothing published today has been evaluated yet." in body
+
+    def test_a_listing_from_another_day_is_not_shown(self, client: TestClient) -> None:
+        """The seeded fixture jobs carry no publication date at all."""
+        assert "Junior PHP Developer" not in client.get("/today").text
+
+    def test_scanning_today_is_offered_and_never_submits(self, client: TestClient) -> None:
+        body = client.get("/today").text
+        assert "/actions/today-scan" in body
+        assert "Nothing is ever submitted automatically." in body
+
+
 class TestPages:
     @pytest.mark.parametrize(
         "path",
-        ["/", "/overview", "/jobs", "/applications", "/notifications", "/settings", "/health"],
+        [
+            "/",
+            "/today",
+            "/overview",
+            "/jobs",
+            "/applications",
+            "/notifications",
+            "/settings",
+            "/health",
+        ],
     )
     def test_pages_render(self, client: TestClient, path: str) -> None:
         response = client.get(path)

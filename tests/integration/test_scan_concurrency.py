@@ -139,14 +139,14 @@ def test_the_evaluation_is_still_persisted(file_database):
     assert evaluation.decision.value == "review"
 
     with database.session() as session:
-        stored = session.execute(
-            Job.__table__.select().where(Job.__table__.c.id == job_id)
-        ).first()
+        stored = session.execute(Job.__table__.select().where(Job.__table__.c.id == job_id)).first()
         assert stored is not None
 
-    rows = sqlite3.connect(db_path).execute(
-        "SELECT decision, is_current FROM job_evaluations WHERE job_id = ?", (job_id,)
-    ).fetchall()
+    rows = (
+        sqlite3.connect(db_path)
+        .execute("SELECT decision, is_current FROM job_evaluations WHERE job_id = ?", (job_id,))
+        .fetchall()
+    )
     assert rows == [("review", 1)]
 
 

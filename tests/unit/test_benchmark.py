@@ -303,9 +303,11 @@ def test_the_longest_real_prompt_fits_the_configured_context():
     db = _Path("data/jobhunter.db")
     cv_text = None
     if db.exists():
-        row = sqlite3.connect(db).execute(
-            "SELECT extracted_text FROM cv_files WHERE extracted_text IS NOT NULL LIMIT 1"
-        ).fetchone()
+        row = (
+            sqlite3.connect(db)
+            .execute("SELECT extracted_text FROM cv_files WHERE extracted_text IS NOT NULL LIMIT 1")
+            .fetchone()
+        )
         cv_text = row[0] if row else None
 
     candidate = CandidateSnapshot(

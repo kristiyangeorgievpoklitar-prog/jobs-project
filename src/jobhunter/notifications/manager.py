@@ -96,6 +96,56 @@ class NotificationManager:
             )
         )
 
+    def today_digest(
+        self,
+        *,
+        new_count: int,
+        apply_count: int,
+        review_count: int,
+        skip_count: int,
+        top_matches: list[tuple[str, str]],
+        location: str,
+    ) -> None:
+        """One message for a whole day's new listings.
+
+        Deliberately a digest rather than one notification per job: the daily
+        scan finds a handful of listings, and four separate buzzes for four
+        listings is how a useful alert becomes one that gets muted. The caller
+        decides whether there is anything to say — see
+        :func:`jobhunter.today_scan.run_today_scan`.
+        """
+        plural = "" if new_count == 1 else "s"
+        headline = f"{new_count} new IT job{plural} in {location}"
+        lines = [
+            headline,
+            "",
+            f"\U0001f525 {apply_count} APPLY",
+            f"\U0001f7e1 {review_count} REVIEW",
+            f"\u274c {skip_count} SKIP",
+        ]
+        if top_matches:
+            lines.append("")
+            lines.append("Top matches:")
+            lines += [f"\u2022 {title} \u2014 {company}" for title, company in top_matches]
+        lines.append("")
+        lines.append("Open JobHunter for details.")
+
+        self.notify(
+            Notification(
+                kind=NotificationKind.TODAY_DIGEST,
+                level=NotificationLevel.SUCCESS,
+                title=f"Today's Jobs \u2014 {headline}",
+                body="\n".join(lines),
+                detail={
+                    "new": new_count,
+                    "apply": apply_count,
+                    "review": review_count,
+                    "skip": skip_count,
+                    "location": location,
+                },
+            )
+        )
+
     def application_success(
         self, *, title: str, company: str, job_id: int, evidence: str | None = None
     ) -> None:

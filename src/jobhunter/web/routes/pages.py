@@ -48,6 +48,39 @@ async def today(request: Request) -> HTMLResponse:
     )
 
 
+@router.get("/today", response_class=HTMLResponse)
+async def today_jobs(request: Request) -> HTMLResponse:
+    """Only what Jobs.bg published today, and what the pipeline made of it."""
+    from datetime import date as date_type
+
+    from jobhunter.matching.verification import unverified_technologies
+    from jobhunter.profile.profile_store import to_snapshot
+    from jobhunter.today import build_today_jobs, local_today
+
+    context = deps.get_context()
+    requested = request.query_params.get("date")
+    try:
+        day = date_type.fromisoformat(requested) if requested else local_today()
+    except ValueError:
+        day = local_today()
+
+    with context.session() as session:
+        today = build_today_jobs(session, day)
+        candidate = to_snapshot(get_active_profile(session))
+        last_run = next(iter(deps.recent_runs(session, limit=1)), None)
+
+        # Templates cannot call the checker, so the claims are resolved here.
+        for item in today.jobs:
+            item.unverified_claims = unverified_technologies(item.evaluation, candidate)
+
+    return render(
+        request,
+        "today_jobs.html",
+        {"today": today, "last_run": last_run, "is_today": day == local_today()},
+        active="today",
+    )
+
+
 @router.get("/overview", response_class=HTMLResponse)
 async def overview(request: Request) -> HTMLResponse:
     """The older statistics view, kept for the numbers it still answers."""

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Today's Jobs - JobHunter{% endblock %}
+{% block content %}
+
+<h1>Today's Jobs</h1>
+<p class="subtitle">
+  IT in {{ settings.search_location }} &middot; published {{ today.day.isoformat() }}
+  {% if not is_today %} &middot; <span class="warn-text">not today</span>{% endif %}
+  {% if last_run %} &middot; last scan {{ last_run.started_at|dt }}{% endif %}
+</p>
+
+<div class="decision-summary">
+  <div class="decision-stat">
+    <div class="n">{{ today.new_count }}</div><div class="l">new today</div>
+  </div>
+  <div class="decision-stat apply">
+    <div class="n">{{ today.apply_count }}</div><div class="l">apply</div>
+  </div>
+  <div class="decision-stat review">
+    <div class="n">{{ today.review_count }}</div><div class="l">review</div>
+  </div>
+  <div class="decision-stat skip">
+    <div class="n">{{ today.skip_count }}</div><div class="l">skip</div>
+  </div>
+</div>
+
+<div class="btn-row" style="margin-bottom: 18px;">
+  <form method="post" action="/actions/today-scan"
+        onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Scanning…';">
+    <button class="btn primary" type="submit">Scan today's listings</button>
+  </form>
+  <span class="muted">Nothing is ever submitted automatically.</span>
+</div>
+
+{% if not today.jobs %}
+  <div class="empty">
+    Nothing published today has been evaluated yet.
+    Run a scan to check Jobs.bg for {{ today.day.isoformat() }}.
+  </div>
+{% endif %}
+
+{% for item in today.jobs %}
+  {% set job = item.job %}
+  {% set ev = item.evaluation %}
+  <article class="job-card {{ ev.decision.value }}">
+    <header>
+      <span class="decision-badge {{ ev.decision.value }}">{{ ev.decision.value|upper }}</span>
+      {% if item.is_new %}
+        <span class="badge state-matched">new</span>
+      {% else %}
+        <span class="badge state-skipped">already seen</span>
+      {% endif %}
+      <h3><a href="/jobs/{{ job.id }}">{{ job.title }}</a></h3>
+      <div class="meta">
+        {{ job.company_display }} &middot; {{ job.city or job.location_raw or 'location unknown' }}
+        {% if ev.seniority and ev.seniority != 'unknown' %} &middot; {{ ev.seniority|replace('_','/') }}{% endif %}
+        {% if ev.location_fit and ev.location_fit != 'unclear' %} &middot; {{ ev.location_fit|replace('_',' ') }}{% endif %}
+      </div>
+    </header>
+
+    <p class="recommendation">{{ ev.headline() }}</p>
+
+    {% if item.mandatory_requirements %}
+      <div class="requirements">
+        <h4>Must have</h4>
+        {% for requirement in item.mandatory_requirements[:6] %}
+          <div class="requirement">
+            <span class="fit {{ requirement.candidate_fit.value }}">{{ requirement.candidate_fit.value }}</span>
+            <span>{{ requirement.requirement }}
+              {% if requirement.evidence %}<span class="evidence">{{ requirement.evidence }}</span>{% endif %}
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if item.warnings %}
+      <div class="why-risk">
+        <div class="risk">
+          <span class="label">Warnings</span>
+          <ul>{% for warning in item.warnings %}<li>{{ warning }}</li>{% endfor %}</ul>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if item.unverified_claims %}
+      <p class="unverified">Check: this credits you with
+        <strong>{{ item.unverified_claims|join(', ') }}</strong>, which your profile does not list.</p>
+    {% endif %}
+
+    <footer>
+      <span class="confidence">confidence {{ (ev.confidence * 100)|round|int }}%</span>
+      {% if ev.degraded %}<span class="badge bad">not evaluated</span>{% endif %}
+      <div class="actions">
+        <a class="btn" href="/jobs/{{ job.id }}">Details</a>
+        <a class="btn" href="{{ job.source_url }}" target="_blank" rel="noopener">Open on Jobs.bg</a>
+      </div>
+    </footer>
+  </article>
+{% endfor %}
+
+{% endblock %}

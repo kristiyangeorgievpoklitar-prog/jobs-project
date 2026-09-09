@@ -15,6 +15,20 @@ JOB_PATH_PREFIX = "/job/"
 # Verified category ids. 56 is the aggregated "IT JOBS" section.
 CATEGORY_IT = 56
 
+# The site's own "Публикувани" (published) filter, read out of the chip sheet on
+# the live search page: each option is a checkbox named ``last``. Verified
+# against IT/Varna — ``last=2`` reported exactly one listing, the only card on
+# the page reading ``днес``, while the unfiltered search reported 91.
+#
+# 2 and 3 select a single day each; 4, 5 and 6 are cumulative windows ending
+# today. This matters when picking one: only TODAY and YESTERDAY are exact, so
+# any older day still has to be sieved by its card date.
+PUBLISHED_TODAY = 2
+PUBLISHED_YESTERDAY = 3
+PUBLISHED_LAST_3_DAYS = 4
+PUBLISHED_LAST_7_DAYS = 5
+PUBLISHED_LAST_14_DAYS = 6
+
 CATEGORIES: dict[str, int] = {
     "it": 56,
     "engineers_technicians": 29,
@@ -83,11 +97,16 @@ def build_search_url(
     keywords: str | None = None,
     entry_level_only: bool = False,
     page: int = 1,
+    posted_within: int | None = None,
 ) -> str:
     """Build a Jobs.bg search URL.
 
     ``location`` is resolved to a ``location_sid``; an explicit ``location_sid``
     always wins. Unknown city names are simply omitted rather than guessed.
+
+    ``posted_within`` is the site's own publication filter — one of the
+    ``PUBLISHED_*`` constants — and is what makes a "today" search cheap: the
+    site returns only that window instead of the whole history.
     """
     params: list[tuple[str, str]] = [("subm", "1")]
 
@@ -104,6 +123,9 @@ def build_search_url(
 
     if entry_level_only:
         params.append(("is_entry_level", "1"))
+
+    if posted_within is not None:
+        params.append(("last", str(posted_within)))
 
     if keywords:
         params.append(("keyword", keywords))

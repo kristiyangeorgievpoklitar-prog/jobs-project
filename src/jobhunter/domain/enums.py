@@ -118,6 +118,7 @@ class NotificationKind(StrEnum):
     """Discrete notification events the system emits."""
 
     HIGH_MATCH_JOB = "high_match_job"
+    TODAY_DIGEST = "today_digest"
     APPLICATION_SUCCESS = "application_success"
     APPLICATION_FAILED = "application_failed"
     AUTOMATION_BLOCKED = "automation_blocked"

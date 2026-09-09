@@ -8,6 +8,7 @@ pause between scrolls.
 from __future__ import annotations
 
 import time
+from datetime import date, datetime
 from typing import Any
 
 from jobhunter.browser.challenge import ChallengeDetectedError
@@ -19,11 +20,66 @@ from jobhunter.sources.jobsbg import selectors as S
 from jobhunter.sources.jobsbg.parser import (
     parse_detail_page,
     parse_listing_page,
+    parse_posted_date,
     parse_total_results,
 )
-from jobhunter.sources.jobsbg.urls import CATEGORY_IT, build_search_url
+from jobhunter.sources.jobsbg.urls import (
+    CATEGORY_IT,
+    PUBLISHED_LAST_3_DAYS,
+    PUBLISHED_LAST_7_DAYS,
+    PUBLISHED_LAST_14_DAYS,
+    PUBLISHED_TODAY,
+    PUBLISHED_YESTERDAY,
+    build_search_url,
+)
 
 log = get_logger(__name__)
+
+
+def published_on(job: RawJob, day: date) -> bool:
+    """Whether a listing card carries the given publication date.
+
+    The card prints a calendar day and nothing finer — as ``DD.MM.YY``, or as
+    ``днес``/``вчера`` for the last two days — so this is a day comparison.
+    Those words are resolved against the real current date, never against
+    ``day``: the site wrote them when the page was fetched, so asking for an
+    earlier day must still read ``вчера`` as yesterday rather than as that day.
+    A card whose date could not be read is *not* claimed for the day; guessing
+    would let history through as "new today".
+    """
+    parsed = parse_posted_date(job.posted_at_raw)
+    return parsed is not None and parsed.date() == day
+
+
+# Each option of the site's "Публикувани" filter, as the oldest day it still
+# includes. Ordered narrowest first so the smallest covering window wins.
+_WINDOWS: tuple[tuple[int, int], ...] = (
+    (0, PUBLISHED_TODAY),
+    (1, PUBLISHED_YESTERDAY),
+    (2, PUBLISHED_LAST_3_DAYS),
+    (6, PUBLISHED_LAST_7_DAYS),
+    (13, PUBLISHED_LAST_14_DAYS),
+)
+
+
+def published_window(day: date, today: date | None = None) -> int | None:
+    """The narrowest publication filter that still contains ``day``.
+
+    Returns ``None`` for a day the site cannot express — anything older than a
+    fortnight, or in the future — and the caller then falls back to reading the
+    unfiltered results and sieving them by card date.
+
+    ``PUBLISHED_YESTERDAY`` is a single day like ``PUBLISHED_TODAY``; the wider
+    options are cumulative windows ending today, so a day picked out of one of
+    those still has to be filtered by its card date afterwards.
+    """
+    age = ((today or datetime.now().date()) - day).days
+    if age < 0:
+        return None
+    for oldest, value in _WINDOWS:
+        if age <= oldest:
+            return value
+    return None
 
 
 class JobsBgDiscovery:
@@ -43,6 +99,7 @@ class JobsBgDiscovery:
         entry_level_only: bool = False,
         category: int | None = CATEGORY_IT,
         page: int = 1,
+        posted_within: int | None = None,
     ) -> str:
         return build_search_url(
             location=location,
@@ -50,6 +107,7 @@ class JobsBgDiscovery:
             keywords=keywords,
             entry_level_only=entry_level_only,
             page=page,
+            posted_within=posted_within,
         )
 
     def search(
@@ -60,6 +118,7 @@ class JobsBgDiscovery:
         entry_level_only: bool = False,
         max_results: int = 100,
         category: int | None = CATEGORY_IT,
+        posted_on: date | None = None,
         page: Any | None = None,
     ) -> list[RawJob]:
         """Run a paginated search and return every listing found.
@@ -68,11 +127,29 @@ class JobsBgDiscovery:
         Pages are fetched sequentially, with the browser layer enforcing a
         polite delay between requests, and stop early once a page repeats
         results or the caller's limit is reached.
+
+        ``posted_on`` narrows the crawl to one publication date. It is applied
+        by the site itself wherever possible — the ``last`` parameter behind the
+        "Публикувани" filter, which is the control the candidate clicks by hand
+        — so a search for today returns today's listings and nothing else.
+
+        Results are *not* ordered by date, which is why the day cannot be found
+        by paging until the dates run out: measured live, an unfiltered IT
+        search over Varna opened with 02.09, ran down to 18.08, then began a
+        second block whose first card was the newest on the page. The one
+        listing published that day was not on page 1 at all. Asking the site for
+        the window is both cheaper and correct; the card date is then re-checked
+        locally, because the wider windows are cumulative.
         """
         browser_page = page or self.browser.new_page()
         collected: dict[str, RawJob] = {}
+        # Every listing id served so far, matching or not, to detect the end.
+        seen_ids: set[str] = set()
         total: int | None = None
         pages_fetched = 0
+        # None when the day is older than the site's widest window; the crawl
+        # then reads unfiltered pages and relies on the card-date sieve below.
+        window = published_window(posted_on) if posted_on is not None else None
 
         for page_number in range(1, self.settings.max_pages_per_scan + 1):
             url = self.build_url(
@@ -81,6 +158,7 @@ class JobsBgDiscovery:
                 entry_level_only=entry_level_only,
                 category=category,
                 page=page_number,
+                posted_within=window,
             )
             log.info("discovery_page_start", page=page_number, url=url)
 
@@ -97,23 +175,38 @@ class JobsBgDiscovery:
                 log.info("discovery_page_empty", page=page_number)
                 break
 
+            wanted = (
+                [job for job in listings if published_on(job, posted_on)]
+                if posted_on is not None
+                else listings
+            )
+
             new_on_page = 0
-            for job in listings:
+            for job in wanted:
                 key = job.source_job_id or job.source_url
                 if key not in collected:
                     collected[key] = job
                     new_on_page += 1
 
+            # Exhaustion is judged on the page as served, not on what survived
+            # the date sieve. A cumulative window can hand back a page holding
+            # nothing from the target day while later pages still do, so
+            # counting only matches here would stop the crawl early — the very
+            # mistake that hid the day's one listing before.
+            fresh_ids = {job.source_job_id or job.source_url for job in listings} - seen_ids
+            seen_ids |= fresh_ids
+
             log.info(
                 "discovery_page_done",
                 page=page_number,
                 on_page=len(listings),
+                matching=len(wanted),
                 new=new_on_page,
                 total_collected=len(collected),
             )
 
-            # A page that adds nothing means we have run past the last page.
-            if new_on_page == 0:
+            # A page repeating what we already read means there is no more.
+            if not fresh_ids:
                 break
             if len(collected) >= max_results:
                 break
@@ -126,6 +219,8 @@ class JobsBgDiscovery:
             found=len(result),
             reported_total=total,
             pages_fetched=pages_fetched,
+            posted_on=posted_on.isoformat() if posted_on else None,
+            window=window,
         )
         return result
 

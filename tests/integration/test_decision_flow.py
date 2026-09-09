@@ -221,9 +221,7 @@ def test_evaluations_made_against_an_older_profile_are_flagged_not_hidden(sessio
     evaluator.evaluate(session, row.id, normalized, candidate)
 
     upskilled = candidate.model_copy(update={"skills": ["php", "go", "kubernetes"]})
-    briefing = build_briefing(
-        session, candidate_fingerprint=candidate_fingerprint(upskilled, None)
-    )
+    briefing = build_briefing(session, candidate_fingerprint=candidate_fingerprint(upskilled, None))
 
     assert briefing.stale_count == 1
     assert len(briefing.apply) == 1, "the job is still shown"
@@ -237,9 +235,7 @@ def test_nothing_is_flagged_stale_when_the_profile_is_unchanged(session, candida
     row, normalized = add_job(session, "Junior PHP Developer")
     evaluator.evaluate(session, row.id, normalized, candidate)
 
-    briefing = build_briefing(
-        session, candidate_fingerprint=candidate_fingerprint(candidate, None)
-    )
+    briefing = build_briefing(session, candidate_fingerprint=candidate_fingerprint(candidate, None))
     assert briefing.stale_count == 0
 
 
@@ -278,7 +274,9 @@ def test_a_claim_the_profile_does_not_support_is_flagged_for_the_reader(session,
 
     class CreditsCSharp(ScriptedModel):
         def _chat(self, system, user):
-            return response("apply", strengths=["The candidate has experience with C# and Java."]), 10
+            return response(
+                "apply", strengths=["The candidate has experience with C# and Java."]
+            ), 10
 
     row, normalized = add_job(session, "Junior C# Developer")
     JobEvaluator(CreditsCSharp({})).evaluate(session, row.id, normalized, candidate)

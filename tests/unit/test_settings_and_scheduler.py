@@ -81,6 +81,83 @@ class TestScheduler:
         assert JOB_DEFAULTS["coalesce"] is True
 
 
+class TestDailyTodayScan:
+    """`schedule --daily` is the same scheduler with a different task."""
+
+    def _scheduler(self, tmp_path, mode):
+        from jobhunter.context import AppContext
+        from jobhunter.scheduler.scheduler import create_scheduler
+
+        settings = Settings(
+            _env_file=None,
+            data_dir=tmp_path / "data",
+            logs_dir=tmp_path / "logs",
+            screenshots_dir=tmp_path / "shots",
+            browser_profile_dir=tmp_path / "profile",
+            database_url="sqlite:///:memory:",
+            scan_at_hour=7,
+        )
+        context = AppContext(settings, configure_logs=False)
+        return create_scheduler(context, blocking=False, mode=mode)
+
+    def test_today_mode_registers_one_daily_job(self, tmp_path) -> None:
+        from jobhunter.scheduler.scheduler import TODAY_SCAN_JOB_ID
+
+        jobs = self._scheduler(tmp_path, "today").get_jobs()
+        assert [job.id for job in jobs] == [TODAY_SCAN_JOB_ID]
+        assert "hour='7'" in str(jobs[0].trigger)
+
+    def test_full_mode_is_unchanged(self, tmp_path) -> None:
+        from jobhunter.scheduler.scheduler import SCAN_JOB_ID
+
+        assert [job.id for job in self._scheduler(tmp_path, "full").get_jobs()] == [SCAN_JOB_ID]
+
+    def test_the_default_is_still_the_full_scan(self, tmp_path) -> None:
+        from jobhunter.context import AppContext
+        from jobhunter.scheduler.scheduler import SCAN_JOB_ID, create_scheduler
+
+        settings = Settings(
+            _env_file=None,
+            data_dir=tmp_path / "d",
+            logs_dir=tmp_path / "l",
+            screenshots_dir=tmp_path / "s",
+            browser_profile_dir=tmp_path / "p",
+            database_url="sqlite:///:memory:",
+        )
+        scheduler = create_scheduler(AppContext(settings, configure_logs=False), blocking=False)
+        assert [job.id for job in scheduler.get_jobs()] == [SCAN_JOB_ID]
+
+    def test_the_scheduled_task_never_applies(self, tmp_path, monkeypatch) -> None:
+        """A scan that reads is safe unattended; one that submits on a timer is not."""
+        import jobhunter.today as today_module
+        from jobhunter.scheduler.scheduler import run_today_scan
+
+        calls: list[str] = []
+        monkeypatch.setattr(
+            today_module, "run_today_scan", lambda ctx, **kw: calls.append("scanned") or _Result()
+        )
+        monkeypatch.setattr(
+            "jobhunter.applications.orchestrator.ApplicationOrchestrator",
+            _ExplodingOrchestrator,
+        )
+        run_today_scan(object())
+        assert calls == ["scanned"]
+
+
+class _Result:
+    """The minimum a TodayScanResult needs to be for the scheduled task to log it."""
+
+    def __init__(self) -> None:
+        self.outcomes: list = []
+        self.new: list = []
+        self.notified = False
+
+
+class _ExplodingOrchestrator:
+    def __init__(self, context) -> None:
+        raise AssertionError("the scheduled today-scan must never apply")
+
+
 class TestPolitenessDefaults:
     def test_request_delay_is_conservative(self, tmp_path) -> None:
         settings = Settings(_env_file=None, data_dir=tmp_path)

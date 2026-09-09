@@ -61,6 +61,24 @@ async def trigger_scan(request: Request) -> RedirectResponse:
     )
 
 
+@router.post("/today-scan")
+async def trigger_today_scan(request: Request) -> RedirectResponse:
+    from jobhunter.today import run_today_scan
+
+    context = deps.get_context()
+
+    def work() -> None:
+        run_today_scan(context)
+
+    if not _run_background(work):
+        return redirect("/today", "A scan is already running.", "warning")
+    return redirect(
+        "/today",
+        "Scanning today's listings. A browser window will open; results appear here as they land.",
+        "info",
+    )
+
+
 @router.post("/jobs/{job_id}/approve")
 async def approve_job(request: Request, job_id: int) -> RedirectResponse:
     context = deps.get_context()

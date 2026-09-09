@@ -1,4 +1,5 @@
 """Tests for the invented-skill check."""
+
 from __future__ import annotations
 
 import pytest
@@ -42,13 +43,16 @@ class TestInventedSkillsAreCaught:
         assert {"fastapi", "flask", "linux"} <= set(found)
 
     def test_a_technology_the_profile_has_is_not_flagged(self, candidate):
-        assert unverified_technologies(
-            strengths("The candidate has experience with PHP, Laravel and MySQL."), candidate
-        ) == []
+        assert (
+            unverified_technologies(
+                strengths("The candidate has experience with PHP, Laravel and MySQL."), candidate
+            )
+            == []
+        )
 
 
 class TestTransferArgumentsAreLeftAlone:
-    """"Laravel is related to Spring" argues a transfer; it claims nothing."""
+    """ "Laravel is related to Spring" argues a transfer; it claims nothing."""
 
     def test_a_relation_clause_is_not_a_claim(self, candidate):
         found = unverified_technologies(

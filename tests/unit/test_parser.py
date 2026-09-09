@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
 import pytest
 
@@ -87,6 +87,38 @@ class TestParsePostedDate:
     def test_invalid_returns_none(self) -> None:
         assert parse_posted_date("not a date") is None
         assert parse_posted_date("45.99.26") is None
+
+    def test_reads_the_words_the_site_prints_for_recent_listings(self) -> None:
+        """Verified live: a busy IT search returns only ``днес`` and ``вчера``.
+
+        Every listing published in the last two days is dated in words, so a
+        parser that only understands ``DD.MM.YY`` cannot see today's jobs at
+        all — which is the entire point of the daily scan.
+        """
+        reference = date(2026, 9, 9)
+        assert parse_posted_date("днес", today=reference) == datetime(2026, 9, 9, tzinfo=UTC)
+        assert parse_posted_date("вчера", today=reference) == datetime(2026, 9, 8, tzinfo=UTC)
+        assert parse_posted_date("онзи ден", today=reference) == datetime(2026, 9, 7, tzinfo=UTC)
+
+    def test_reads_the_english_sites_wording_too(self) -> None:
+        reference = date(2026, 9, 9)
+        assert parse_posted_date("Today", today=reference) == datetime(2026, 9, 9, tzinfo=UTC)
+        assert parse_posted_date("Yesterday", today=reference) == datetime(2026, 9, 8, tzinfo=UTC)
+
+    def test_a_relative_word_crossing_a_month_boundary(self) -> None:
+        assert parse_posted_date("вчера", today=date(2026, 9, 1)) == datetime(
+            2026, 8, 31, tzinfo=UTC
+        )
+
+    def test_a_numeric_date_ignores_the_reference(self) -> None:
+        assert parse_posted_date("02.09.26", today=date(2020, 1, 1)) == datetime(
+            2026, 9, 2, tzinfo=UTC
+        )
+
+    def test_the_reference_defaults_to_the_local_date(self) -> None:
+        from datetime import datetime as real_datetime
+
+        assert parse_posted_date("днес").date() == real_datetime.now().date()
 
 
 class TestParseListingPage:

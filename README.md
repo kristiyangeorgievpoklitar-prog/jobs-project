@@ -123,6 +123,37 @@ uv run jobhunter scan --entry-level    # use the site's own entry-level filter
 A Chromium window opens while a scan runs. That is intentional — leave it alone
 and it will close itself.
 
+### Today's Jobs
+
+The daily habit — open Jobs.bg, filter to IT in your city, read what was
+published today — as one command:
+
+```bash
+uv run jobhunter today-scan            # find and evaluate today's listings
+uv run jobhunter today-scan --date 2026-09-08   # a specific day
+uv run jobhunter today-scan --no-notify         # scan without sending the digest
+```
+
+`today-scan` **performs** the scan; `today` **shows** what the last one decided
+and never touches the network.
+
+It asks the site for today's listings using its own "Публикувани днес" filter,
+so it reads that day and not the history behind it — a real day brings a
+handful, so it does not spend an evening of local inference re-reading months. Listings this database has
+already recorded are shown and marked *already seen*, but only genuinely new
+ones are announced, so running it twice in a morning sends one notification and
+makes no second model call.
+
+Exit codes follow grep, which makes it usable from a shell script:
+
+| code | meaning |
+|---|---|
+| 0 | new listings turned up today |
+| 1 | the scan ran; nothing new |
+| 2 | the scan could not run (model down, blocked, bad date) |
+
+Nothing is ever submitted. The dashboard shows the same thing under **Today**.
+
 ### Evaluating and giving feedback
 
 ```bash
@@ -165,8 +196,13 @@ submission during scheduled runs is separately gated by `AUTO_APPLY`.
 ### Scheduling
 
 ```bash
-uv run jobhunter schedule    # foreground; daily at SCAN_AT_HOUR
+uv run jobhunter schedule            # foreground; full scan on SCAN_INTERVAL_HOURS
+uv run jobhunter schedule --daily    # foreground; today-scan once a day at SCAN_AT_HOUR
 ```
+
+`--daily` is the same scheduler with a different task, and it never applies to
+anything: a scan that reads is safe to leave running, one that submits on a
+timer is not.
 
 ---
 

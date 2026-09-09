@@ -201,7 +201,9 @@ class TestEmploymentTypeWordBoundaries:
         )
 
     def test_a_real_internship_is_still_detected(self) -> None:
-        assert detect_employment_type(None, "Paid internship programme") is EmploymentType.INTERNSHIP
+        assert (
+            detect_employment_type(None, "Paid internship programme") is EmploymentType.INTERNSHIP
+        )
         assert detect_employment_type(None, "Стаж за студенти") is EmploymentType.INTERNSHIP
 
     def test_other_contract_types_survive_the_change(self) -> None:

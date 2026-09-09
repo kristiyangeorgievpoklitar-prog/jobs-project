@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import traceback
 from dataclasses import dataclass
+from datetime import date
 
 from sqlalchemy import select
 
@@ -19,7 +20,7 @@ from jobhunter.context import AppContext
 from jobhunter.db.base import utcnow
 from jobhunter.db.models import AutomationRun, Job
 from jobhunter.domain.enums import JobState, RunStatus, RunTrigger
-from jobhunter.domain.evaluation import Decision
+from jobhunter.domain.evaluation import Decision, JobEvaluation
 from jobhunter.domain.schemas import CandidateSnapshot, RawJob, ScanStats
 from jobhunter.logging_setup import get_logger
 from jobhunter.matching.evaluator import EvaluationStats
@@ -44,6 +45,35 @@ class ScanOptions:
     enrich_limit: int | None = None
     trigger: RunTrigger = RunTrigger.MANUAL
     dry_run: bool = False
+    # Only listings published on this date. Discovery stops as soon as it pages
+    # past the date, so asking for today does not read months of history.
+    posted_on: date | None = None
+    # Set by a caller that sends its own summary instead — the per-listing and
+    # scan-completed notifications are then suppressed so one scan produces one
+    # message. Failure and challenge notifications are never suppressed.
+    suppress_notifications: bool = False
+
+
+@dataclass
+class JobOutcome:
+    """What one scan decided about one listing.
+
+    Collected so a caller can summarise the run it just asked for without
+    re-querying, and in particular so it can tell listings this run discovered
+    from listings it had already seen.
+    """
+
+    job_id: int
+    title: str
+    company: str
+    location: str
+    source_url: str
+    evaluation: JobEvaluation
+    is_new: bool
+
+    @property
+    def decision(self) -> Decision:
+        return self.evaluation.decision
 
 
 class ScanPipeline:
@@ -52,6 +82,9 @@ class ScanPipeline:
     def __init__(self, context: AppContext) -> None:
         self.context = context
         self.settings = context.settings
+        # Filled during run(); reset on each call.
+        self.outcomes: list[JobOutcome] = []
+        self.status: RunStatus = RunStatus.RUNNING
 
     # ------------------------------------------------------------- helpers
 
@@ -143,6 +176,8 @@ class ScanPipeline:
     def run(self, options: ScanOptions | None = None) -> ScanStats:
         options = options or ScanOptions()
         stats = ScanStats()
+        self.outcomes = []
+        self.status = RunStatus.RUNNING
         run_id = self._start_run(options)
         candidate = self._candidate()
 
@@ -159,6 +194,7 @@ class ScanPipeline:
             run_id=run_id,
             location=location,
             max_results=max_results,
+            posted_on=options.posted_on.isoformat() if options.posted_on else None,
             provider=self.context.provider.name,
         )
 
@@ -180,6 +216,7 @@ class ScanPipeline:
                     ),
                     entry_level_only=options.entry_level_only,
                     max_results=max_results,
+                    posted_on=options.posted_on,
                 )
                 stats.jobs_seen = len(cards)
 
@@ -204,6 +241,7 @@ class ScanPipeline:
                             cv_text=cv_text,
                             rejected=rejected,
                             evaluation_stats=evaluation_stats,
+                            notify=not options.suppress_notifications,
                         )
                     except Exception as exc:
                         stats.errors_count += 1
@@ -253,8 +291,9 @@ class ScanPipeline:
                 )
 
         self._finish_run(run_id, stats, status, notes)
+        self.status = status
 
-        if status is RunStatus.SUCCEEDED:
+        if status is RunStatus.SUCCEEDED and not options.suppress_notifications:
             self.context.notifier.scan_completed(
                 stats={
                     "jobs_seen": stats.jobs_seen,
@@ -294,6 +333,7 @@ class ScanPipeline:
         cv_text: str | None = None,
         rejected: set[str] | None = None,
         evaluation_stats: EvaluationStats | None = None,
+        notify: bool = True,
     ) -> None:
         normalized = normalize_job(raw)
 
@@ -372,7 +412,9 @@ class ScanPipeline:
                 },
             )
 
-            should_notify = is_new and evaluation.decision in (Decision.APPLY, Decision.REVIEW)
+            should_notify = (
+                notify and is_new and evaluation.decision in (Decision.APPLY, Decision.REVIEW)
+            )
             job_id, title, company, city, score, rec = (
                 job.id,
                 job.title,
@@ -385,6 +427,20 @@ class ScanPipeline:
                 ", ".join(evaluation.major_strengths[:2]) or evaluation.recommendation or None
             )
             notify_risk = evaluation.major_risks[0] if evaluation.major_risks else None
+
+            # Recorded while the row is still attached; the caller reads this
+            # after the session has closed.
+            self.outcomes.append(
+                JobOutcome(
+                    job_id=job_id,
+                    title=title,
+                    company=company,
+                    location=city,
+                    source_url=job.source_url,
+                    evaluation=evaluation,
+                    is_new=is_new,
+                )
+            )
 
         if should_notify:
             self.context.notifier.high_match_job(

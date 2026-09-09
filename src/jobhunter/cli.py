@@ -14,7 +14,8 @@ from jobhunter.config import PROJECT_ROOT, get_settings
 from jobhunter.context import AppContext
 from jobhunter.db.models import Application, AutomationRun, CVFile, Job, JobMatch
 from jobhunter.domain.enums import JobState, RunTrigger
-from jobhunter.pipeline.runner import ScanOptions, ScanPipeline
+from jobhunter.domain.evaluation import Decision
+from jobhunter.pipeline.runner import JobOutcome, ScanOptions, ScanPipeline
 from jobhunter.profile.cv import discover_cv_files, list_cvs, register_cv, set_default_cv
 from jobhunter.profile.profile_store import (
     bootstrap_profile_from_cv,
@@ -505,11 +506,22 @@ def serve(
 
 
 @app.command()
-def schedule() -> None:
-    """Run the scheduler in the foreground."""
+def schedule(
+    daily: bool = typer.Option(
+        False,
+        "--daily",
+        help="Run today-scan once a day instead of a full scan",
+    ),
+) -> None:
+    """Run the scheduler in the foreground.
+
+    By default this is the full scan on the configured interval. `--daily` runs
+    the today-scan instead, once a day at SCAN_AT_HOUR — the same scheduler,
+    with a different task.
+    """
     from jobhunter.scheduler.scheduler import run_forever
 
-    run_forever(AppContext())
+    run_forever(AppContext(), mode="today" if daily else "full")
 
 
 # ---------------------------------------------------------------- apply ---
@@ -574,8 +586,13 @@ def today(
     limit: int = typer.Option(10, help="How many jobs to list per bucket"),
     hours: int | None = typer.Option(None, help="Only listings first seen in the last N hours"),
 ) -> None:
-    """What is worth applying to right now."""
+    """Show what is worth applying to, from the last scan's results.
+
+    This reads; it does not go to the site. Run `jobhunter today-scan` to look
+    for listings published today.
+    """
     from jobhunter.briefing import build_briefing, render_briefing
+    from jobhunter.today import build_today_jobs
     from jobhunter.web.deps import current_candidate_fingerprint
 
     context = AppContext(configure_logs=False)
@@ -604,7 +621,137 @@ def today(
                 console.print(f"      {evaluation.headline()}")
                 if evaluation.major_risks:
                     console.print(f"      [dim]risk: {evaluation.major_risks[0]}[/dim]")
+
+        today_jobs = build_today_jobs(session)
+        if today_jobs.total:
+            console.print(
+                f"\n[dim]{today_jobs.total} listing(s) were published today "
+                f"({today_jobs.new_count} first seen today). "
+                "Run `jobhunter today-scan` to check for more.[/dim]"
+            )
+        else:
+            console.print(
+                "\n[dim]Run `jobhunter today-scan` to look for listings published today.[/dim]"
+            )
     context.close()
+
+
+@app.command("today-scan")
+def today_scan(
+    location: str = typer.Option(None, help="Override the search location"),
+    limit: int = typer.Option(None, help="Maximum listings to consider"),
+    day: str = typer.Option(None, "--date", help="Scan a specific day (YYYY-MM-DD)"),
+    notify: bool = typer.Option(True, help="Send one summary notification for new listings"),
+) -> None:
+    """Find and evaluate the IT listings published today.
+
+    Reads only listings carrying today's date, evaluates the ones this database
+    has never seen, and prints what they are. Nothing is ever submitted: run
+    `jobhunter apply <id>` when you have decided.
+
+    Exit codes follow grep: 0 when something new turned up, 1 when the day
+    brought nothing new, 2 when the scan could not run.
+    """
+    from datetime import date as date_type
+
+    from jobhunter.matching.verification import unverified_technologies
+    from jobhunter.today import local_today, render_today_scan, run_today_scan
+
+    context = AppContext()
+
+    if context.settings.ai_provider == "local" and not context.local_model.is_available():
+        console.print(
+            f"[red]Local model {context.settings.local_model!r} is not reachable[/red] at "
+            f"{context.settings.local_model_host}.\n"
+            "Start it with `ollama serve`, or set AI_PROVIDER=rule_based to scan without it."
+        )
+        context.close()
+        raise typer.Exit(code=2)
+
+    try:
+        target = date_type.fromisoformat(day) if day else local_today()
+    except ValueError as exc:
+        console.print(f"[red]{day!r} is not a date[/red]. Use YYYY-MM-DD.")
+        context.close()
+        raise typer.Exit(code=2) from exc
+
+    result = run_today_scan(context, day=target, location=location, limit=limit, notify=notify)
+    console.print(render_today_scan(result))
+
+    with context.session() as session:
+        candidate = to_snapshot(get_active_profile(session))
+
+    for heading, decision, style in (
+        ("APPLY", Decision.APPLY, "bold green"),
+        ("REVIEW", Decision.REVIEW, "yellow"),
+        ("SKIP", Decision.SKIP, "dim"),
+    ):
+        bucket = result.with_decision(decision)
+        if not bucket:
+            continue
+        console.print(f"\n[{style}]{heading}[/{style}]")
+        for outcome in bucket:
+            verbose = decision is not Decision.SKIP
+            _print_today_listing(
+                outcome,
+                verbose=verbose,
+                unverified=unverified_technologies(outcome.evaluation, candidate)
+                if verbose
+                else [],
+            )
+
+    if result.notified:
+        console.print(f"\n[dim]Notified: {len(result.new)} new listing(s).[/dim]")
+    console.print("\n[dim]Nothing was submitted. Run `jobhunter apply <id>` when you decide.[/dim]")
+
+    context.close()
+    if not result.completed:
+        raise typer.Exit(code=2)
+    raise typer.Exit(code=0 if result.new else 1)
+
+
+def _print_today_listing(outcome: JobOutcome, *, verbose: bool, unverified: list[str]) -> None:
+    """One listing, with enough evidence to see why it was surfaced."""
+    evaluation = outcome.evaluation
+    flag = "[cyan]new[/cyan]" if outcome.is_new else "[dim]already seen[/dim]"
+    console.print(
+        f"  [{outcome.job_id}] {outcome.title} - {outcome.company} ({outcome.location}) {flag}"
+    )
+    console.print(f"      {evaluation.headline()}")
+
+    if not verbose:
+        return
+
+    # The evidence behind the two claims that most often decide the answer.
+    evidence = []
+    if evaluation.seniority and str(evaluation.seniority) != "unknown":
+        evidence.append(f"seniority {str(evaluation.seniority).replace('_', '/')}")
+    if evaluation.location_fit.value != "unclear":
+        evidence.append(f"location {evaluation.location_fit.value.replace('_', ' ')}")
+    if evidence:
+        console.print(f"      [dim]{' | '.join(evidence)}[/dim]")
+
+    for requirement in evaluation.mandatory_requirements[:4]:
+        colour = {"strong": "green", "acceptable": "green", "weak": "yellow"}.get(
+            requirement.candidate_fit.value, "red"
+        )
+        console.print(
+            f"      must have: {requirement.requirement} "
+            f"[{colour}]{requirement.candidate_fit.value}[/{colour}]"
+        )
+    for risk in evaluation.major_risks[:2]:
+        console.print(f"      [yellow]risk:[/yellow] {risk}")
+    if evaluation.degraded:
+        console.print(
+            f"      [red]not evaluated:[/red] "
+            f"{evaluation.degraded_reason or 'the model did not answer'}"
+        )
+    if unverified:
+        console.print(
+            f"      [yellow]check:[/yellow] this credits you with "
+            f"{', '.join(unverified)}, which your profile does not list"
+        )
+    console.print(f"      [dim]{outcome.source_url}[/dim]")
 
 
 @app.command()

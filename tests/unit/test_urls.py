@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 import pytest
 
+from jobhunter.sources.jobsbg.discovery import published_window
 from jobhunter.sources.jobsbg.urls import (
     CATEGORY_IT,
+    PUBLISHED_LAST_3_DAYS,
+    PUBLISHED_LAST_7_DAYS,
+    PUBLISHED_LAST_14_DAYS,
+    PUBLISHED_TODAY,
+    PUBLISHED_YESTERDAY,
     build_search_url,
     extract_job_id,
     normalize_url,
@@ -79,3 +87,50 @@ class TestNormalizeUrl:
 
     def test_empty_is_safe(self) -> None:
         assert normalize_url("") == ""
+
+
+class TestPublishedWindow:
+    """The site's own "Публикувани" filter, mapped from a calendar day.
+
+    Read out of the live filter sheet: each option is a checkbox named ``last``.
+    ``2`` and ``3`` select a single day each; ``4``, ``5`` and ``6`` are
+    cumulative windows ending today, so a day picked out of one of those still
+    has to be sieved by its card date.
+    """
+
+    TODAY = date(2026, 9, 9)
+
+    @pytest.mark.parametrize(
+        ("age", "expected"),
+        [
+            (0, PUBLISHED_TODAY),
+            (1, PUBLISHED_YESTERDAY),
+            (2, PUBLISHED_LAST_3_DAYS),
+            (3, PUBLISHED_LAST_7_DAYS),
+            (6, PUBLISHED_LAST_7_DAYS),
+            (7, PUBLISHED_LAST_14_DAYS),
+            (13, PUBLISHED_LAST_14_DAYS),
+        ],
+    )
+    def test_the_narrowest_covering_window_is_chosen(self, age: int, expected: int) -> None:
+        day = self.TODAY - timedelta(days=age)
+        assert published_window(day, self.TODAY) == expected
+
+    def test_older_than_a_fortnight_has_no_window(self) -> None:
+        assert published_window(self.TODAY - timedelta(days=14), self.TODAY) is None
+        assert published_window(self.TODAY - timedelta(days=90), self.TODAY) is None
+
+    def test_a_future_day_has_no_window(self) -> None:
+        assert published_window(self.TODAY + timedelta(days=1), self.TODAY) is None
+
+    def test_the_reference_day_defaults_to_now(self) -> None:
+        assert published_window(date.today()) == PUBLISHED_TODAY
+
+
+class TestPublishedFilterInTheUrl:
+    def test_the_parameter_is_added_when_asked_for(self) -> None:
+        url = build_search_url(location="Varna", posted_within=PUBLISHED_TODAY)
+        assert "last=2" in url
+
+    def test_nothing_is_added_by_default(self) -> None:
+        assert "last=" not in build_search_url(location="Varna")

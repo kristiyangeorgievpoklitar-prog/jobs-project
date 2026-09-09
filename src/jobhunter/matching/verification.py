@@ -34,9 +34,7 @@ _POSSESSION = re.compile(
 )
 
 
-def unverified_technologies(
-    evaluation: JobEvaluation, candidate: CandidateSnapshot
-) -> list[str]:
+def unverified_technologies(evaluation: JobEvaluation, candidate: CandidateSnapshot) -> list[str]:
     """Technologies the evaluation credits the candidate with, that they lack.
 
     Scans only the possession clause of a claim, so a sentence arguing that one

@@ -10,7 +10,7 @@ from __future__ import annotations
 import copy
 import json
 import re
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from bs4 import BeautifulSoup, Tag
@@ -73,9 +73,40 @@ def _parse_action_args(node: Tag | None) -> dict[str, Any]:
     return parsed if isinstance(parsed, dict) else {}
 
 
-def parse_posted_date(value: str | None) -> datetime | None:
-    """Parse Jobs.bg date strings: ``02.09.26`` or ``02.09.2026``."""
+# The site prints the last two days in words and everything older as a date.
+# Verified live: an IT search over Sofia returned twenty cards reading only
+# ``днес`` and ``вчера`` — not one numeric date. Anything that cannot read
+# these therefore cannot see today's listings at all.
+_RELATIVE_DAYS = {
+    "днес": 0,
+    "today": 0,
+    "вчера": 1,
+    "yesterday": 1,
+    "онзи ден": 2,
+}
+_RELATIVE_PATTERN = re.compile(
+    r"\b(" + "|".join(sorted(_RELATIVE_DAYS, key=len, reverse=True)) + r")\b",
+    re.IGNORECASE,
+)
+
+
+def parse_posted_date(value: str | None, *, today: date | None = None) -> datetime | None:
+    """Parse a Jobs.bg card date: ``02.09.26``, ``02.09.2026``, ``днес`` or ``вчера``.
+
+    Card dates carry no time, so the result is midnight UTC — a printed calendar
+    date, not an instant. ``today`` fixes the reference point the relative words
+    are resolved against; it defaults to the machine's local date, which is the
+    one the Bulgarian site is printing.
+    """
     text = clean_text(value)
+    if not text:
+        return None
+
+    if match := _RELATIVE_PATTERN.search(text):
+        base = today or datetime.now().date()
+        when = base - timedelta(days=_RELATIVE_DAYS[match.group(1).lower()])
+        return datetime(when.year, when.month, when.day, tzinfo=UTC)
+
     match = re.search(r"(\d{1,2})\.(\d{1,2})\.(\d{2,4})", text)
     if not match:
         return None
