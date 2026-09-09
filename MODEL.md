@@ -151,8 +151,63 @@ at a usable speed:
 
 ## Results
 
-<!--BENCHMARK-->
+All 41 labelled cases (3 APPLY / 6 REVIEW / 32 SKIP), qwen2.5:3b on prompt v10.
+The two stubs are included because most listings genuinely are skips, and both
+headline numbers can be gamed by refusing to decide in one direction.
+
+| matcher | accuracy | worth-surfacing recall | precision | harmful | seniority | location |
+|---|---|---|---|---|---|---|
+| always-skip stub | 78% | 0% | 0% | 3 | – | – |
+| always-review stub | 15% | 100% | 22% | 0 | – | – |
+| legacy rule score | **68%** | 33% | 33% | 2 | **88%** | **83%** |
+| local model, raw | 29% | 89% | 24% | 1 | 73% | 54% |
+| **local model + policy** | 54% | **89%** | 33% | **1** | 73% | 54% |
+
+Read the recall column, not the accuracy column. Of the nine listings a human
+said were worth looking at, the old scorer surfaced **three**; the new matcher
+surfaces **eight**, at the same precision and with fewer harmful errors. That is
+the product working: it costs about 24 listings to read instead of 9, and buys
+back five opportunities that would otherwise never have been seen.
+
+Accuracy is *lower* than the old scorer, and that is not hidden here. The set is
+78% skips, so a cautious matcher scores well on accuracy by saying no — the
+always-skip stub scores 78% while being useless. The local matcher over-uses
+REVIEW, which costs it accuracy and buys recall.
+
+### What the policy contributes
+
+The model reads seniority well and then refuses to act on it: it answers
+"review" for roles it has just described as mid-senior. Turning its own
+judgement into the decision is worth +25 points of accuracy and +9 of precision
+at no cost to recall.
+
+One rule was tested and **rejected**: applying the same treatment to the model's
+"missing requirement" verdicts scored *better* on accuracy (67%) and collapsed
+recall from 89% to 22%. It over-marks gaps — it called HTML and CSS missing for
+a candidate whose profile lists both.
+
+Also rejected: substituting the deterministic classifier's seniority, which is
+more accurate (88% against the model's 73%) but produced *worse* decisions (46%
+against 54%). It reads the employer's level tag, which is optimistic, so it
+rarely says mid-senior and the skip rule fires less often. Accuracy on a
+supporting claim is not the same as usefulness for the decision.
 
 ## Known weaknesses
 
-<!--WEAKNESSES-->
+**It never says APPLY on the full set.** Every strong match comes through as
+REVIEW. The candidate still sees the job, but the system does not distinguish
+"apply now" from "worth a look", which is the weakest part of the result.
+
+**It over-surfaces.** 24 of 41 listings reach the candidate. Ranking puts the
+best first, but a scan still leaves a substantial reading list.
+
+**Its supporting claims are worse than the rule engine's.** Seniority 73%
+against 88%, location 54% against 83%. The model earns its place on recall and
+on reading requirements, not on these.
+
+**It over-marks missing requirements**, which is why they are not used to decide.
+
+**Two of the four models measured were unusable**, and the shortlist was small.
+A machine with more VRAM should re-run `jobhunter benchmark` before trusting
+this choice — gemma3:4b had the best supporting claims of the four and was ruled
+out purely on speed.
