@@ -230,3 +230,47 @@ def test_agreement_tracks_where_the_system_and_the_candidate_differ(session):
 
     stats = agreement_stats(session)
     assert stats == {"total": 2, "agreed": 1, "disagreed": 1}
+
+
+class TestItDoesNotLearnAgainstYourOwnProfile:
+    """Measured on real feedback: skipping three sysadmin roles for their
+    technology taught the system to dislike "varna" (-0.60) and "entry" (-0.60)
+    — the city and the level the candidate's profile asks for. Every listing in
+    a Varna search is in Varna, so the dimension carries no signal at all."""
+
+    def test_skipping_for_technology_does_not_teach_it_to_dislike_your_city(self, session):
+        for index in range(3):
+            job = make_job(session, title=f"Sysadmin {index}", tech=["windows"], city="Varna")
+            record_feedback(session, job.id, action="skip", reason="technology")
+
+        preferences = load_preferences(session, min_evidence=1)
+        assert ("city", "varna") not in preferences
+        assert preferences[("technology", "windows")] < 0, "the real reason is still learned"
+
+    def test_nor_the_seniority_you_are_targeting(self, session):
+        for index in range(3):
+            job = make_job(session, title=f"Sysadmin {index}", tech=["vmware"])
+            record_feedback(session, job.id, action="skip", reason="technology")
+
+        assert ("seniority", "junior") not in load_preferences(session, min_evidence=1)
+
+    def test_but_saying_wrong_location_outright_is_learned(self, session):
+        """A stated reason is a statement, not a coincidence."""
+        for index in range(3):
+            job = make_job(session, title=f"Sofia role {index}", city="Sofia")
+            record_feedback(session, job.id, action="skip", reason="wrong_location")
+
+        preferences = load_preferences(session, min_evidence=1)
+        assert preferences[("city", "sofia")] < 0
+
+    def test_and_so_is_saying_too_senior(self, session):
+        from jobhunter.domain.enums import Seniority
+
+        for index in range(3):
+            job = make_job(session, title=f"Senior role {index}")
+            job.seniority = Seniority.SENIOR
+            session.flush()
+            record_feedback(session, job.id, action="skip", reason="too_senior")
+
+        preferences = load_preferences(session, min_evidence=1)
+        assert preferences[("seniority", "senior")] < 0

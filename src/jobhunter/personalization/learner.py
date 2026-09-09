@@ -71,9 +71,26 @@ class Observation:
     weight: float
 
 
+# Dimensions the candidate has already stated in their profile. Learning these
+# from incidental co-occurrence is worse than not learning them: measured on
+# real feedback, skipping three sysadmin roles for their technology taught the
+# system to dislike "varna" at -0.60 and "entry" at -0.60 — the city and the
+# level the candidate's own profile asks for. Every listing in a Varna search is
+# in Varna, so the dimension carries no signal and only accumulates weight.
+#
+# They are still learned when the candidate says outright that is the problem,
+# because "too senior" or "wrong location" is a statement, not a coincidence.
+STATED_IN_PROFILE = {DIMENSION_CITY, DIMENSION_SENIORITY}
+
+
 def observations_for_job(job: Job, *, reason: str | None = None) -> list[Observation]:
     """The features of a job that a preference could attach to."""
     out: list[Observation] = []
+
+    def learnable(dimension: str) -> bool:
+        if dimension not in STATED_IN_PROFILE:
+            return True
+        return REASON_DIMENSIONS.get(reason or "") == dimension
 
     def emphasis(dimension: str) -> float:
         """Weight an explicit reason more than an incidental co-occurrence."""
@@ -92,7 +109,7 @@ def observations_for_job(job: Job, *, reason: str | None = None) -> list[Observa
             Observation(DIMENSION_COMPANY, normalize_company(company), emphasis(DIMENSION_COMPANY))
         )
 
-    if job.seniority is not None and job.seniority.is_known:
+    if job.seniority is not None and job.seniority.is_known and learnable(DIMENSION_SENIORITY):
         out.append(
             Observation(DIMENSION_SENIORITY, job.seniority.value, emphasis(DIMENSION_SENIORITY))
         )
@@ -102,7 +119,7 @@ def observations_for_job(job: Job, *, reason: str | None = None) -> list[Observa
             Observation(DIMENSION_WORK_MODE, job.work_mode.value, emphasis(DIMENSION_WORK_MODE))
         )
 
-    if job.city:
+    if job.city and learnable(DIMENSION_CITY):
         out.append(Observation(DIMENSION_CITY, job.city.strip().lower(), emphasis(DIMENSION_CITY)))
 
     return out
