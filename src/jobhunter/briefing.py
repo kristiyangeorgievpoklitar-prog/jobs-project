@@ -15,7 +15,7 @@ from sqlalchemy import select
 from jobhunter.db.base import utcnow
 from jobhunter.db.models import Job
 from jobhunter.db.models import JobEvaluation as JobEvaluationRow
-from jobhunter.domain.evaluation import Decision
+from jobhunter.domain.evaluation import Decision, _first_sentence
 from jobhunter.domain.schemas import CandidateSnapshot
 from jobhunter.matching.verification import unverified_technologies, verification_warning
 from jobhunter.personalization.learner import load_preferences
@@ -132,10 +132,12 @@ def render_briefing(briefing: Briefing) -> str:
         lines.append(f"  {top.job.title} - {top.job.company_display}")
         lines.append(f"  {top.job.city or top.job.location_raw or 'location unknown'}")
         lines.append(f"  {evaluation.headline()}")
-        if evaluation.major_strengths:
-            lines.append(f"  Why: {', '.join(evaluation.major_strengths[:3])}")
-        if evaluation.major_risks:
-            lines.append(f"  Risk: {evaluation.major_risks[0]}")
+        # One per line, trimmed. The model writes full sentences, and joining
+        # three of them with commas produces a paragraph nobody reads.
+        for strength in evaluation.major_strengths[:3]:
+            lines.append(f"  + {_first_sentence(strength, limit=100)}")
+        for risk in evaluation.major_risks[:2]:
+            lines.append(f"  - {_first_sentence(risk, limit=100)}")
         if top.unverified_claims:
             lines.append(f"  Check: {verification_warning(top.unverified_claims)}")
         if top.personalised:
