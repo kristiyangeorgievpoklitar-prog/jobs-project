@@ -122,8 +122,9 @@ def test_a_full_pass_produces_a_briefing_a_person_can_act_on(session, candidate)
     text = render_briefing(briefing)
     assert "2 jobs worth your attention" in text
     assert "Junior PHP Developer" in text
-    assert "Why:" in text
-    assert "Risk:" in text
+    assert "Worth applying" in text, "the headline states the decision"
+    assert "+ PHP" in text, "strengths are listed one per line"
+    assert "- No Docker experience" in text, "so are the risks"
 
 
 def test_the_briefing_says_so_plainly_when_there_is_nothing(session, candidate):
