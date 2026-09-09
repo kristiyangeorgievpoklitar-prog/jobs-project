@@ -16,9 +16,12 @@ from jobhunter.db.base import utcnow
 from jobhunter.db.models import Job
 from jobhunter.db.models import JobEvaluation as JobEvaluationRow
 from jobhunter.domain.evaluation import Decision
+from jobhunter.domain.schemas import CandidateSnapshot
+from jobhunter.matching.verification import unverified_technologies, verification_warning
 from jobhunter.personalization.learner import load_preferences
 from jobhunter.personalization.ranker import RankedJob, explain_preferences, rank_jobs
 from jobhunter.pipeline.evaluation_store import to_domain
+from jobhunter.profile.profile_store import get_active_profile, to_snapshot
 
 
 @dataclass
@@ -50,6 +53,7 @@ def build_briefing(
     limit: int = 12,
     since_hours: int | None = None,
     candidate_fingerprint: str | None = None,
+    candidate: CandidateSnapshot | None = None,
 ) -> Briefing:
     """Collect the current decisions, ranked by the candidate's own history.
 
@@ -67,6 +71,7 @@ def build_briefing(
 
     rows = session.execute(stmt).all()
     preferences = load_preferences(session)
+    candidate = candidate or to_snapshot(get_active_profile(session))
 
     stale = (
         sum(
@@ -89,6 +94,12 @@ def build_briefing(
     )
     briefing.apply = [r for r in ranked if r.evaluation.decision is Decision.APPLY][:limit]
     briefing.review = [r for r in ranked if r.evaluation.decision is Decision.REVIEW][:limit]
+
+    # Only for what is actually shown: the check is cheap but pointless on the
+    # listings nobody will read.
+    for shown in (*briefing.apply, *briefing.review):
+        shown.unverified_claims = unverified_technologies(shown.evaluation, candidate)
+
     return briefing
 
 
@@ -125,6 +136,8 @@ def render_briefing(briefing: Briefing) -> str:
             lines.append(f"  Why: {', '.join(evaluation.major_strengths[:3])}")
         if evaluation.major_risks:
             lines.append(f"  Risk: {evaluation.major_risks[0]}")
+        if top.unverified_claims:
+            lines.append(f"  Check: {verification_warning(top.unverified_claims)}")
         if top.personalised:
             explanation = explain_preferences(top.matched_preferences)
             if explanation:

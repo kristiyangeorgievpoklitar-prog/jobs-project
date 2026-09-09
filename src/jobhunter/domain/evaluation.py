@@ -222,15 +222,16 @@ class JobEvaluation(BaseModel):
 
         if self.decision is Decision.SKIP:
             reason = self.major_risks[0] if self.major_risks else self.reasoning
-            return f"{lead}: {_first_sentence(reason)}" if reason else lead
+            return f"{lead}: {_first_sentence(reason, limit=110)}" if reason else lead
 
-        parts = [lead]
+        line = lead
         if self.major_strengths:
-            parts.append(_first_sentence(self.major_strengths[0]))
+            line += f" - {_first_sentence(self.major_strengths[0], limit=90)}"
         if self.major_risks:
-            parts.append(f"but {_first_sentence(self.major_risks[0])[0].lower()}"
-                         f"{_first_sentence(self.major_risks[0])[1:]}")
-        return " - ".join(parts[:2]) + (f", {parts[2]}" if len(parts) > 2 else "")
+            risk = _first_sentence(self.major_risks[0], limit=70)
+            if risk:
+                line += f", but {risk[0].lower()}{risk[1:]}"
+        return line
 
     @property
     def blocking_gaps(self) -> list[RequirementAssessment]:
@@ -246,11 +247,22 @@ class JobEvaluation(BaseModel):
         return covered / len(self.mandatory_requirements)
 
 
-def _first_sentence(text: str, limit: int = 120) -> str:
-    """The first clause of a model sentence, trimmed to fit one line."""
+def _first_sentence(text: str, limit: int = 110) -> str:
+    """The first clause of a model sentence, trimmed to fit one line.
+
+    Cuts on a word boundary. A hard character cut produced headlines ending
+    "...which aligns with the J, but", which reads as a rendering fault and
+    undermines the explanation it is meant to carry.
+    """
     cleaned = " ".join((text or "").split())
-    for stop in (". ", "; "):
+    for stop in (". ", "; ", " - "):
         if stop in cleaned:
             cleaned = cleaned.split(stop)[0]
             break
-    return cleaned[:limit].rstrip(" .,;")
+
+    if len(cleaned) > limit:
+        cut = cleaned[:limit].rsplit(" ", 1)[0].rstrip(" .,;")
+        # Trim before appending, or the trailing strip eats the ellipsis and the
+        # line reads as an unfinished sentence rather than a shortened one.
+        return f"{cut}..." if cut else cleaned[:limit]
+    return cleaned.rstrip(" .,;")

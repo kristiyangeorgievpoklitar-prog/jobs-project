@@ -430,3 +430,40 @@ class TestTheHeadlineIsComposedNotAsked:
             major_risks=["No Docker experience", "No Docker experience", "No Kubernetes"]
         )
         assert evaluation.major_risks == ["No Docker experience", "No Kubernetes"]
+
+
+class TestTheHeadlineReadsAsFinishedText:
+    """A line cut mid-word reads as a rendering fault, not a summary."""
+
+    def _headline(self, strength: str, risk: str = "") -> str:
+        from jobhunter.domain.evaluation import Decision, JobEvaluation
+
+        return JobEvaluation(
+            decision=Decision.APPLY,
+            major_strengths=[strength] if strength else [],
+            major_risks=[risk] if risk else [],
+        ).headline()
+
+    def test_a_long_strength_is_cut_on_a_word_boundary(self):
+        """Measured output ended '...which aligns with the J, but'."""
+        line = self._headline(
+            "The candidate has hands-on experience in software development and web "
+            "application modernization, which aligns with the Junior C# Developer role."
+        )
+        assert "..." in line
+        head = line.split("...")[0]
+        assert head.endswith(tuple("abcdefghijklmnopqrstuvwxyz")), "cut mid-word"
+
+    def test_a_truncation_keeps_its_ellipsis(self):
+        """An earlier version stripped the ellipsis it had just added."""
+        line = self._headline("A very long strength " + "indeed " * 40)
+        assert line.rstrip().endswith("...")
+
+    def test_a_short_strength_is_left_alone(self):
+        line = self._headline("Laravel and MySQL match the stack.")
+        assert "..." not in line
+        assert line == "Worth applying - Laravel and MySQL match the stack"
+
+    def test_the_line_stays_glanceable(self):
+        line = self._headline("x " * 200, "y " * 200)
+        assert len(line) < 200

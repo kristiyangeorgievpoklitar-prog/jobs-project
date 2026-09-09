@@ -12,7 +12,7 @@ means they see things in a more useful sequence.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from jobhunter.db.models import Job
 from jobhunter.domain.evaluation import Decision, JobEvaluation
@@ -40,6 +40,9 @@ class RankedJob:
     matched_preferences: list[tuple[str, str, float]]
     # Filled in by the presentation layer, which knows how to phrase it.
     preference_explanation: str = ""
+    # Technologies the evaluation credits the candidate with that their profile
+    # does not list. Shown, never silently removed.
+    unverified_claims: list[str] = field(default_factory=list)
 
     @property
     def personalised(self) -> bool:

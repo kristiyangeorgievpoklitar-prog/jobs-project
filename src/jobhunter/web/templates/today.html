@@ -59,6 +59,11 @@
       {% endif %}
     </div>
 
+    {% if ranked.unverified_claims %}
+      <p class="unverified">Check: this credits you with
+        <strong>{{ ranked.unverified_claims|join(', ') }}</strong>, which your profile does not list.</p>
+    {% endif %}
+
     {% if ranked.personalised and ranked.preference_explanation %}
       <p class="personalised">Ranked up because {{ ranked.preference_explanation }}.</p>
     {% endif %}
