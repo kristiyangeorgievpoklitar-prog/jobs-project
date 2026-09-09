@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import typer
@@ -757,8 +758,14 @@ def benchmark(
     prompt_version: str | None = typer.Option(
         None, help="Prompt version to test, e.g. v5. Defaults to the current one."
     ),
+    fresh: bool = typer.Option(False, help="Ignore cached answers from a previous run"),
 ) -> None:
-    """Measure matchers against the labelled dataset."""
+    """Measure matchers against the labelled dataset.
+
+    A full local-model pass is hours of inference, so each answer is cached to
+    ``data/benchmarks/`` as it lands and an interrupted run resumes where it
+    stopped. Pass --fresh to start over.
+    """
     from jobhunter.ai.local_model import LocalModelConfig
     from jobhunter.db.models import CVFile
     from jobhunter.evaluation.dataset import Dataset, load_dataset
@@ -772,6 +779,7 @@ def benchmark(
         PolicyMatcher,
         run_benchmark,
     )
+    from jobhunter.prompts import JOB_EVALUATION_VERSION
 
     context = AppContext(configure_logs=False)
     dataset = load_dataset()
@@ -818,15 +826,31 @@ def benchmark(
                 )
                 raise typer.Exit(code=1)
             matcher.provider.prompt = job_evaluation_prompt(prompt_version)
-        # Memoised so the policy variant costs no extra inference.
-        memoised = MemoisingMatcher(matcher)
+        # Cached to disk: the policy variant then costs no extra inference, and
+        # an interrupted run resumes rather than repeating hours of work.
+        cache_path = (
+            context.settings.data_dir
+            / "benchmarks"
+            / f"{model.replace(':', '_')}.{prompt_version or JOB_EVALUATION_VERSION}.json"
+        )
+        if fresh and cache_path.exists():
+            cache_path.unlink()
+        memoised = MemoisingMatcher(matcher, cache_path=cache_path)
+        if memoised.resumed:
+            console.print(f"[dim]resuming {model}: {memoised.resumed} case(s) already done[/dim]")
         matchers.append(memoised)
         # What the candidate actually sees: the same evaluation after the
         # pipeline's safety rules have had their say.
         matchers.append(PolicyMatcher(memoised, candidate, context.decision_policy))
 
+    results: dict[str, object] = {}
+    results_path = context.settings.data_dir / "benchmarks" / "summary.json"
+
     for matcher in matchers:
         report = run_benchmark(matcher, dataset)
+        results[matcher.name] = report.summary()
+        results_path.parent.mkdir(parents=True, exist_ok=True)
+        results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
         console.print(format_report(report))
         for outcome in report.failures():
             marker = "HARMFUL" if outcome.harmful else "       "
@@ -835,6 +859,8 @@ def benchmark(
                 f"got {outcome.predicted.value:6} | {outcome.title[:44]}[/dim]"
             )
         console.print()
+
+    console.print(f"[dim]summary written to {results_path}[/dim]")
     context.close()
 
 

@@ -8,8 +8,10 @@ anything.
 
 from __future__ import annotations
 
+import json
 import time
 from collections.abc import Callable
+from pathlib import Path
 from typing import Protocol
 
 from jobhunter.ai.local_model import LocalModelConfig, LocalModelProvider
@@ -155,20 +157,50 @@ class AlwaysReviewMatcher:
 class MemoisingMatcher:
     """Runs the wrapped matcher once per case and remembers the answer.
 
-    Without this, reporting both the raw and the policy-applied numbers would
-    mean two full inference passes over the dataset — an extra hour for a
-    result that is a pure function of the first pass.
+    Two reasons, both measured. Reporting the raw and the policy-applied numbers
+    would otherwise mean two full inference passes — an extra hour for a result
+    that is a pure function of the first. And with ``cache_path`` set, each
+    answer is written to disk as it lands, so an interrupted run resumes instead
+    of starting over: a full pass is around two hours on this hardware, and one
+    was lost outright to a shell timeout before this existed.
     """
 
-    def __init__(self, inner: Matcher) -> None:
+    def __init__(self, inner: Matcher, cache_path: Path | None = None) -> None:
         self.inner = inner
         self.name = inner.name
+        self.cache_path = cache_path
         self._answers: dict[str, JobEvaluation] = {}
+
+        if cache_path is not None and cache_path.exists():
+            stored = json.loads(cache_path.read_text(encoding="utf-8"))
+            self._answers = {
+                case_id: JobEvaluation.model_validate(payload)
+                for case_id, payload in stored.items()
+            }
+            log.info("benchmark_cache_loaded", cases=len(self._answers), path=str(cache_path))
+
+    @property
+    def resumed(self) -> int:
+        """How many answers came from a previous run."""
+        return len(self._answers)
 
     def evaluate_case(self, case: BenchmarkCase) -> JobEvaluation:
         if case.id not in self._answers:
             self._answers[case.id] = self.inner.evaluate_case(case)
+            self._persist()
         return self._answers[case.id]
+
+    def _persist(self) -> None:
+        if self.cache_path is None:
+            return
+        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            case_id: json.loads(evaluation.model_dump_json())
+            for case_id, evaluation in self._answers.items()
+        }
+        self.cache_path.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
 
 
 class PolicyMatcher:

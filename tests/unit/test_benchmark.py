@@ -512,3 +512,59 @@ class TestDatasetBuild:
         restored = load_dataset(path)
         assert len(restored) == 1
         assert restored.cases[0].level_raw == "Ниво Entry-level / Junior"
+
+
+def test_an_interrupted_run_resumes_instead_of_repeating_hours_of_work(tmp_path):
+    """A full local pass is hours; one was lost outright to a shell timeout."""
+    from jobhunter.evaluation.runner import MemoisingMatcher
+
+    calls = {"n": 0}
+
+    class CountingMatcher:
+        name = "counting"
+
+        def evaluate_case(self, benchmark_case):
+            calls["n"] += 1
+            return JobEvaluation(decision=Decision.APPLY, confidence=0.9, reasoning="because")
+
+    dataset = Dataset([case("a", Decision.APPLY), case("b", Decision.SKIP)])
+    cache = tmp_path / "cache.json"
+
+    run_benchmark(MemoisingMatcher(CountingMatcher(), cache_path=cache), dataset)
+    assert calls["n"] == 2
+    assert cache.exists()
+
+    # A second process, starting cold, must not pay for the same answers again.
+    resumed = MemoisingMatcher(CountingMatcher(), cache_path=cache)
+    assert resumed.resumed == 2
+    report = run_benchmark(resumed, dataset)
+    assert calls["n"] == 2, "the cached answers must be reused"
+    assert report.total == 2
+
+
+def test_a_cached_answer_round_trips_faithfully(tmp_path):
+    from jobhunter.evaluation.runner import MemoisingMatcher
+
+    class FixedMatcher:
+        name = "fixed"
+
+        def evaluate_case(self, benchmark_case):
+            return JobEvaluation(
+                decision=Decision.REVIEW,
+                confidence=0.71,
+                seniority=Seniority.MID_SENIOR,
+                location_fit=LocationFit.HYBRID_CITY,
+                major_risks=["Docker missing"],
+                reasoning="A specific reason.",
+            )
+
+    dataset = Dataset([case("a", Decision.REVIEW)])
+    cache = tmp_path / "cache.json"
+    run_benchmark(MemoisingMatcher(FixedMatcher(), cache_path=cache), dataset)
+
+    restored = MemoisingMatcher(FixedMatcher(), cache_path=cache)
+    evaluation = restored.evaluate_case(dataset.cases[0])
+    assert evaluation.confidence == 0.71
+    assert evaluation.seniority is Seniority.MID_SENIOR
+    assert evaluation.location_fit is LocationFit.HYBRID_CITY
+    assert evaluation.major_risks == ["Docker missing"]
