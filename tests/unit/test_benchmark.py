@@ -333,9 +333,11 @@ def test_the_longest_real_prompt_fits_the_configured_context():
         )
         worst = max(worst, len(rendered))
 
-    # 3.5 characters per token is conservative for this mix of Bulgarian and
-    # English; measured prompts came in nearer 4.5.
-    estimated_tokens = worst / 3.5
+    # 4.2 characters per token, with a margin. Measured against the tokeniser on
+    # the three longest real prompts in this set: 4.58, 4.60 and 4.68 chars per
+    # token, the largest coming to 4,071 tokens. The constant is deliberately
+    # below all three so the guard trips before the real limit does.
+    estimated_tokens = worst / 4.2
     budget = config.num_ctx - config.num_predict
 
     assert estimated_tokens <= budget, (
