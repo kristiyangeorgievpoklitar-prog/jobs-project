@@ -241,3 +241,49 @@ def test_nothing_is_flagged_stale_when_the_profile_is_unchanged(session, candida
         session, candidate_fingerprint=candidate_fingerprint(candidate, None)
     )
     assert briefing.stale_count == 0
+
+
+def test_the_briefing_survives_the_session_closing(session, candidate):
+    """The dashboard renders after the session is gone.
+
+    A lazy relationship read at render time raises DetachedInstanceError and
+    takes the whole page down with a 500 — which is exactly what happened to the
+    home page once the briefing started returning jobs. The company must be
+    eagerly loaded.
+    """
+    from jobhunter.db.models import Company
+
+    company = Company(name="Acme Ltd", normalized_name="acme ltd")
+    session.add(company)
+    session.flush()
+
+    evaluator = JobEvaluator(ScriptedModel({"Junior PHP Developer": "apply"}))
+    row, normalized = add_job(session, "Junior PHP Developer")
+    row.company_id = company.id
+    session.flush()
+    evaluator.evaluate(session, row.id, normalized, candidate)
+
+    briefing = build_briefing(session)
+    session.expunge_all()  # what closing the request's session does to the rows
+
+    # Rendering must not need the session back.
+    assert briefing.apply[0].job.company_display == "Acme Ltd"
+    assert "Junior PHP Developer" in render_briefing(briefing)
+
+
+def test_a_claim_the_profile_does_not_support_is_flagged_for_the_reader(session, candidate):
+    """The measured failure: an evaluation crediting the candidate with C#."""
+    model = ScriptedModel({})
+    model.by_title = {}
+
+    class CreditsCSharp(ScriptedModel):
+        def _chat(self, system, user):
+            return response("apply", strengths=["The candidate has experience with C# and Java."]), 10
+
+    row, normalized = add_job(session, "Junior C# Developer")
+    JobEvaluator(CreditsCSharp({})).evaluate(session, row.id, normalized, candidate)
+
+    briefing = build_briefing(session, candidate=candidate)
+    assert briefing.apply, "the job is still shown"
+    assert "c#" in briefing.apply[0].unverified_claims
+    assert "java" in briefing.apply[0].unverified_claims

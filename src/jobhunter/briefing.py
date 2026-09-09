@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from jobhunter.db.base import utcnow
 from jobhunter.db.models import Job
@@ -65,6 +66,10 @@ def build_briefing(
         select(Job, JobEvaluationRow)
         .join(JobEvaluationRow, JobEvaluationRow.job_id == Job.id)
         .where(JobEvaluationRow.is_current.is_(True), Job.is_archived.is_(False))
+        # The company is eagerly loaded because the dashboard renders it after
+        # the session has closed; a lazy load there raises DetachedInstanceError
+        # and takes the whole page down with a 500.
+        .options(joinedload(Job.company))
     )
     if since_hours is not None:
         stmt = stmt.where(Job.first_seen_at >= utcnow() - timedelta(hours=since_hours))
