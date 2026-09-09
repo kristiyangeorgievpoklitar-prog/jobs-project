@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import pytest
 
+from jobhunter.domain.enums import Seniority
 from jobhunter.domain.evaluation import (
     Decision,
     ExperienceFit,
@@ -271,3 +272,76 @@ def test_remote_can_be_excluded_by_configuration(candidate):
         policy,
     )
     assert outcome.evaluation.decision is Decision.SKIP
+
+
+class TestSeniorityDecidesWhereTheModelHedges:
+    """The model reads level well and then refuses to act on it.
+
+    Measured over the labelled set it places the entry bar within one band 80%
+    of the time, yet still answers "review" for roles it has just described as
+    mid-senior. Turning that judgement into the decision moved accuracy from 33%
+    to 61% and precision from 30% to 44% without costing recall.
+    """
+
+    def test_a_role_two_bands_above_the_target_is_skipped(self, candidate):
+        outcome = apply_policy(
+            strong_evaluation(decision=Decision.REVIEW, seniority=Seniority.MID_SENIOR),
+            job("QA Automation Engineer"),
+            candidate,
+        )
+        assert outcome.evaluation.decision is Decision.SKIP
+        assert any("entry bar" in reason for reason in outcome.adjustments)
+
+    def test_one_band_above_the_target_is_still_shown(self, candidate):
+        """A stretch is worth seeing; two bands up is a different job."""
+        outcome = apply_policy(
+            strong_evaluation(decision=Decision.REVIEW, seniority=Seniority.MID),
+            job("Software Developer"),
+            candidate,
+        )
+        assert outcome.evaluation.decision is Decision.REVIEW
+
+    def test_a_junior_role_is_untouched(self, candidate):
+        outcome = apply_policy(
+            strong_evaluation(seniority=Seniority.JUNIOR), job("Junior PHP Developer"), candidate
+        )
+        assert outcome.evaluation.decision is Decision.APPLY
+
+    def test_an_unknown_seniority_is_not_used_to_skip(self, candidate):
+        """Declining to guess must not be read as a verdict."""
+        outcome = apply_policy(
+            strong_evaluation(decision=Decision.REVIEW, seniority=Seniority.UNKNOWN),
+            job("Software Developer"),
+            candidate,
+        )
+        assert outcome.evaluation.decision is Decision.REVIEW
+
+    def test_the_tolerance_follows_the_candidate_not_a_constant(self):
+        """Someone targeting mid should see mid-senior roles."""
+        from jobhunter.domain.schemas import CandidateSnapshot
+
+        mid_candidate = CandidateSnapshot(
+            location="Varna",
+            preferred_locations=["Varna"],
+            desired_seniority=Seniority.MID,
+            years_experience=4.0,
+        )
+        outcome = apply_policy(
+            strong_evaluation(decision=Decision.REVIEW, seniority=Seniority.MID_SENIOR),
+            job("Senior-ish Developer"),
+            mid_candidate,
+        )
+        assert outcome.evaluation.decision is Decision.REVIEW
+
+    def test_missing_requirements_are_not_used_the_same_way(self, candidate):
+        """The model over-marks gaps; using them to skip collapsed recall to 22%."""
+        evaluation = strong_evaluation(
+            decision=Decision.REVIEW,
+            seniority=Seniority.JUNIOR,
+            mandatory_requirements=[
+                RequirementAssessment(requirement="HTML", candidate_fit=Fit.MISSING),
+                RequirementAssessment(requirement="CSS", candidate_fit=Fit.MISSING),
+            ],
+        )
+        outcome = apply_policy(evaluation, job("Junior PHP Developer"), candidate)
+        assert outcome.evaluation.decision is Decision.REVIEW
