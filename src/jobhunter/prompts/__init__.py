@@ -45,12 +45,19 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 #       from a stub that reviews everything. v7 states the base rate — most
 #       listings are skips — lists concrete skip triggers, and defines "review"
 #       as "I could not decide" rather than "I would rather not say".
-#   v8  current. Describes every field the schema demands. Six of the fourteen
+#   v8  describes every field the schema demands. Six of the fourteen
 #       required fields were never named in the prompt — the grammar forces the
 #       model to emit them regardless, so it filled them blind. is_it_role came
 #       back false for EVERY listing, including "Junior C++ Developer", and the
 #       policy skipped all 41 benchmark cases as non-software work.
-JOB_EVALUATION_VERSION = "v8"
+#   v9  current. v8 fixed the blind fields but regressed the decision: on the
+#       same 14 cases it issued ZERO skips against v7's eight, and accuracy fell
+#       57% -> 29%. The field list sits at the end of the prompt, so the last
+#       thing read before answering was a bare "decision: apply, review or skip"
+#       with the anti-hedging rules far above it. v9 restates them at the point
+#       of use, keeping v8's glossary — which lifted seniority to 86%, the best
+#       measured.
+JOB_EVALUATION_VERSION = "v9"
 COVER_LETTER_VERSION = "v1"
 
 
