@@ -50,14 +50,21 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 #       model to emit them regardless, so it filled them blind. is_it_role came
 #       back false for EVERY listing, including "Junior C++ Developer", and the
 #       policy skipped all 41 benchmark cases as non-software work.
-#   v9  current. v8 fixed the blind fields but regressed the decision: on the
+#   v9  v8 fixed the blind fields but regressed the decision: on the
 #       same 14 cases it issued ZERO skips against v7's eight, and accuracy fell
 #       57% -> 29%. The field list sits at the end of the prompt, so the last
 #       thing read before answering was a bare "decision: apply, review or skip"
 #       with the anti-hedging rules far above it. v9 restates them at the point
 #       of use, keeping v8's glossary — which lifted seniority to 86%, the best
 #       measured.
-JOB_EVALUATION_VERSION = "v9"
+#   v10 current. The hedging was one level lower than it looked: the model
+#       never marked anything "missing", so no evidence ever supported a skip.
+#       It was obeying the prompt, which defined "unknown" as "the profile is
+#       simply silent" — and a CV listing Bulgarian, English and Russian IS
+#       silent about German by that wording. v10 draws the line where it
+#       belongs: a CV lists its languages and technologies, so absence from
+#       that list is evidence of absence, not silence.
+JOB_EVALUATION_VERSION = "v10"
 COVER_LETTER_VERSION = "v1"
 
 
