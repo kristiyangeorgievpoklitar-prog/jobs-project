@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from jobhunter.ai.local_model import SCHEMA_VERSION, LocalModelProvider
+from jobhunter.classify.classifier import classify_job
 from jobhunter.domain.evaluation import Decision, JobEvaluation, LocationFit
 from jobhunter.domain.schemas import CandidateSnapshot, NormalizedJob
 from jobhunter.logging_setup import get_logger
@@ -143,7 +144,13 @@ class JobEvaluator:
             stats.degraded += 1
 
         # --- stage 4: what the system is willing to stand behind
-        outcome = apply_policy(evaluation, job, candidate, self.policy)
+        classification = classify_job(
+            job,
+            target_locations=candidate.preferred_locations
+            or ([candidate.location] if candidate.location else []),
+            remote_ok=candidate.remote_ok,
+        )
+        outcome = apply_policy(evaluation, job, candidate, self.policy, classification)
         if outcome.changed:
             stats.downgraded += 1
             log.info(

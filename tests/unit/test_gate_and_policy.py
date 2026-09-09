@@ -345,3 +345,75 @@ class TestSeniorityDecidesWhereTheModelHedges:
         )
         outcome = apply_policy(evaluation, job("Junior PHP Developer"), candidate)
         assert outcome.evaluation.decision is Decision.REVIEW
+
+
+class TestALanguageYouDoNotSpeakIsAHardGate:
+    """The site states required languages; fluent German cannot be acquired by Tuesday.
+
+    On the real listings this was the difference between a "Greek-Speaking
+    Reactivation Agent" being the top recommendation and being filtered out.
+    """
+
+    def _job(self, languages):
+        return normalize_job(
+            RawJob(
+                source_url="https://www.jobs.bg/job/1",
+                title="Support Specialist",
+                location_raw="Варна",
+                description=LONG_DESCRIPTION,
+                languages_raw=languages,
+            )
+        )
+
+    @pytest.fixture
+    def speaker(self):
+        return CandidateSnapshot(
+            location="Varna",
+            preferred_locations=["Varna"],
+            languages=[
+                {"name": "English", "level": "professional"},
+                {"name": "Bulgarian", "level": "native"},
+            ],
+        )
+
+    def test_a_required_language_the_candidate_lacks_is_rejected(self, speaker):
+        result = Stage1Gate().check(self._job(["Английски", "Немски"]), speaker)
+        assert not result.passed
+        assert result.reason == "language_required"
+        assert "Немски" in (result.detail or "")
+
+    def test_a_language_the_candidate_speaks_is_not_a_barrier(self, speaker):
+        gate = Stage1Gate(GateConfig(require_it=False))
+        assert gate.check(self._job(["Английски"]), speaker).passed
+
+    def test_no_stated_language_is_not_a_barrier(self, speaker):
+        gate = Stage1Gate(GateConfig(require_it=False))
+        assert gate.check(self._job([]), speaker).passed
+
+    def test_a_candidate_with_no_languages_recorded_is_not_gated(self):
+        """Absence of profile data must not become a filter."""
+        blank = CandidateSnapshot(location="Varna", preferred_locations=["Varna"])
+        gate = Stage1Gate(GateConfig(require_it=False))
+        assert gate.check(self._job(["Немски"]), blank).passed
+
+
+def test_the_classifier_wins_on_location_where_it_disagrees(candidate):
+    """The city is a fact on the page; the classifier reads it 83% against 54%."""
+    from jobhunter.classify.classifier import classify_job
+
+    sofia = normalize_job(
+        RawJob(
+            source_url="https://www.jobs.bg/job/2",
+            title="Junior PHP Developer",
+            location_raw="София",
+            description=LONG_DESCRIPTION,
+        )
+    )
+    classification = classify_job(sofia, target_locations=["Varna"], remote_ok=True)
+
+    # The model thinks it is local; the classifier knows the city is Sofia.
+    optimistic = strong_evaluation(decision=Decision.REVIEW, location_fit=LocationFit.EXACT_CITY)
+    outcome = apply_policy(optimistic, sofia, candidate, None, classification)
+
+    assert outcome.evaluation.decision is Decision.SKIP
+    assert any("another city" in reason for reason in outcome.adjustments)

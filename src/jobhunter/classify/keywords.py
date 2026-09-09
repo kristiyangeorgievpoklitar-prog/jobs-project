@@ -580,3 +580,26 @@ EDUCATION_MARKERS = (
     "phd",
     "доктор",
 )
+
+
+# The language names Jobs.bg puts in its own "language" field, mapped to the
+# names a candidate profile uses. This field is the site's own structured data
+# and is far more reliable than looking for language names in the posting body.
+SITE_LANGUAGE_NAMES: dict[str, str] = {
+    "английски": "english",
+    "немски": "german",
+    "френски": "french",
+    "испански": "spanish",
+    "италиански": "italian",
+    "португалски": "portuguese",
+    "гръцки": "greek",
+    "турски": "turkish",
+    "руски": "russian",
+    "български": "bulgarian",
+    "румънски": "romanian",
+    "полски": "polish",
+    "нидерландски": "dutch",
+    "шведски": "swedish",
+    "чешки": "czech",
+    "унгарски": "hungarian",
+}

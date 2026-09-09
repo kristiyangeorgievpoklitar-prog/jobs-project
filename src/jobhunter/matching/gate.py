@@ -88,6 +88,18 @@ def _title_is_clearly_senior(title: str) -> str | None:
     return None
 
 
+def _unmet_language(job: NormalizedJob, candidate: CandidateSnapshot) -> str | None:
+    """A language the listing requires and the candidate does not speak."""
+    spoken = candidate.spoken_languages
+    if not spoken:
+        return None
+    for stated in job.languages:
+        name = K.SITE_LANGUAGE_NAMES.get(stated.strip().lower())
+        if name and name not in spoken:
+            return stated.strip()
+    return None
+
+
 def _title_has_it_role_word(title: str) -> bool:
     lowered = normalize_text(title)
     return any(kw in lowered for kw in K.IT_ROLE_KEYWORDS)
@@ -122,7 +134,21 @@ class Stage1Gate:
                 GateVerdict.REJECT, "senior_title", f"Title states a senior role ({marker!r})"
             )
 
-        # 3. Not a software role at all.
+        # 3. A working language the candidate does not have.
+        #
+        # This is the site's own structured field, not a guess from the body,
+        # and it is a hard gate: a fluent-German requirement cannot be met by
+        # Tuesday. Measured on the labelled set it removes exactly the four
+        # German and Greek listings, all of them labelled skip, and touches
+        # nothing else.
+        if unmet := _unmet_language(job, candidate):
+            return GateResult(
+                GateVerdict.REJECT,
+                "language_required",
+                f"Requires {unmet}, which you do not list",
+            )
+
+        # 4. Not a software role at all.
         #
         # This leans on the classifier's verdict rather than a list of non-IT job
         # titles, because the list can only ever name professions someone thought

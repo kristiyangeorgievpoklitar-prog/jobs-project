@@ -15,7 +15,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from jobhunter.domain.evaluation import Decision, JobEvaluation, LocationFit
-from jobhunter.domain.schemas import CandidateSnapshot, NormalizedJob
+from jobhunter.domain.schemas import (
+    CandidateSnapshot,
+    ClassificationResult,
+    NormalizedJob,
+)
 from jobhunter.matching.job_context import has_usable_description
 
 
@@ -51,11 +55,24 @@ def apply_policy(
     job: NormalizedJob,
     candidate: CandidateSnapshot,
     policy: DecisionPolicy | None = None,
+    classification: ClassificationResult | None = None,
 ) -> PolicyOutcome:
-    """Downgrade a decision the evidence does not support."""
+    """Downgrade a decision the evidence does not support.
+
+    ``classification`` is the deterministic classifier's read. Where the two
+    disagree about *location*, it wins: measured over the labelled set it is
+    right 83% of the time against the model's 54%, because the city is a fact on
+    the page rather than something to infer. Seniority is deliberately left to
+    the model even though the classifier scores better on it — see the seniority
+    rule below.
+    """
     policy = policy or DecisionPolicy()
     decision = evaluation.decision
     adjustments: list[str] = []
+
+    location_fit = evaluation.location_fit
+    if classification is not None and classification.location_relevant is False:
+        location_fit = LocationFit.OTHER_CITY
 
     def downgrade(to: Decision, why: str) -> None:
         nonlocal decision
@@ -110,12 +127,12 @@ def apply_policy(
             )
 
     # Location the candidate cannot actually take.
-    if evaluation.location_fit is LocationFit.OTHER_CITY:
+    if location_fit is LocationFit.OTHER_CITY:
         downgrade(
             Decision.SKIP if not policy.allow_other_city_review else Decision.REVIEW,
             "the role is based in another city",
         )
-    elif evaluation.location_fit is LocationFit.REMOTE and not policy.accept_remote:
+    elif location_fit is LocationFit.REMOTE and not policy.accept_remote:
         downgrade(Decision.SKIP, "remote roles are excluded by your settings")
 
     # Explicitly not a software role — but only as a demotion to REVIEW, not a
