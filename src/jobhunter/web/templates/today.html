@@ -42,7 +42,7 @@
       </div>
     </header>
 
-    {% if ev.recommendation %}<p class="recommendation">{{ ev.recommendation }}</p>{% endif %}
+    <p class="recommendation">{{ ev.headline() }}</p>
 
     <div class="why-risk">
       {% if ev.major_strengths %}

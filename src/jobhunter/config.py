@@ -69,7 +69,7 @@ class Settings(BaseSettings):
     local_model_host: str = Field(default="http://127.0.0.1:11434")
     local_model_timeout_seconds: float = Field(default=180.0, ge=10.0)
     local_model_num_ctx: int = Field(default=6144, ge=1024, le=32768)
-    local_model_num_predict: int = Field(default=900, ge=200, le=4096)
+    local_model_num_predict: int = Field(default=1100, ge=200, le=4096)
     # Sending the CV to a local model is private; sending it anywhere else is not.
     send_cv_text_to_local_model: bool = Field(default=True)
     anthropic_api_key: SecretStr | None = Field(default=None)

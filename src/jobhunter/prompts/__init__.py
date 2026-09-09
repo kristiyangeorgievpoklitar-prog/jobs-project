@@ -57,14 +57,19 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 #       with the anti-hedging rules far above it. v9 restates them at the point
 #       of use, keeping v8's glossary — which lifted seniority to 86%, the best
 #       measured.
-#   v10 current. The hedging was one level lower than it looked: the model
+#   v10 the hedging was one level lower than it looked: the model
 #       never marked anything "missing", so no evidence ever supported a skip.
 #       It was obeying the prompt, which defined "unknown" as "the profile is
 #       simply silent" — and a CV listing Bulgarian, English and Russian IS
 #       silent about German by that wording. v10 draws the line where it
 #       belongs: a CV lists its languages and technologies, so absence from
 #       that list is evidence of absence, not silence.
-JOB_EVALUATION_VERSION = "v10"
+#   v11 current. Fixes the explanations, which a real run showed were useless
+#       even where the decisions were right: every recommendation read "Review
+#       the candidate's profile to determine if they meet the requirements", and
+#       strengths were a copy of the profile's skill list ("c, c++, javascript")
+#       rather than anything about the posting.
+JOB_EVALUATION_VERSION = "v11"
 COVER_LETTER_VERSION = "v1"
 
 

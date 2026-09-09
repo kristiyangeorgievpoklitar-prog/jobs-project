@@ -120,8 +120,7 @@ def render_briefing(briefing: Briefing) -> str:
         lines.append("Top pick:")
         lines.append(f"  {top.job.title} - {top.job.company_display}")
         lines.append(f"  {top.job.city or top.job.location_raw or 'location unknown'}")
-        if evaluation.recommendation:
-            lines.append(f"  {evaluation.recommendation}")
+        lines.append(f"  {evaluation.headline()}")
         if evaluation.major_strengths:
             lines.append(f"  Why: {', '.join(evaluation.major_strengths[:3])}")
         if evaluation.major_risks:

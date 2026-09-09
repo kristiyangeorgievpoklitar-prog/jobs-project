@@ -601,8 +601,7 @@ def today(
                     f"  [{job.id}] {job.title} - {job.company_display} "
                     f"({job.city or 'location unknown'})"
                 )
-                if evaluation.recommendation:
-                    console.print(f"      {evaluation.recommendation}")
+                console.print(f"      {evaluation.headline()}")
                 if evaluation.major_risks:
                     console.print(f"      [dim]risk: {evaluation.major_risks[0]}[/dim]")
     context.close()

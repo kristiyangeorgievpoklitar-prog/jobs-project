@@ -187,9 +187,50 @@ class JobEvaluation(BaseModel):
     @field_validator("major_strengths", "major_risks", mode="before")
     @classmethod
     def _clean_list(cls, value: object) -> list[str]:
+        """Trim, drop blanks, and de-duplicate.
+
+        Small models repeat themselves: one measured evaluation listed the same
+        risk three times, which reads as three separate problems.
+        """
         if not isinstance(value, list):
             return []
-        return [str(v).strip()[:200] for v in value if str(v).strip()][:8]
+        seen: list[str] = []
+        for item in value:
+            text = str(item).strip()[:200]
+            if text and text not in seen:
+                seen.append(text)
+        return seen[:8]
+
+    def headline(self) -> str:
+        """The one line the candidate reads first.
+
+        Composed here rather than taken from the model. Asked for it, the model
+        returns "Review the candidate's profile to determine if they meet the
+        requirements" almost every time — instructions for a reader rather than
+        anything about the job — and it ignored an explicit prohibition on that
+        exact phrasing. It is also the last field generated, so it is the one
+        truncated when the rest of the answer runs long.
+
+        Its own structured fields say the same thing better, and composing them
+        guarantees the line agrees with the decision.
+        """
+        lead = {
+            Decision.APPLY: "Worth applying",
+            Decision.REVIEW: "Worth a look",
+            Decision.SKIP: "Not worth applying",
+        }[self.decision]
+
+        if self.decision is Decision.SKIP:
+            reason = self.major_risks[0] if self.major_risks else self.reasoning
+            return f"{lead}: {_first_sentence(reason)}" if reason else lead
+
+        parts = [lead]
+        if self.major_strengths:
+            parts.append(_first_sentence(self.major_strengths[0]))
+        if self.major_risks:
+            parts.append(f"but {_first_sentence(self.major_risks[0])[0].lower()}"
+                         f"{_first_sentence(self.major_risks[0])[1:]}")
+        return " - ".join(parts[:2]) + (f", {parts[2]}" if len(parts) > 2 else "")
 
     @property
     def blocking_gaps(self) -> list[RequirementAssessment]:
@@ -203,3 +244,13 @@ class JobEvaluation(BaseModel):
             return None
         covered = sum(1 for r in self.mandatory_requirements if r.candidate_fit.is_covered)
         return covered / len(self.mandatory_requirements)
+
+
+def _first_sentence(text: str, limit: int = 120) -> str:
+    """The first clause of a model sentence, trimmed to fit one line."""
+    cleaned = " ".join((text or "").split())
+    for stop in (". ", "; "):
+        if stop in cleaned:
+            cleaned = cleaned.split(stop)[0]
+            break
+    return cleaned[:limit].rstrip(" .,;")

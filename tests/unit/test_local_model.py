@@ -372,3 +372,61 @@ class TestThePromptExplainsWhatTheSchemaDemands:
         system = job_evaluation_prompt().system
         for value in ("junior_mid", "mid_senior", "hybrid_city", "other_city", "insufficient"):
             assert value in system, f"{value!r} is a legal answer the prompt never offers"
+
+
+class TestTheHeadlineIsComposedNotAsked:
+    """The model will not write this line, so the code does.
+
+    Asked for a one-line recommendation, qwen2.5:3b returned "Review the
+    candidate's profile to determine if they meet the requirements" on nearly
+    every listing — instructions for a reader rather than anything about the
+    job — and went on doing so after the prompt named that exact phrasing as
+    forbidden. It is also the last field generated, so it is the first to be
+    truncated when the rest of the answer runs long.
+    """
+
+    def test_the_headline_agrees_with_the_decision(self):
+        from jobhunter.domain.evaluation import Decision, JobEvaluation
+
+        for decision, expected in (
+            (Decision.APPLY, "Worth applying"),
+            (Decision.REVIEW, "Worth a look"),
+            (Decision.SKIP, "Not worth applying"),
+        ):
+            evaluation = JobEvaluation(decision=decision, major_strengths=["Laravel matches"])
+            assert evaluation.headline().startswith(expected)
+
+    def test_a_skip_leads_with_the_reason_not_the_strength(self):
+        from jobhunter.domain.evaluation import Decision, JobEvaluation
+
+        evaluation = JobEvaluation(
+            decision=Decision.SKIP,
+            major_strengths=["Some PHP overlap"],
+            major_risks=["Requires three years of Python the candidate does not have."],
+        )
+        headline = evaluation.headline()
+        assert "three years of Python" in headline
+        assert "PHP overlap" not in headline, "a skip must explain itself, not console"
+
+    def test_a_long_model_sentence_is_cut_to_one_line(self):
+        from jobhunter.domain.evaluation import Decision, JobEvaluation
+
+        evaluation = JobEvaluation(
+            decision=Decision.REVIEW,
+            major_strengths=["The candidate has " + "very " * 80 + "relevant experience."],
+        )
+        assert len(evaluation.headline()) < 200
+
+    def test_it_says_something_even_with_no_strengths_or_risks(self):
+        from jobhunter.domain.evaluation import Decision, JobEvaluation
+
+        assert JobEvaluation(decision=Decision.REVIEW).headline() == "Worth a look"
+
+    def test_a_repeated_risk_is_reported_once(self):
+        """One measured evaluation listed the same risk three times."""
+        from jobhunter.domain.evaluation import JobEvaluation
+
+        evaluation = JobEvaluation(
+            major_risks=["No Docker experience", "No Docker experience", "No Kubernetes"]
+        )
+        assert evaluation.major_risks == ["No Docker experience", "No Kubernetes"]

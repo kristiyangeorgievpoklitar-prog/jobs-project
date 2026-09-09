@@ -40,7 +40,7 @@
       <p class="warn-text">This listing could not be evaluated automatically ({{ evaluation.degraded_reason }}). Judge it yourself.</p>
     {% endif %}
 
-    {% if evaluation.recommendation %}<p class="recommendation"><strong>{{ evaluation.recommendation }}</strong></p>{% endif %}
+    <p class="recommendation"><strong>{{ evaluation.headline() }}</strong></p>
     {% if evaluation.reasoning %}<p>{{ evaluation.reasoning }}</p>{% endif %}
 
     <div class="claim-row">

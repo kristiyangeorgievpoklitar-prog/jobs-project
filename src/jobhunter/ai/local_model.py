@@ -68,7 +68,9 @@ class LocalModelConfig:
     # at 4096 that plus num_predict overflowed and the context was silently
     # truncated, which costs the model the system prompt or the requirements.
     num_ctx: int = 6144
-    num_predict: int = 900
+    # Raised after v11: richer strengths and risks pushed the final field past
+    # the old 900-token budget and it was returned truncated mid-sentence.
+    num_predict: int = 1100
     max_description_chars: int = 5000
     keep_alive: str = "10m"
 
